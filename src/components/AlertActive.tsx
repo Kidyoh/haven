@@ -1,10 +1,25 @@
+import { useState, useEffect } from "react";
 import { Shield, MapPin, Mic, Radio } from "lucide-react";
 
 interface AlertActiveProps {
   onSafe: () => void;
+  incidentId?: string | null;
 }
 
-const AlertActive = ({ onSafe }: AlertActiveProps) => {
+const AlertActive = ({ onSafe, incidentId }: AlertActiveProps) => {
+  const [elapsed, setElapsed] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => setElapsed((e) => e + 1), 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const formatTime = (secs: number) => {
+    const m = Math.floor(secs / 60).toString().padStart(2, "0");
+    const s = (secs % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+  };
+
   return (
     <div className="fixed inset-0 z-50 bg-background flex flex-col items-center justify-between py-12 px-6">
       {/* Top status */}
@@ -15,6 +30,7 @@ const AlertActive = ({ onSafe }: AlertActiveProps) => {
         </div>
         <h1 className="text-2xl font-display font-bold text-foreground">Help is on the way</h1>
         <p className="text-muted-foreground text-sm mt-2">Your contacts and police have been notified</p>
+        <p className="text-xs text-muted-foreground mt-1 font-mono">Duration: {formatTime(elapsed)}</p>
       </div>
 
       {/* Status indicators */}

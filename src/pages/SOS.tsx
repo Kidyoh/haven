@@ -1,10 +1,11 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Settings, Shield, LogOut, Share2, Copy, Check } from "lucide-react";
+import { Shield, LogOut, Share2, Copy, Check } from "lucide-react";
 import SOSButton from "@/components/SOSButton";
 import CountdownOverlay from "@/components/CountdownOverlay";
 import AlertActive from "@/components/AlertActive";
 import { useAuth } from "@/hooks/useAuth";
+import { useSOSPipeline } from "@/hooks/useSOSPipeline";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 
@@ -16,8 +17,11 @@ const SOS = () => {
   const [shareLink, setShareLink] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [showShare, setShowShare] = useState(false);
+  const [activeIncidentId, setActiveIncidentId] = useState<string | null>(null);
+  const locationTrackingRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
+  const { triggerSOS, resolveIncident, startLocationTracking } = useSOSPipeline(user?.id);
 
   useEffect(() => {
     if (!user) return;
@@ -31,7 +35,6 @@ const SOS = () => {
         if (data) setProfile(data);
       });
 
-    // Check for existing share link
     supabase
       .from("incident_shares")
       .select("share_token")
@@ -45,6 +48,36 @@ const SOS = () => {
       });
   }, [user]);
 
+  // Cleanup location tracking on unmount
+  useEffect(() => {
+    return () => {
+      if (locationTrackingRef.current) clearInterval(locationTrackingRef.current);
+    };
+  }, []);
+
+  const handleCountdownComplete = async () => {
+    const result = await triggerSOS();
+    if (result) {
+      setActiveIncidentId(result.incidentId);
+      // Start continuous location tracking every 5 min
+      const intervalId = startLocationTracking(result.incidentId);
+      if (intervalId) locationTrackingRef.current = intervalId;
+    }
+    setState("active");
+  };
+
+  const handleSafe = async () => {
+    if (activeIncidentId) {
+      await resolveIncident(activeIncidentId);
+      setActiveIncidentId(null);
+      if (locationTrackingRef.current) {
+        clearInterval(locationTrackingRef.current);
+        locationTrackingRef.current = null;
+      }
+    }
+    setState("home");
+  };
+
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
@@ -52,15 +85,14 @@ const SOS = () => {
 
   const generateShareLink = async () => {
     if (!user) return;
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("incident_shares")
       .insert({ user_id: user.id, label: "Next of Kin" })
       .select("share_token")
       .single();
 
     if (data) {
-      const link = `${window.location.origin}/track/${data.share_token}`;
-      setShareLink(link);
+      setShareLink(`${window.location.origin}/track/${data.share_token}`);
     }
   };
 
@@ -72,16 +104,15 @@ const SOS = () => {
   };
 
   if (state === "countdown") {
-    return <CountdownOverlay seconds={10} onComplete={() => setState("active")} onCancel={() => setState("home")} />;
+    return <CountdownOverlay seconds={10} onComplete={handleCountdownComplete} onCancel={() => setState("home")} />;
   }
 
   if (state === "active") {
-    return <AlertActive onSafe={() => setState("home")} />;
+    return <AlertActive onSafe={handleSafe} incidentId={activeIncidentId} />;
   }
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {/* Header */}
       <header className="flex items-center justify-between px-6 pt-6 pb-4">
         <div>
           <h1 className="font-display font-bold text-xl tracking-[0.3em] text-foreground">HAVEN</h1>
@@ -105,7 +136,6 @@ const SOS = () => {
         </div>
       </header>
 
-      {/* Share panel */}
       {showShare && (
         <div className="mx-6 mb-4 p-4 rounded-2xl bg-card border border-border">
           <p className="text-sm font-semibold text-foreground mb-2">Share with Next of Kin</p>
@@ -122,18 +152,13 @@ const SOS = () => {
               </Button>
             </div>
           ) : (
-            <Button
-              size="sm"
-              className="bg-sos hover:bg-sos/90 text-destructive-foreground"
-              onClick={generateShareLink}
-            >
+            <Button size="sm" className="bg-sos hover:bg-sos/90 text-destructive-foreground" onClick={generateShareLink}>
               Generate Link
             </Button>
           )}
         </div>
       )}
 
-      {/* Main SOS area */}
       <main className="flex-1 flex flex-col items-center justify-center -mt-12">
         <SOSButton onActivate={() => setState("countdown")} />
         <p className="text-muted-foreground text-sm mt-10 text-center px-12">
@@ -141,7 +166,6 @@ const SOS = () => {
         </p>
       </main>
 
-      {/* Bottom status bar */}
       <footer className="px-6 pb-8">
         <div className="flex items-center justify-between p-4 rounded-2xl bg-card">
           <div className="flex items-center gap-3">
