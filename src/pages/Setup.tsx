@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { User, Users, Bell, ChevronRight, Plus, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -15,8 +15,27 @@ const Setup = () => {
   const [contacts, setContacts] = useState<Contact[]>([{ name: "", phone: "", relationship: "family" }]);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [checkingSetup, setCheckingSetup] = useState(true);
   const navigate = useNavigate();
   const { user } = useAuth();
+
+  // Redirect if setup already complete
+  useEffect(() => {
+    if (!user) return;
+    const check = async () => {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("setup_complete")
+        .eq("user_id", user.id)
+        .single();
+      if (profile?.setup_complete) {
+        navigate("/sos", { replace: true });
+      } else {
+        setCheckingSetup(false);
+      }
+    };
+    check();
+  }, [user, navigate]);
 
   const steps = [
     { icon: <Users className="w-6 h-6" />, title: "Emergency Contacts", desc: "Who should we alert in an emergency?" },
@@ -80,6 +99,14 @@ const Setup = () => {
     if (step < 1) setStep(step + 1);
     else handleComplete();
   };
+
+  if (checkingSetup) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-sos border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background flex flex-col px-6 py-8">

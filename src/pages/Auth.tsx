@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { Shield, ArrowLeft, Eye, EyeOff } from "lucide-react";
 
 const Auth = () => {
@@ -28,7 +29,24 @@ const Auth = () => {
     } else {
       const { error } = await signIn(email, password);
       if (error) setError(error.message);
-      else navigate("/setup");
+      else {
+        // Check if setup is already complete
+        const { data: { user: currentUser } } = await supabase.auth.getUser();
+        if (currentUser) {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("setup_complete")
+            .eq("user_id", currentUser.id)
+            .single();
+          if (profile?.setup_complete) {
+            navigate("/sos");
+          } else {
+            navigate("/setup");
+          }
+        } else {
+          navigate("/setup");
+        }
+      }
     }
     setLoading(false);
   };
