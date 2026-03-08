@@ -8,6 +8,9 @@ import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Setup from "./pages/Setup";
 import SOS from "./pages/SOS";
+import TrackIncident from "./pages/TrackIncident";
+import DashboardAuth from "./pages/DashboardAuth";
+import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
