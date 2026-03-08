@@ -14,7 +14,155 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      emergency_contacts: {
+        Row: {
+          created_at: string
+          email: string | null
+          id: string
+          is_primary: boolean
+          name: string
+          phone: string
+          relationship: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_primary?: boolean
+          name: string
+          phone: string
+          relationship?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string | null
+          id?: string
+          is_primary?: boolean
+          name?: string
+          phone?: string
+          relationship?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      incidents: {
+        Row: {
+          accuracy_meters: number | null
+          audio_url: string | null
+          battery_level: number | null
+          created_at: string
+          id: string
+          latitude: number | null
+          longitude: number | null
+          photo_url: string | null
+          reference_number: string
+          resolved_at: string | null
+          signal_strength: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          accuracy_meters?: number | null
+          audio_url?: string | null
+          battery_level?: number | null
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          photo_url?: string | null
+          reference_number: string
+          resolved_at?: string | null
+          signal_strength?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          accuracy_meters?: number | null
+          audio_url?: string | null
+          battery_level?: number | null
+          created_at?: string
+          id?: string
+          latitude?: number | null
+          longitude?: number | null
+          photo_url?: string | null
+          reference_number?: string
+          resolved_at?: string | null
+          signal_strength?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      location_updates: {
+        Row: {
+          accuracy_meters: number | null
+          created_at: string
+          id: string
+          incident_id: string
+          latitude: number
+          longitude: number
+          user_id: string
+        }
+        Insert: {
+          accuracy_meters?: number | null
+          created_at?: string
+          id?: string
+          incident_id: string
+          latitude: number
+          longitude: number
+          user_id: string
+        }
+        Update: {
+          accuracy_meters?: number | null
+          created_at?: string
+          id?: string
+          incident_id?: string
+          latitude?: number
+          longitude?: number
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "location_updates_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "incidents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string
+          full_name: string
+          id: string
+          phone_number: string
+          setup_complete: boolean
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          full_name: string
+          id?: string
+          phone_number: string
+          setup_complete?: boolean
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          full_name?: string
+          id?: string
+          phone_number?: string
+          setup_complete?: boolean
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
