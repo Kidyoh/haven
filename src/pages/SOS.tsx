@@ -13,16 +13,52 @@ import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 type SOSState = "home" | "countdown" | "active";
 
 const SOS = () => {
-  const [state, setState] = useState<SOSState>("home");
+  const [state, setState] = useState<SOSState>(() => {
+    const saved = localStorage.getItem("haven-sos-state");
+    return saved === "active" ? "active" : "home";
+  });
   const [profile, setProfile] = useState<{ full_name: string } | null>(null);
   const [shareLink, setShareLink] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [showShare, setShowShare] = useState(false);
-  const [activeIncidentId, setActiveIncidentId] = useState<string | null>(null);
+  const [activeIncidentId, setActiveIncidentId] = useState<string | null>(
+    () => localStorage.getItem("haven-active-incident")
+  );
   const locationTrackingRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const { triggerSOS, resolveIncident, startLocationTracking } = useSOSPipeline(user?.id);
+
+  // Persist SOS state to localStorage
+  useEffect(() => {
+    if (state === "active" && activeIncidentId) {
+      localStorage.setItem("haven-sos-state", "active");
+      localStorage.setItem("haven-active-incident", activeIncidentId);
+    } else if (state === "home") {
+      localStorage.removeItem("haven-sos-state");
+      localStorage.removeItem("haven-active-incident");
+    }
+  }, [state, activeIncidentId]);
+
+  // On reload, verify the incident is still active in DB
+  useEffect(() => {
+    if (state === "active" && activeIncidentId && user) {
+      supabase
+        .from("incidents")
+        .select("id, status")
+        .eq("id", activeIncidentId)
+        .single()
+        .then(({ data }) => {
+          if (!data || data.status !== "active") {
+            setState("home");
+            setActiveIncidentId(null);
+          } else {
+            const intervalId = startLocationTracking(activeIncidentId);
+            if (intervalId) locationTrackingRef.current = intervalId;
+          }
+        });
+    }
+  }, [user]);
 
   useEffect(() => {
     if (!user) return;
@@ -60,7 +96,6 @@ const SOS = () => {
     const result = await triggerSOS();
     if (result) {
       setActiveIncidentId(result.incidentId);
-      // Start continuous location tracking every 5 min
       const intervalId = startLocationTracking(result.incidentId);
       if (intervalId) locationTrackingRef.current = intervalId;
     }
