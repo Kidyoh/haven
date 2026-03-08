@@ -177,27 +177,25 @@ export const useSOSPipeline = (userId: string | undefined) => {
       setIsCapturing(false);
       return null;
     }
-  }, [userId, startAudioRecording, getLocation]);
+  }, [userId, startAudioRecording, stopAudioRecording, uploadAudio, getLocation]);
 
   const resolveIncident = useCallback(async (incidentId: string): Promise<void> => {
-    // Stop audio recording and upload
+    // Stop audio if still recording (may have already auto-stopped after 30s)
     const audioBlob = await stopAudioRecording();
-    let audioUrl: string | null = null;
-
     if (audioBlob && audioBlob.size > 0) {
-      audioUrl = await uploadAudio(audioBlob);
+      const audioUrl = await uploadAudio(audioBlob);
+      if (audioUrl) {
+        await supabase.from("incidents").update({ audio_url: audioUrl }).eq("id", incidentId);
+      }
     }
 
-    // Update incident with audio URL and resolve
+    // Resolve the incident
     await supabase
       .from("incidents")
-      .update({
-        status: "resolved",
-        resolved_at: new Date().toISOString(),
-        audio_url: audioUrl,
-      })
+      .update({ status: "resolved", resolved_at: new Date().toISOString() })
       .eq("id", incidentId);
 
+    latestIncidentIdRef.current = null;
     setIsCapturing(false);
   }, [stopAudioRecording, uploadAudio]);
 
