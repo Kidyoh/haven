@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { Shield, MapPin, Mic, Camera, Radio, Users, ChevronRight, Zap } from "lucide-react";
 import heroImage from "@/assets/hero-shield.jpg";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 const Landing = () => {
   const navigate = useNavigate();
