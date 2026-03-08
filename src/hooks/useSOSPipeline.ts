@@ -151,6 +151,9 @@ export const useSOSPipeline = (userId: string | undefined) => {
         return null;
       }
 
+      // Store incident ID for the auto-stop audio upload
+      latestIncidentIdRef.current = incident.id;
+
       // Also insert first location update
       if (location) {
         await supabase.from("location_updates").insert({
