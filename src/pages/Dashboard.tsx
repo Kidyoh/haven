@@ -121,6 +121,74 @@ const Dashboard = () => {
     };
   }, [authorized]);
 
+  // Fetch team members
+  useEffect(() => {
+    if (!authorized || !isAdmin) return;
+    const fetchTeam = async () => {
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("user_id, role, created_at, organizations(name)");
+      if (roles) {
+        // Get profile info for each team member
+        const userIds = [...new Set(roles.map((r: any) => r.user_id))];
+        const { data: teamProfiles } = await supabase
+          .from("profiles")
+          .select("user_id, full_name, phone_number")
+          .in("user_id", userIds);
+        const profileMap = new Map((teamProfiles || []).map((p: any) => [p.user_id, p]));
+        setTeamMembers(
+          roles.map((r: any) => ({
+            ...r,
+            profile: profileMap.get(r.user_id),
+          }))
+        );
+      }
+    };
+    fetchTeam();
+  }, [authorized, isAdmin]);
+
+  const handleInvite = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setInviteLoading(true);
+    setTempPassword(null);
+
+    const { data, error } = await supabase.functions.invoke("invite-responder", {
+      body: {
+        email: inviteEmail,
+        full_name: inviteName,
+        phone: invitePhone,
+        role: inviteRole,
+      },
+    });
+
+    if (error || data?.error) {
+      toast.error(data?.error || error?.message || "Failed to invite user");
+      setInviteLoading(false);
+      return;
+    }
+
+    setTempPassword(data.temp_password);
+    toast.success(`${inviteName} has been added as ${inviteRole}`);
+    setInviteEmail("");
+    setInviteName("");
+    setInvitePhone("");
+    setInviteLoading(false);
+
+    // Refresh team list
+    const { data: roles } = await supabase
+      .from("user_roles")
+      .select("user_id, role, created_at, organizations(name)");
+    if (roles) {
+      const userIds = [...new Set(roles.map((r: any) => r.user_id))];
+      const { data: teamProfiles } = await supabase
+        .from("profiles")
+        .select("user_id, full_name, phone_number")
+        .in("user_id", userIds);
+      const profileMap = new Map((teamProfiles || []).map((p: any) => [p.user_id, p]));
+      setTeamMembers(roles.map((r: any) => ({ ...r, profile: profileMap.get(r.user_id) })));
+    }
+  };
+
   const handleResolve = async (incidentId: string) => {
     await supabase
       .from("incidents")
