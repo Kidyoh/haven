@@ -256,8 +256,8 @@ const Dashboard = () => {
 
       <div className="max-w-7xl mx-auto px-6 py-6">
         {/* Tabs */}
-        <div className="flex gap-1 mb-6 p-1 rounded-xl bg-card w-fit">
-          {(["overview", "incidents", "analytics"] as Tab[]).map((t) => (
+        <div className="flex gap-1 mb-6 p-1 rounded-xl bg-card w-fit flex-wrap">
+          {(["overview", "incidents", "analytics", ...(isAdmin ? ["team"] : [])] as Tab[]).map((t) => (
             <button
               key={t}
               onClick={() => setTab(t)}
@@ -267,7 +267,7 @@ const Dashboard = () => {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {t}
+              {t === "team" ? "Team" : t}
             </button>
           ))}
         </div>
