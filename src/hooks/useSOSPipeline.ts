@@ -9,6 +9,8 @@ interface SOSData {
   audioUrl: string | null;
 }
 
+const RECORDING_DURATION_MS = 30000;
+
 export const useSOSPipeline = (userId: string | undefined) => {
   const [isCapturing, setIsCapturing] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -17,7 +19,7 @@ export const useSOSPipeline = (userId: string | undefined) => {
   const streamRef = useRef<MediaStream | null>(null);
   const latestIncidentIdRef = useRef<string | null>(null);
   const recordingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const recordingStoppedRef = useRef(false);
+  const stoppedRef = useRef(false);
 
   const getLocation = useCallback((): Promise<{ lat: number; lng: number; accuracy: number } | null> => {
     return new Promise((resolve) => {
@@ -33,36 +35,62 @@ export const useSOSPipeline = (userId: string | undefined) => {
     });
   }, []);
 
+  const killStream = useCallback(() => {
+    streamRef.current?.getTracks().forEach((t) => {
+      t.stop();
+      t.enabled = false;
+    });
+    streamRef.current = null;
+  }, []);
+
   const stopAndUploadAudio = useCallback(async (incidentId: string | null): Promise<string | null> => {
-    if (recordingStoppedRef.current) return null;
-    recordingStoppedRef.current = true;
+    // Prevent double-stop
+    if (stoppedRef.current) return null;
+    stoppedRef.current = true;
     setIsRecording(false);
 
-    // Clear the auto-stop timer if it's still pending
+    // Clear the auto-stop timer
     if (recordingTimerRef.current) {
       clearTimeout(recordingTimerRef.current);
       recordingTimerRef.current = null;
     }
 
     const recorder = mediaRecorderRef.current;
+    mediaRecorderRef.current = null;
+
     if (!recorder || recorder.state === "inactive") {
-      // Clean up stream
-      streamRef.current?.getTracks().forEach((t) => t.stop());
-      streamRef.current = null;
+      killStream();
       return null;
     }
 
-    // Stop the recorder and wait for final data
+    // Force stop and collect final data
     const blob = await new Promise<Blob | null>((resolve) => {
+      const timeout = setTimeout(() => {
+        // Safety net: if onstop never fires, force cleanup
+        killStream();
+        const fallback = chunksRef.current.length > 0
+          ? new Blob(chunksRef.current, { type: recorder.mimeType })
+          : null;
+        chunksRef.current = [];
+        resolve(fallback);
+      }, 3000);
+
       recorder.onstop = () => {
+        clearTimeout(timeout);
         const finalBlob = new Blob(chunksRef.current, { type: recorder.mimeType });
         chunksRef.current = [];
-        streamRef.current?.getTracks().forEach((t) => t.stop());
-        streamRef.current = null;
-        mediaRecorderRef.current = null;
+        killStream();
         resolve(finalBlob.size > 0 ? finalBlob : null);
       };
-      recorder.stop();
+
+      try {
+        recorder.stop();
+      } catch {
+        clearTimeout(timeout);
+        killStream();
+        chunksRef.current = [];
+        resolve(null);
+      }
     });
 
     if (!blob || !userId) return null;
@@ -94,12 +122,12 @@ export const useSOSPipeline = (userId: string | undefined) => {
     }
 
     return audioUrl;
-  }, [userId]);
+  }, [userId, killStream]);
 
   const triggerSOS = useCallback(async (): Promise<SOSData | null> => {
     if (!userId) return null;
     setIsCapturing(true);
-    recordingStoppedRef.current = false;
+    stoppedRef.current = false;
 
     try {
       // Start audio recording immediately
@@ -118,8 +146,16 @@ export const useSOSPipeline = (userId: string | undefined) => {
         };
 
         mediaRecorderRef.current = recorder;
-        recorder.start(1000); // Collect data every 1 second
+        recorder.start(1000);
         setIsRecording(true);
+
+        // Hard stop at exactly 30 seconds - uses the stream tracks directly as backup
+        recordingTimerRef.current = setTimeout(() => {
+          console.log("30s recording limit reached, force stopping");
+          // Immediately disable mic tracks to guarantee no more audio
+          stream.getTracks().forEach((t) => { t.enabled = false; });
+          stopAndUploadAudio(latestIncidentIdRef.current);
+        }, RECORDING_DURATION_MS);
       } catch (err) {
         console.error("Mic access denied:", err);
       }
@@ -172,11 +208,6 @@ export const useSOSPipeline = (userId: string | undefined) => {
         });
       }
 
-      // Auto-stop recording after exactly 30 seconds
-      recordingTimerRef.current = setTimeout(() => {
-        stopAndUploadAudio(incident.id);
-      }, 30000);
-
       return {
         incidentId: incident.id,
         referenceNumber: incident.reference_number,
@@ -192,10 +223,8 @@ export const useSOSPipeline = (userId: string | undefined) => {
   }, [userId, getLocation, stopAndUploadAudio]);
 
   const resolveIncident = useCallback(async (incidentId: string): Promise<void> => {
-    // Stop audio if still recording
     await stopAndUploadAudio(incidentId);
 
-    // Resolve the incident
     await supabase
       .from("incidents")
       .update({ status: "resolved", resolved_at: new Date().toISOString() })
@@ -205,7 +234,6 @@ export const useSOSPipeline = (userId: string | undefined) => {
     setIsCapturing(false);
   }, [stopAndUploadAudio]);
 
-  // Continuous location tracking
   const startLocationTracking = useCallback((incidentId: string) => {
     if (!userId) return null;
 
