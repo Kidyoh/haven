@@ -105,7 +105,7 @@ const Dashboard = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [authorized]);
 
   const handleResolve = async (incidentId: string) => {
     await supabase
