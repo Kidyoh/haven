@@ -8,6 +8,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { useSOSPipeline } from "@/hooks/useSOSPipeline";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
+import PWAInstallPrompt from "@/components/PWAInstallPrompt";
 
 type SOSState = "home" | "countdown" | "active";
 
