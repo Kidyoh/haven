@@ -99,7 +99,7 @@ const Landing = () => {
 
           <div className="grid grid-cols-2 gap-3">
             <FeatureCard icon={<MapPin className="w-5 h-5" />} title="Live Tracking" desc="Location updates every 5 minutes" />
-            <FeatureCard icon={<Mic className="w-5 h-5" />} title="Audio Evidence" desc="90-second auto recording" />
+            <FeatureCard icon={<Mic className="w-5 h-5" />} title="Audio Evidence" desc="30-second auto recording" />
             <FeatureCard icon={<Shield className="w-5 h-5" />} title="Stealth Mode" desc="App appears closed while alerting" />
             <FeatureCard icon={<Users className="w-5 h-5" />} title="6 Contacts" desc="Family, friends & NGOs" />
             <FeatureCard icon={<Zap className="w-5 h-5" />} title="Offline Ready" desc="Queues alerts for when signal returns" />
