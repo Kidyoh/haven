@@ -184,6 +184,8 @@ const SOS = () => {
           </div>
         </div>
       </footer>
+
+      <PWAInstallPrompt />
     </div>
   );
 };

@@ -136,6 +136,8 @@ const Landing = () => {
           <span className="text-xs text-muted-foreground">Protecting women in Ethiopia</span>
         </div>
       </footer>
+
+      <PWAInstallPrompt />
     </div>
   );
 };
