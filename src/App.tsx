@@ -43,6 +43,7 @@ const App = () => (
           <Route path="/track/:token" element={<TrackIncident />} />
           <Route path="/respond" element={<DashboardAuth />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/install" element={<Install />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
