@@ -11,10 +11,13 @@ interface SOSData {
 
 export const useSOSPipeline = (userId: string | undefined) => {
   const [isCapturing, setIsCapturing] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
   const latestIncidentIdRef = useRef<string | null>(null);
+  const recordingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const recordingStoppedRef = useRef(false);
 
   const getLocation = useCallback((): Promise<{ lat: number; lng: number; accuracy: number } | null> => {
     return new Promise((resolve) => {
@@ -30,51 +33,41 @@ export const useSOSPipeline = (userId: string | undefined) => {
     });
   }, []);
 
-  const startAudioRecording = useCallback(async (): Promise<void> => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 44100 },
-      });
-      streamRef.current = stream;
-      chunksRef.current = [];
+  const stopAndUploadAudio = useCallback(async (incidentId: string | null): Promise<string | null> => {
+    if (recordingStoppedRef.current) return null;
+    recordingStoppedRef.current = true;
+    setIsRecording(false);
 
-      const mimeType = MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "audio/mp4";
-      const recorder = new MediaRecorder(stream, { mimeType });
-
-      recorder.ondataavailable = (e) => {
-        if (e.data.size > 0) chunksRef.current.push(e.data);
-      };
-
-      mediaRecorderRef.current = recorder;
-      recorder.start(1000);
-    } catch (err) {
-      console.error("Mic access denied:", err);
+    // Clear the auto-stop timer if it's still pending
+    if (recordingTimerRef.current) {
+      clearTimeout(recordingTimerRef.current);
+      recordingTimerRef.current = null;
     }
-  }, []);
 
-  const stopAudioRecording = useCallback((): Promise<Blob | null> => {
-    return new Promise((resolve) => {
-      const recorder = mediaRecorderRef.current;
-      if (!recorder || recorder.state === "inactive") {
-        resolve(null);
-        return;
-      }
+    const recorder = mediaRecorderRef.current;
+    if (!recorder || recorder.state === "inactive") {
+      // Clean up stream
+      streamRef.current?.getTracks().forEach((t) => t.stop());
+      streamRef.current = null;
+      return null;
+    }
 
+    // Stop the recorder and wait for final data
+    const blob = await new Promise<Blob | null>((resolve) => {
       recorder.onstop = () => {
-        const blob = new Blob(chunksRef.current, { type: recorder.mimeType });
+        const finalBlob = new Blob(chunksRef.current, { type: recorder.mimeType });
         chunksRef.current = [];
-        // Stop all tracks
         streamRef.current?.getTracks().forEach((t) => t.stop());
         streamRef.current = null;
-        resolve(blob);
+        mediaRecorderRef.current = null;
+        resolve(finalBlob.size > 0 ? finalBlob : null);
       };
-
       recorder.stop();
     });
-  }, []);
 
-  const uploadAudio = useCallback(async (blob: Blob): Promise<string | null> => {
-    if (!userId) return null;
+    if (!blob || !userId) return null;
+
+    // Upload
     const ext = blob.type.includes("webm") ? "webm" : "mp4";
     const fileName = `${userId}/sos_${Date.now()}.${ext}`;
 
@@ -89,32 +82,47 @@ export const useSOSPipeline = (userId: string | undefined) => {
     }
 
     const { data } = supabase.storage.from("evidence").getPublicUrl(fileName);
-    return data.publicUrl;
+    const audioUrl = data.publicUrl;
+
+    // Update incident with audio URL
+    const targetId = incidentId || latestIncidentIdRef.current;
+    if (audioUrl && targetId) {
+      await supabase
+        .from("incidents")
+        .update({ audio_url: audioUrl })
+        .eq("id", targetId);
+    }
+
+    return audioUrl;
   }, [userId]);
 
   const triggerSOS = useCallback(async (): Promise<SOSData | null> => {
     if (!userId) return null;
     setIsCapturing(true);
+    recordingStoppedRef.current = false;
 
     try {
-      // Start audio recording immediately (called from user gesture context)
-      await startAudioRecording();
+      // Start audio recording immediately
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          audio: { echoCancellation: true, noiseSuppression: true, sampleRate: 44100 },
+        });
+        streamRef.current = stream;
+        chunksRef.current = [];
 
-      // Auto-stop recording after 30 seconds and upload
-      setTimeout(async () => {
-        const audioBlob = await stopAudioRecording();
-        if (audioBlob && audioBlob.size > 0) {
-          const audioUrl = await uploadAudio(audioBlob);
-          // We'll update the incident with audio URL once we have the incident ID
-          // Store it for later use
-          if (audioUrl && latestIncidentIdRef.current) {
-            await supabase
-              .from("incidents")
-              .update({ audio_url: audioUrl })
-              .eq("id", latestIncidentIdRef.current);
-          }
-        }
-      }, 30000);
+        const mimeType = MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "audio/mp4";
+        const recorder = new MediaRecorder(stream, { mimeType });
+
+        recorder.ondataavailable = (e) => {
+          if (e.data.size > 0) chunksRef.current.push(e.data);
+        };
+
+        mediaRecorderRef.current = recorder;
+        recorder.start(1000); // Collect data every 1 second
+        setIsRecording(true);
+      } catch (err) {
+        console.error("Mic access denied:", err);
+      }
 
       // Get location in parallel
       const location = await getLocation();
@@ -122,14 +130,14 @@ export const useSOSPipeline = (userId: string | undefined) => {
       // Generate reference number
       const refNum = `HVN-${Date.now().toString(36).toUpperCase()}`;
 
-      // Get battery level if available
+      // Get battery level
       let batteryLevel: number | null = null;
       try {
         const battery = await (navigator as any).getBattery?.();
         if (battery) batteryLevel = Math.round(battery.level * 100);
       } catch {}
 
-      // Create incident in DB
+      // Create incident
       const { data: incident, error } = await supabase
         .from("incidents")
         .insert({
@@ -151,10 +159,9 @@ export const useSOSPipeline = (userId: string | undefined) => {
         return null;
       }
 
-      // Store incident ID for the auto-stop audio upload
       latestIncidentIdRef.current = incident.id;
 
-      // Also insert first location update
+      // Insert first location update
       if (location) {
         await supabase.from("location_updates").insert({
           incident_id: incident.id,
@@ -165,29 +172,28 @@ export const useSOSPipeline = (userId: string | undefined) => {
         });
       }
 
+      // Auto-stop recording after exactly 30 seconds
+      recordingTimerRef.current = setTimeout(() => {
+        stopAndUploadAudio(incident.id);
+      }, 30000);
+
       return {
         incidentId: incident.id,
         referenceNumber: incident.reference_number,
         latitude: location?.lat ?? null,
         longitude: location?.lng ?? null,
-        audioUrl: null, // Will be set when recording stops
+        audioUrl: null,
       };
     } catch (err) {
       console.error("SOS trigger failed:", err);
       setIsCapturing(false);
       return null;
     }
-  }, [userId, startAudioRecording, stopAudioRecording, uploadAudio, getLocation]);
+  }, [userId, getLocation, stopAndUploadAudio]);
 
   const resolveIncident = useCallback(async (incidentId: string): Promise<void> => {
-    // Stop audio if still recording (may have already auto-stopped after 30s)
-    const audioBlob = await stopAudioRecording();
-    if (audioBlob && audioBlob.size > 0) {
-      const audioUrl = await uploadAudio(audioBlob);
-      if (audioUrl) {
-        await supabase.from("incidents").update({ audio_url: audioUrl }).eq("id", incidentId);
-      }
-    }
+    // Stop audio if still recording
+    await stopAndUploadAudio(incidentId);
 
     // Resolve the incident
     await supabase
@@ -197,7 +203,7 @@ export const useSOSPipeline = (userId: string | undefined) => {
 
     latestIncidentIdRef.current = null;
     setIsCapturing(false);
-  }, [stopAudioRecording, uploadAudio]);
+  }, [stopAndUploadAudio]);
 
   // Continuous location tracking
   const startLocationTracking = useCallback((incidentId: string) => {
@@ -214,13 +220,12 @@ export const useSOSPipeline = (userId: string | undefined) => {
           accuracy_meters: location.accuracy,
         });
 
-        // Also update incident's latest location
         await supabase
           .from("incidents")
           .update({ latitude: location.lat, longitude: location.lng, accuracy_meters: location.accuracy })
           .eq("id", incidentId);
       }
-    }, 5 * 60 * 1000); // Every 5 minutes
+    }, 5 * 60 * 1000);
 
     return intervalId;
   }, [userId, getLocation]);
@@ -230,6 +235,6 @@ export const useSOSPipeline = (userId: string | undefined) => {
     resolveIncident,
     startLocationTracking,
     isCapturing,
-    isRecording: mediaRecorderRef.current?.state === "recording",
+    isRecording,
   };
 };
