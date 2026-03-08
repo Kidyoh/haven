@@ -11,6 +11,7 @@ import SOS from "./pages/SOS";
 import TrackIncident from "./pages/TrackIncident";
 import DashboardAuth from "./pages/DashboardAuth";
 import Dashboard from "./pages/Dashboard";
+import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
