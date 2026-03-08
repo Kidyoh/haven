@@ -43,10 +43,30 @@ const Dashboard = () => {
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "resolved">("all");
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authorized, setAuthorized] = useState<boolean | null>(null);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
+  // Check responder role
   useEffect(() => {
+    if (!user) return;
+    const checkRole = async () => {
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id);
+      if (!roles || roles.length === 0) {
+        setAuthorized(false);
+        navigate("/respond", { replace: true });
+      } else {
+        setAuthorized(true);
+      }
+    };
+    checkRole();
+  }, [user, navigate]);
+
+  useEffect(() => {
+    if (authorized !== true) return;
     const fetchData = async () => {
       const [incidentRes, profileRes] = await Promise.all([
         supabase.from("incidents").select("*").order("created_at", { ascending: false }),
@@ -85,7 +105,7 @@ const Dashboard = () => {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [authorized]);
 
   const handleResolve = async (incidentId: string) => {
     await supabase
@@ -124,7 +144,7 @@ const Dashboard = () => {
 
   const maxDayCount = Math.max(...incidentsPerDay.map((d) => d.count), 1);
 
-  if (loading) {
+  if (loading || authorized === null) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="w-8 h-8 border-2 border-sos border-t-transparent rounded-full animate-spin" />
