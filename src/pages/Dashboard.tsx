@@ -583,6 +583,164 @@ const Dashboard = () => {
             </div>
           </div>
         )}
+
+        {tab === "team" && isAdmin && (
+          <div className="space-y-6">
+            {/* Invite form */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <UserPlus className="w-5 h-5 text-muted-foreground" />
+                  Invite New Responder
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <form onSubmit={handleInvite} className="space-y-4">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="invite-name">Full Name</Label>
+                      <Input
+                        id="invite-name"
+                        value={inviteName}
+                        onChange={(e) => setInviteName(e.target.value)}
+                        placeholder="Officer Kebede"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="invite-email">Email</Label>
+                      <Input
+                        id="invite-email"
+                        type="email"
+                        value={inviteEmail}
+                        onChange={(e) => setInviteEmail(e.target.value)}
+                        placeholder="kebede@police.gov.et"
+                        required
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="invite-phone">Phone</Label>
+                      <Input
+                        id="invite-phone"
+                        value={invitePhone}
+                        onChange={(e) => setInvitePhone(e.target.value)}
+                        placeholder="+251 9XX XXX XXX"
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="invite-role">Role</Label>
+                      <Select value={inviteRole} onValueChange={setInviteRole}>
+                        <SelectTrigger>
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="responder">Responder</SelectItem>
+                          <SelectItem value="org_admin">Organization Admin</SelectItem>
+                          <SelectItem value="admin">Admin</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  </div>
+                  <Button type="submit" className="bg-sos hover:bg-sos/90 text-destructive-foreground" disabled={inviteLoading}>
+                    {inviteLoading ? (
+                      <div className="w-4 h-4 border-2 border-destructive-foreground border-t-transparent rounded-full animate-spin" />
+                    ) : (
+                      <>
+                        <UserPlus className="w-4 h-4 mr-2" />
+                        Create & Invite
+                      </>
+                    )}
+                  </Button>
+                </form>
+
+                {tempPassword && (
+                  <div className="mt-4 p-4 rounded-xl bg-safe/10 border border-safe/20">
+                    <p className="text-sm font-semibold text-foreground mb-2">Account created successfully!</p>
+                    <p className="text-xs text-muted-foreground mb-3">Share this temporary password with the new user. They should change it after first login.</p>
+                    <div className="flex items-center gap-2">
+                      <code className="flex-1 bg-card px-3 py-2 rounded-lg text-sm font-mono text-foreground">
+                        {showPassword ? tempPassword : "••••••••••••"}
+                      </code>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          navigator.clipboard.writeText(tempPassword);
+                          toast.success("Password copied to clipboard");
+                        }}
+                      >
+                        <Copy className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+
+            {/* Team list */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Users className="w-5 h-5 text-muted-foreground" />
+                  Team Members ({teamMembers.length})
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Name</TableHead>
+                      <TableHead>Phone</TableHead>
+                      <TableHead>Role</TableHead>
+                      <TableHead>Added</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {teamMembers.length === 0 ? (
+                      <TableRow>
+                        <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
+                          No team members yet. Invite your first responder above.
+                        </TableCell>
+                      </TableRow>
+                    ) : (
+                      teamMembers.map((member, i) => (
+                        <TableRow key={i}>
+                          <TableCell className="font-medium">
+                            {member.profile?.full_name || "Unknown"}
+                          </TableCell>
+                          <TableCell className="text-xs text-muted-foreground">
+                            {member.profile?.phone_number || "—"}
+                          </TableCell>
+                          <TableCell>
+                            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
+                              member.role === "admin"
+                                ? "bg-primary/10 text-primary"
+                                : member.role === "org_admin"
+                                ? "bg-warning/10 text-warning"
+                                : "bg-safe/10 text-safe"
+                            }`}>
+                              {member.role === "org_admin" ? "Org Admin" : member.role.charAt(0).toUpperCase() + member.role.slice(1)}
+                            </span>
+                          </TableCell>
+                          <TableCell className="text-xs text-muted-foreground">
+                            {new Date(member.created_at).toLocaleDateString()}
+                          </TableCell>
+                        </TableRow>
+                      ))
+                    )}
+                  </TableBody>
+                </Table>
+              </CardContent>
+            </Card>
+          </div>
+        )}
       </div>
     </div>
   );
