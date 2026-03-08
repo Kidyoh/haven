@@ -3,18 +3,21 @@ import { useNavigate } from "react-router-dom";
 import {
   Shield, MapPin, Users, BarChart3, AlertTriangle, CheckCircle,
   Clock, LogOut, Search, Filter, ChevronRight, Activity, TrendingUp,
-  Phone, Mail
+  Phone, Mail, UserPlus, Copy, Eye, EyeOff, Trash2
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Table, TableHeader, TableBody, TableRow, TableHead, TableCell,
 } from "@/components/ui/table";
+import { toast } from "sonner";
 
-type Tab = "overview" | "incidents" | "analytics";
+type Tab = "overview" | "incidents" | "analytics" | "team";
 
 interface Incident {
   id: string;
