@@ -8,6 +8,9 @@ import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Setup from "./pages/Setup";
 import SOS from "./pages/SOS";
+import TrackIncident from "./pages/TrackIncident";
+import DashboardAuth from "./pages/DashboardAuth";
+import Dashboard from "./pages/Dashboard";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -36,6 +39,9 @@ const App = () => (
           <Route path="/auth" element={<Auth />} />
           <Route path="/setup" element={<ProtectedRoute><Setup /></ProtectedRoute>} />
           <Route path="/sos" element={<ProtectedRoute><SOS /></ProtectedRoute>} />
+          <Route path="/track/:token" element={<TrackIncident />} />
+          <Route path="/respond" element={<DashboardAuth />} />
+          <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

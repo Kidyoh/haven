@@ -1,22 +1,27 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Settings, Shield, LogOut } from "lucide-react";
+import { Settings, Shield, LogOut, Share2, Copy, Check } from "lucide-react";
 import SOSButton from "@/components/SOSButton";
 import CountdownOverlay from "@/components/CountdownOverlay";
 import AlertActive from "@/components/AlertActive";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { Button } from "@/components/ui/button";
 
 type SOSState = "home" | "countdown" | "active";
 
 const SOS = () => {
   const [state, setState] = useState<SOSState>("home");
   const [profile, setProfile] = useState<{ full_name: string } | null>(null);
+  const [shareLink, setShareLink] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
+  const [showShare, setShowShare] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
     if (!user) return;
+
     supabase
       .from("profiles")
       .select("full_name")
@@ -25,11 +30,45 @@ const SOS = () => {
       .then(({ data }) => {
         if (data) setProfile(data);
       });
+
+    // Check for existing share link
+    supabase
+      .from("incident_shares")
+      .select("share_token")
+      .eq("user_id", user.id)
+      .eq("is_active", true)
+      .limit(1)
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setShareLink(`${window.location.origin}/track/${data[0].share_token}`);
+        }
+      });
   }, [user]);
 
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
+  };
+
+  const generateShareLink = async () => {
+    if (!user) return;
+    const { data, error } = await supabase
+      .from("incident_shares")
+      .insert({ user_id: user.id, label: "Next of Kin" })
+      .select("share_token")
+      .single();
+
+    if (data) {
+      const link = `${window.location.origin}/track/${data.share_token}`;
+      setShareLink(link);
+    }
+  };
+
+  const copyLink = async () => {
+    if (!shareLink) return;
+    await navigator.clipboard.writeText(shareLink);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   if (state === "countdown") {
@@ -52,6 +91,12 @@ const SOS = () => {
         </div>
         <div className="flex items-center gap-2">
           <button
+            onClick={() => setShowShare(!showShare)}
+            className="w-10 h-10 rounded-xl bg-card flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
+          >
+            <Share2 className="w-5 h-5" />
+          </button>
+          <button
             onClick={handleSignOut}
             className="w-10 h-10 rounded-xl bg-card flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
           >
@@ -59,6 +104,34 @@ const SOS = () => {
           </button>
         </div>
       </header>
+
+      {/* Share panel */}
+      {showShare && (
+        <div className="mx-6 mb-4 p-4 rounded-2xl bg-card border border-border">
+          <p className="text-sm font-semibold text-foreground mb-2">Share with Next of Kin</p>
+          <p className="text-xs text-muted-foreground mb-3">
+            Generate a tracking link your family can use to monitor your safety — no login needed.
+          </p>
+          {shareLink ? (
+            <div className="flex items-center gap-2">
+              <div className="flex-1 px-3 py-2 rounded-lg bg-secondary text-xs text-foreground font-mono truncate">
+                {shareLink}
+              </div>
+              <Button size="sm" variant="outline" onClick={copyLink} className="shrink-0">
+                {copied ? <Check className="w-4 h-4 text-safe" /> : <Copy className="w-4 h-4" />}
+              </Button>
+            </div>
+          ) : (
+            <Button
+              size="sm"
+              className="bg-sos hover:bg-sos/90 text-destructive-foreground"
+              onClick={generateShareLink}
+            >
+              Generate Link
+            </Button>
+          )}
+        </div>
+      )}
 
       {/* Main SOS area */}
       <main className="flex-1 flex flex-col items-center justify-center -mt-12">
