@@ -47,6 +47,16 @@ const Dashboard = () => {
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState<boolean | null>(null);
+  const [isAdmin, setIsAdmin] = useState(false);
+  // Team management state
+  const [teamMembers, setTeamMembers] = useState<any[]>([]);
+  const [inviteEmail, setInviteEmail] = useState("");
+  const [inviteName, setInviteName] = useState("");
+  const [invitePhone, setInvitePhone] = useState("");
+  const [inviteRole, setInviteRole] = useState<string>("responder");
+  const [inviteLoading, setInviteLoading] = useState(false);
+  const [tempPassword, setTempPassword] = useState<string | null>(null);
+  const [showPassword, setShowPassword] = useState(false);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
