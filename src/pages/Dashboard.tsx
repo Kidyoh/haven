@@ -73,6 +73,7 @@ const Dashboard = () => {
         navigate("/respond", { replace: true });
       } else {
         setAuthorized(true);
+        setIsAdmin(roles.some((r: any) => r.role === "admin" || r.role === "org_admin"));
       }
     };
     checkRole();
