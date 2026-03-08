@@ -99,6 +99,22 @@ export const useSOSPipeline = (userId: string | undefined) => {
       // Start audio recording immediately (called from user gesture context)
       await startAudioRecording();
 
+      // Auto-stop recording after 30 seconds and upload
+      setTimeout(async () => {
+        const audioBlob = await stopAudioRecording();
+        if (audioBlob && audioBlob.size > 0) {
+          const audioUrl = await uploadAudio(audioBlob);
+          // We'll update the incident with audio URL once we have the incident ID
+          // Store it for later use
+          if (audioUrl && latestIncidentIdRef.current) {
+            await supabase
+              .from("incidents")
+              .update({ audio_url: audioUrl })
+              .eq("id", latestIncidentIdRef.current);
+          }
+        }
+      }, 30000);
+
       // Get location in parallel
       const location = await getLocation();
 
