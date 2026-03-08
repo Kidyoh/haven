@@ -14,6 +14,7 @@ export const useSOSPipeline = (userId: string | undefined) => {
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const chunksRef = useRef<Blob[]>([]);
   const streamRef = useRef<MediaStream | null>(null);
+  const latestIncidentIdRef = useRef<string | null>(null);
 
   const getLocation = useCallback((): Promise<{ lat: number; lng: number; accuracy: number } | null> => {
     return new Promise((resolve) => {
