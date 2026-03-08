@@ -43,10 +43,30 @@ const Dashboard = () => {
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "resolved">("all");
   const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   const [loading, setLoading] = useState(true);
+  const [authorized, setAuthorized] = useState<boolean | null>(null);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
+  // Check responder role
   useEffect(() => {
+    if (!user) return;
+    const checkRole = async () => {
+      const { data: roles } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id);
+      if (!roles || roles.length === 0) {
+        setAuthorized(false);
+        navigate("/respond", { replace: true });
+      } else {
+        setAuthorized(true);
+      }
+    };
+    checkRole();
+  }, [user, navigate]);
+
+  useEffect(() => {
+    if (authorized !== true) return;
     const fetchData = async () => {
       const [incidentRes, profileRes] = await Promise.all([
         supabase.from("incidents").select("*").order("created_at", { ascending: false }),
