@@ -60,9 +60,9 @@ export const useSOSPipeline = (userId: string | undefined) => {
     const recorder = mediaRecorderRef.current;
     const sessionId = recordingSessionRef.current;
     mediaRecorderRef.current = null;
-    recordingSessionRef.current = null;
 
     if (!recorder || recorder.state === "inactive") {
+      recordingSessionRef.current = null;
       killStream();
       return null;
     }
@@ -76,14 +76,15 @@ export const useSOSPipeline = (userId: string | undefined) => {
           ? new Blob(chunksRef.current, { type: recorder.mimeType })
           : null;
         chunksRef.current = [];
+        recordingSessionRef.current = null;
         resolve(fallback);
       }, 3000);
 
       recorder.onstop = () => {
-        if (sessionId !== recordingSessionRef.current && recordingSessionRef.current !== null) return;
         clearTimeout(timeout);
         const finalBlob = new Blob(chunksRef.current, { type: recorder.mimeType });
         chunksRef.current = [];
+        recordingSessionRef.current = null;
         killStream();
         resolve(finalBlob.size > 0 ? finalBlob : null);
       };
@@ -95,6 +96,7 @@ export const useSOSPipeline = (userId: string | undefined) => {
         clearTimeout(timeout);
         killStream();
         chunksRef.current = [];
+        recordingSessionRef.current = null;
         resolve(null);
       }
     });
