@@ -11,6 +11,7 @@ import SOS from "./pages/SOS";
 import TrackIncident from "./pages/TrackIncident";
 import DashboardAuth from "./pages/DashboardAuth";
 import Dashboard from "./pages/Dashboard";
+import Organizations from "./pages/Organizations";
 import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
 
@@ -43,6 +44,7 @@ const App = () => (
           <Route path="/track/:token" element={<TrackIncident />} />
           <Route path="/respond" element={<DashboardAuth />} />
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
+          <Route path="/organizations" element={<ProtectedRoute><Organizations /></ProtectedRoute>} />
           <Route path="/install" element={<Install />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
