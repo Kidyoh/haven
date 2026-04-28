@@ -30,6 +30,7 @@ interface Incident {
   user_id: string;
   battery_level: number | null;
   signal_strength: string | null;
+  audio_url: string | null;
 }
 
 interface Profile {
