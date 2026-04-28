@@ -126,6 +126,11 @@ export const useSOSPipeline = (userId: string | undefined) => {
 
   const triggerSOS = useCallback(async (): Promise<SOSData | null> => {
     if (!userId) return null;
+    // Guard: prevent duplicate recorder if SOS was already triggered
+    if (mediaRecorderRef.current || streamRef.current) {
+      console.warn("SOS already in progress, ignoring duplicate trigger");
+      return null;
+    }
     setIsCapturing(true);
     stoppedRef.current = false;
 
