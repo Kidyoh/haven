@@ -459,6 +459,7 @@ const Dashboard = () => {
                       <TableHead>Status</TableHead>
                       <TableHead>Date</TableHead>
                       <TableHead>Location</TableHead>
+                      <TableHead>Audio</TableHead>
                       <TableHead>Actions</TableHead>
                     </TableRow>
                   </TableHeader>
