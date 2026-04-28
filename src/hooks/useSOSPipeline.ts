@@ -58,7 +58,6 @@ export const useSOSPipeline = (userId: string | undefined) => {
     }
 
     const recorder = mediaRecorderRef.current;
-    const sessionId = recordingSessionRef.current;
     mediaRecorderRef.current = null;
 
     if (!recorder || recorder.state === "inactive") {
@@ -207,6 +206,7 @@ export const useSOSPipeline = (userId: string | undefined) => {
 
       if (error || !incident) {
         console.error("Failed to create incident:", error);
+        triggerInFlightRef.current = false;
         setIsCapturing(false);
         return null;
       }
