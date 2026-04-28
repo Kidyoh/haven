@@ -507,6 +507,13 @@ const Dashboard = () => {
                               )}
                             </TableCell>
                             <TableCell>
+                              {incident.audio_url ? (
+                                <audio controls src={incident.audio_url} className="h-8 max-w-[180px]" preload="none" />
+                              ) : (
+                                <span className="text-xs text-muted-foreground">—</span>
+                              )}
+                            </TableCell>
+                            <TableCell>
                               {incident.status === "active" && (
                                 <Button
                                   size="sm"
