@@ -334,47 +334,52 @@ const Dashboard = () => {
                         return (
                           <div
                             key={incident.id}
-                            className="flex items-center justify-between p-4 rounded-xl bg-sos/5 border border-sos/10"
+                            className="flex flex-col gap-3 p-4 rounded-xl bg-sos/5 border border-sos/10"
                           >
-                            <div>
-                              <p className="font-semibold text-sm text-foreground">
-                                {profile?.full_name || "Unknown User"}
-                              </p>
-                              <p className="text-xs text-muted-foreground font-mono">
-                                {incident.reference_number}
-                              </p>
-                              <p className="text-xs text-muted-foreground mt-0.5">
-                                {new Date(incident.created_at).toLocaleString()}
-                              </p>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              {incident.latitude && (
-                                <a
-                                  href={`https://maps.google.com/?q=${incident.latitude},${incident.longitude}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="w-9 h-9 rounded-lg bg-card flex items-center justify-center text-muted-foreground hover:text-foreground"
+                            <div className="flex items-center justify-between">
+                              <div>
+                                <p className="font-semibold text-sm text-foreground">
+                                  {profile?.full_name || "Unknown User"}
+                                </p>
+                                <p className="text-xs text-muted-foreground font-mono">
+                                  {incident.reference_number}
+                                </p>
+                                <p className="text-xs text-muted-foreground mt-0.5">
+                                  {new Date(incident.created_at).toLocaleString()}
+                                </p>
+                              </div>
+                              <div className="flex items-center gap-2">
+                                {incident.latitude && (
+                                  <a
+                                    href={`https://maps.google.com/?q=${incident.latitude},${incident.longitude}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="w-9 h-9 rounded-lg bg-card flex items-center justify-center text-muted-foreground hover:text-foreground"
+                                  >
+                                    <MapPin className="w-4 h-4" />
+                                  </a>
+                                )}
+                                {profile?.phone_number && (
+                                  <a
+                                    href={`tel:${profile.phone_number}`}
+                                    className="w-9 h-9 rounded-lg bg-card flex items-center justify-center text-muted-foreground hover:text-foreground"
+                                  >
+                                    <Phone className="w-4 h-4" />
+                                  </a>
+                                )}
+                                <Button
+                                  size="sm"
+                                  variant="outline"
+                                  onClick={() => handleResolve(incident.id)}
+                                  className="text-safe border-safe/20 hover:bg-safe/10"
                                 >
-                                  <MapPin className="w-4 h-4" />
-                                </a>
-                              )}
-                              {profile?.phone_number && (
-                                <a
-                                  href={`tel:${profile.phone_number}`}
-                                  className="w-9 h-9 rounded-lg bg-card flex items-center justify-center text-muted-foreground hover:text-foreground"
-                                >
-                                  <Phone className="w-4 h-4" />
-                                </a>
-                              )}
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => handleResolve(incident.id)}
-                                className="text-safe border-safe/20 hover:bg-safe/10"
-                              >
-                                Resolve
-                              </Button>
+                                  Resolve
+                                </Button>
+                              </div>
                             </div>
+                            {incident.audio_url && (
+                              <audio controls src={incident.audio_url} className="w-full h-9" preload="none" />
+                            )}
                           </div>
                         );
                       })}
