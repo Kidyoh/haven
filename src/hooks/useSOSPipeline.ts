@@ -20,6 +20,8 @@ export const useSOSPipeline = (userId: string | undefined) => {
   const latestIncidentIdRef = useRef<string | null>(null);
   const recordingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const stoppedRef = useRef(false);
+  const triggerInFlightRef = useRef(false);
+  const recordingSessionRef = useRef<string | null>(null);
 
   const getLocation = useCallback((): Promise<{ lat: number; lng: number; accuracy: number } | null> => {
     return new Promise((resolve) => {
@@ -56,7 +58,9 @@ export const useSOSPipeline = (userId: string | undefined) => {
     }
 
     const recorder = mediaRecorderRef.current;
+    const sessionId = recordingSessionRef.current;
     mediaRecorderRef.current = null;
+    recordingSessionRef.current = null;
 
     if (!recorder || recorder.state === "inactive") {
       killStream();
@@ -76,6 +80,7 @@ export const useSOSPipeline = (userId: string | undefined) => {
       }, 3000);
 
       recorder.onstop = () => {
+        if (sessionId !== recordingSessionRef.current && recordingSessionRef.current !== null) return;
         clearTimeout(timeout);
         const finalBlob = new Blob(chunksRef.current, { type: recorder.mimeType });
         chunksRef.current = [];
@@ -84,6 +89,7 @@ export const useSOSPipeline = (userId: string | undefined) => {
       };
 
       try {
+        recorder.requestData();
         recorder.stop();
       } catch {
         clearTimeout(timeout);
@@ -126,11 +132,12 @@ export const useSOSPipeline = (userId: string | undefined) => {
 
   const triggerSOS = useCallback(async (): Promise<SOSData | null> => {
     if (!userId) return null;
-    // Guard: prevent duplicate recorder if SOS was already triggered
-    if (mediaRecorderRef.current || streamRef.current) {
+    // Guard before any async work so double countdown completion cannot start duplicate recorders.
+    if (triggerInFlightRef.current || mediaRecorderRef.current || streamRef.current) {
       console.warn("SOS already in progress, ignoring duplicate trigger");
       return null;
     }
+    triggerInFlightRef.current = true;
     setIsCapturing(true);
     stoppedRef.current = false;
 
@@ -142,12 +149,14 @@ export const useSOSPipeline = (userId: string | undefined) => {
         });
         streamRef.current = stream;
         chunksRef.current = [];
+        const sessionId = crypto.randomUUID();
+        recordingSessionRef.current = sessionId;
 
         const mimeType = MediaRecorder.isTypeSupported("audio/webm") ? "audio/webm" : "audio/mp4";
         const recorder = new MediaRecorder(stream, { mimeType });
 
         recorder.ondataavailable = (e) => {
-          if (e.data.size > 0) chunksRef.current.push(e.data);
+          if (recordingSessionRef.current === sessionId && e.data.size > 0) chunksRef.current.push(e.data);
         };
 
         mediaRecorderRef.current = recorder;
@@ -201,6 +210,7 @@ export const useSOSPipeline = (userId: string | undefined) => {
       }
 
       latestIncidentIdRef.current = incident.id;
+      triggerInFlightRef.current = false;
 
       // Insert first location update
       if (location) {
@@ -222,6 +232,7 @@ export const useSOSPipeline = (userId: string | undefined) => {
       };
     } catch (err) {
       console.error("SOS trigger failed:", err);
+      triggerInFlightRef.current = false;
       setIsCapturing(false);
       return null;
     }
