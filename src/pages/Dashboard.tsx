@@ -248,9 +248,16 @@ const Dashboard = () => {
               <p className="text-xs text-muted-foreground">Response Dashboard</p>
             </div>
           </div>
-          <Button variant="ghost" size="sm" onClick={() => { signOut(); navigate("/"); }}>
-            <LogOut className="w-4 h-4 mr-2" /> Sign Out
-          </Button>
+          <div className="flex items-center gap-2">
+            {isAdmin && (
+              <Button variant="outline" size="sm" onClick={() => navigate("/organizations")}>
+                Organizations
+              </Button>
+            )}
+            <Button variant="ghost" size="sm" onClick={() => { signOut(); navigate("/"); }}>
+              <LogOut className="w-4 h-4 mr-2" /> Sign Out
+            </Button>
+          </div>
         </div>
       </header>
 
