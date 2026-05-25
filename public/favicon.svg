@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Shield background -->
+  <path d="M16 2L4 7v8c0 7.5 5.1 14.5 12 17 6.9-2.5 12-9.5 12-17V7L16 2z" fill="#DC2626"/>
+  <!-- Heart -->
+  <path d="M16 22s-7-5-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 23 12c0 5-7 10-7 10z" fill="white"/>
+</svg>
