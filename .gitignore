@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Generated from /data by scripts/build-dataset.mjs
+public/pathways/dataset.json
+public/pathways/dataset-version.json

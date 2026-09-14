@@ -1,21 +1,23 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Shield, MapPin, Users, BarChart3, AlertTriangle, CheckCircle,
-  Clock, LogOut, Search, Filter, ChevronRight, Activity, TrendingUp,
-  Phone, Mail, UserPlus, Copy, Eye, EyeOff, Trash2
+  Activity, AlertTriangle, Building2, CheckCircle, Copy, Eye, EyeOff, LogOut,
+  MapPin, Phone, Search, TrendingUp, UserPlus, Users,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
   Table, TableHeader, TableBody, TableRow, TableHead, TableCell,
 } from "@/components/ui/table";
 import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+import { Container, IconTile, PageHeader, Screen, type Tone } from "@/components/haven/Screen";
+import { Callout, EmptyState, ScreenLoader, Spinner, StatusPill } from "@/components/haven/Feedback";
+import { Field, TextField } from "@/components/haven/Field";
 
 type Tab = "overview" | "incidents" | "analytics" | "team";
 
@@ -39,18 +41,47 @@ interface Profile {
   phone_number: string;
 }
 
+interface RoleRow {
+  user_id: string;
+  role: string;
+  created_at: string;
+}
+
+type TeamMember = RoleRow & { profile?: Profile };
+
+/**
+ * Roles and profiles live in separate tables with no join, so the team list is
+ * two queries stitched on user_id. Both the initial load and the refresh after
+ * an invite go through here.
+ */
+async function loadTeam(): Promise<TeamMember[]> {
+  const { data: roles } = await supabase
+    .from("user_roles")
+    .select("user_id, role, created_at, organizations(name)");
+  if (!roles) return [];
+
+  const rows = roles as unknown as RoleRow[];
+  const userIds = [...new Set(rows.map((r) => r.user_id))];
+  const { data: teamProfiles } = await supabase
+    .from("profiles")
+    .select("user_id, full_name, phone_number")
+    .in("user_id", userIds);
+
+  const profileMap = new Map((teamProfiles ?? []).map((p) => [p.user_id, p as Profile]));
+  return rows.map((r) => ({ ...r, profile: profileMap.get(r.user_id) }));
+}
+
 const Dashboard = () => {
   const [tab, setTab] = useState<Tab>("overview");
   const [incidents, setIncidents] = useState<Incident[]>([]);
   const [profiles, setProfiles] = useState<Map<string, Profile>>(new Map());
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "resolved">("all");
-  const [selectedIncident, setSelectedIncident] = useState<Incident | null>(null);
   const [loading, setLoading] = useState(true);
   const [authorized, setAuthorized] = useState<boolean | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   // Team management state
-  const [teamMembers, setTeamMembers] = useState<any[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   const [inviteEmail, setInviteEmail] = useState("");
   const [inviteName, setInviteName] = useState("");
   const [invitePhone, setInvitePhone] = useState("");
@@ -74,7 +105,7 @@ const Dashboard = () => {
         navigate("/respond", { replace: true });
       } else {
         setAuthorized(true);
-        setIsAdmin(roles.some((r: any) => r.role === "admin" || r.role === "org_admin"));
+        setIsAdmin(roles.some((r) => r.role === "admin" || r.role === "org_admin"));
       }
     };
     checkRole();
@@ -125,27 +156,7 @@ const Dashboard = () => {
   // Fetch team members
   useEffect(() => {
     if (!authorized || !isAdmin) return;
-    const fetchTeam = async () => {
-      const { data: roles } = await supabase
-        .from("user_roles")
-        .select("user_id, role, created_at, organizations(name)");
-      if (roles) {
-        // Get profile info for each team member
-        const userIds = [...new Set(roles.map((r: any) => r.user_id))];
-        const { data: teamProfiles } = await supabase
-          .from("profiles")
-          .select("user_id, full_name, phone_number")
-          .in("user_id", userIds);
-        const profileMap = new Map((teamProfiles || []).map((p: any) => [p.user_id, p]));
-        setTeamMembers(
-          roles.map((r: any) => ({
-            ...r,
-            profile: profileMap.get(r.user_id),
-          }))
-        );
-      }
-    };
-    fetchTeam();
+    loadTeam().then(setTeamMembers);
   }, [authorized, isAdmin]);
 
   const handleInvite = async (e: React.FormEvent) => {
@@ -175,19 +186,7 @@ const Dashboard = () => {
     setInvitePhone("");
     setInviteLoading(false);
 
-    // Refresh team list
-    const { data: roles } = await supabase
-      .from("user_roles")
-      .select("user_id, role, created_at, organizations(name)");
-    if (roles) {
-      const userIds = [...new Set(roles.map((r: any) => r.user_id))];
-      const { data: teamProfiles } = await supabase
-        .from("profiles")
-        .select("user_id, full_name, phone_number")
-        .in("user_id", userIds);
-      const profileMap = new Map((teamProfiles || []).map((p: any) => [p.user_id, p]));
-      setTeamMembers(roles.map((r: any) => ({ ...r, profile: profileMap.get(r.user_id) })));
-    }
+    setTeamMembers(await loadTeam());
   };
 
   const handleResolve = async (incidentId: string) => {
@@ -227,103 +226,87 @@ const Dashboard = () => {
 
   const maxDayCount = Math.max(...incidentsPerDay.map((d) => d.count), 1);
 
-  if (loading || authorized === null) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-sos border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
+  if (loading || authorized === null) return <ScreenLoader />;
+
+  const tabs: Tab[] = ["overview", "incidents", "analytics", ...(isAdmin ? (["team"] as Tab[]) : [])];
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="border-b border-border px-6 py-4">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-sos/10 flex items-center justify-center">
-              <Shield className="w-5 h-5 text-sos" />
-            </div>
-            <div>
-              <h1 className="font-display font-bold text-lg tracking-[0.2em] text-foreground">HAVEN</h1>
-              <p className="text-xs text-muted-foreground">Response Dashboard</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-2">
+    <Screen>
+      <PageHeader
+        brand
+        sticky
+        width="full"
+        subtitle="Response dashboard"
+        actions={
+          <>
             {isAdmin && (
-              <Button variant="outline" size="sm" onClick={() => navigate("/organizations")}>
-                Organizations
+              <Button variant="subtle" size="sm" onClick={() => navigate("/organizations")}>
+                <Building2 />
+                <span className="hidden sm:inline">Organizations</span>
               </Button>
             )}
-            <Button variant="ghost" size="sm" onClick={() => { signOut(); navigate("/"); }}>
-              <LogOut className="w-4 h-4 mr-2" /> Sign Out
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => {
+                signOut();
+                navigate("/");
+              }}
+            >
+              <LogOut />
+              <span className="hidden sm:inline">Sign out</span>
             </Button>
-          </div>
-        </div>
-      </header>
+          </>
+        }
+      />
 
-      <div className="max-w-7xl mx-auto px-6 py-6">
+      <Container width="full" as="main" className="flex-1 py-6">
         {/* Tabs */}
-        <div className="flex gap-1 mb-6 p-1 rounded-xl bg-card w-fit flex-wrap">
-          {(["overview", "incidents", "analytics", ...(isAdmin ? ["team"] : [])] as Tab[]).map((t) => (
+        <div role="tablist" aria-label="Dashboard sections" className="mb-6 flex w-fit max-w-full flex-wrap gap-1 rounded-2xl bg-card p-1">
+          {tabs.map((t) => (
             <button
               key={t}
+              role="tab"
+              aria-selected={tab === t}
               onClick={() => setTab(t)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors capitalize ${
-                tab === t
-                  ? "bg-sos text-destructive-foreground"
-                  : "text-muted-foreground hover:text-foreground"
-              }`}
+              className={cn(
+                "min-h-10 rounded-xl px-4 text-sm font-medium capitalize transition-colors",
+                tab === t ? "bg-sos text-destructive-foreground" : "text-muted-foreground hover:text-foreground",
+              )}
             >
-              {t === "team" ? "Team" : t}
+              {t}
             </button>
           ))}
         </div>
 
         {tab === "overview" && (
-          <div className="space-y-6">
+          <div className="space-y-5">
             {/* Stats */}
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              <StatCard
-                icon={<AlertTriangle className="w-5 h-5" />}
-                label="Active Alerts"
-                value={activeCount}
-                color="sos"
-              />
-              <StatCard
-                icon={<CheckCircle className="w-5 h-5" />}
-                label="Resolved"
-                value={resolvedCount}
-                color="safe"
-              />
-              <StatCard
-                icon={<Activity className="w-5 h-5" />}
-                label="Total Incidents"
-                value={incidents.length}
-                color="warning"
-              />
-              <StatCard
-                icon={<Users className="w-5 h-5" />}
-                label="Users Affected"
-                value={totalUsers}
-                color="muted"
-              />
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+              <StatCard icon={<AlertTriangle />} label="Active alerts" value={activeCount} tone="sos" />
+              <StatCard icon={<CheckCircle />} label="Resolved" value={resolvedCount} tone="safe" />
+              <StatCard icon={<Activity />} label="Total incidents" value={incidents.length} tone="gold" />
+              <StatCard icon={<Users />} label="Users affected" value={totalUsers} tone="muted" />
             </div>
 
             {/* Active incidents */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-sos animate-alert-pulse" />
-                  Active Alerts
+                <CardTitle className="flex items-center gap-2 font-display text-lg">
+                  <span
+                    className={cn("h-2 w-2 rounded-full", activeCount > 0 ? "animate-alert-pulse bg-sos" : "bg-safe")}
+                  />
+                  Active alerts
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 {activeCount === 0 ? (
-                  <div className="text-center py-8">
-                    <CheckCircle className="w-10 h-10 text-safe mx-auto mb-3" />
-                    <p className="text-muted-foreground text-sm">No active alerts</p>
-                  </div>
+                  <EmptyState
+                    icon={<CheckCircle />}
+                    tone="safe"
+                    title="No active alerts"
+                    description="Every incident has been resolved. New ones appear here the moment they are sent."
+                  />
                 ) : (
                   <div className="space-y-3">
                     {incidents
@@ -334,51 +317,46 @@ const Dashboard = () => {
                         return (
                           <div
                             key={incident.id}
-                            className="flex flex-col gap-3 p-4 rounded-xl bg-sos/5 border border-sos/10"
+                            className="flex flex-col gap-3 rounded-2xl border border-sos/20 bg-sos/5 p-4"
                           >
-                            <div className="flex items-center justify-between">
-                              <div>
-                                <p className="font-semibold text-sm text-foreground">
-                                  {profile?.full_name || "Unknown User"}
+                            <div className="flex flex-wrap items-start justify-between gap-3">
+                              <div className="min-w-0">
+                                <p className="text-sm font-semibold text-foreground">
+                                  {profile?.full_name || "Unknown user"}
                                 </p>
-                                <p className="text-xs text-muted-foreground font-mono">
+                                <p className="font-mono text-xs text-muted-foreground">
                                   {incident.reference_number}
                                 </p>
-                                <p className="text-xs text-muted-foreground mt-0.5">
+                                <p className="mt-0.5 text-xs text-muted-foreground">
                                   {new Date(incident.created_at).toLocaleString()}
                                 </p>
                               </div>
-                              <div className="flex items-center gap-2">
+                              <div className="flex shrink-0 items-center gap-2">
                                 {incident.latitude && (
-                                  <a
-                                    href={`https://maps.google.com/?q=${incident.latitude},${incident.longitude}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="w-9 h-9 rounded-lg bg-card flex items-center justify-center text-muted-foreground hover:text-foreground"
-                                  >
-                                    <MapPin className="w-4 h-4" />
-                                  </a>
+                                  <Button asChild size="icon" variant="subtle" aria-label="Open location on a map">
+                                    <a
+                                      href={`https://maps.google.com/?q=${incident.latitude},${incident.longitude}`}
+                                      target="_blank"
+                                      rel="noopener noreferrer"
+                                    >
+                                      <MapPin />
+                                    </a>
+                                  </Button>
                                 )}
                                 {profile?.phone_number && (
-                                  <a
-                                    href={`tel:${profile.phone_number}`}
-                                    className="w-9 h-9 rounded-lg bg-card flex items-center justify-center text-muted-foreground hover:text-foreground"
-                                  >
-                                    <Phone className="w-4 h-4" />
-                                  </a>
+                                  <Button asChild size="icon" variant="subtle" aria-label={`Call ${profile.full_name}`}>
+                                    <a href={`tel:${profile.phone_number}`}>
+                                      <Phone />
+                                    </a>
+                                  </Button>
                                 )}
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => handleResolve(incident.id)}
-                                  className="text-safe border-safe/20 hover:bg-safe/10"
-                                >
+                                <Button variant="safe" onClick={() => handleResolve(incident.id)}>
                                   Resolve
                                 </Button>
                               </div>
                             </div>
                             {incident.audio_url && (
-                              <audio controls src={incident.audio_url} className="w-full h-9" preload="none" />
+                              <audio controls src={incident.audio_url} className="h-9 w-full" preload="none" />
                             )}
                           </div>
                         );
@@ -388,35 +366,43 @@ const Dashboard = () => {
               </CardContent>
             </Card>
 
-            {/* Recent resolved */}
+            {/* Recent activity */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Recent Activity</CardTitle>
+                <CardTitle className="font-display text-lg">Recent activity</CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="space-y-2">
-                  {incidents.slice(0, 8).map((incident) => {
-                    const profile = profiles.get(incident.user_id);
-                    return (
-                      <div key={incident.id} className="flex items-center justify-between py-2 border-b border-border last:border-0">
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`w-2 h-2 rounded-full ${
-                              incident.status === "active" ? "bg-sos" : "bg-safe"
-                            }`}
-                          />
-                          <div>
-                            <p className="text-sm text-foreground">{profile?.full_name || "Unknown"}</p>
-                            <p className="text-xs text-muted-foreground">{incident.reference_number}</p>
+                {incidents.length === 0 ? (
+                  <EmptyState icon={<Activity />} title="Nothing yet" description="Incidents will be listed here." />
+                ) : (
+                  <ul>
+                    {incidents.slice(0, 8).map((incident) => {
+                      const profile = profiles.get(incident.user_id);
+                      return (
+                        <li
+                          key={incident.id}
+                          className="flex items-center justify-between gap-3 border-b border-border py-3 last:border-0 last:pb-0"
+                        >
+                          <div className="flex min-w-0 items-center gap-3">
+                            <span
+                              className={cn(
+                                "h-2 w-2 shrink-0 rounded-full",
+                                incident.status === "active" ? "bg-sos" : "bg-safe",
+                              )}
+                            />
+                            <div className="min-w-0">
+                              <p className="truncate text-sm text-foreground">{profile?.full_name || "Unknown"}</p>
+                              <p className="font-mono text-xs text-muted-foreground">{incident.reference_number}</p>
+                            </div>
                           </div>
-                        </div>
-                        <span className="text-xs text-muted-foreground">
-                          {new Date(incident.created_at).toLocaleDateString()}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
+                          <span className="shrink-0 text-xs text-muted-foreground">
+                            {new Date(incident.created_at).toLocaleDateString()}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -425,26 +411,27 @@ const Dashboard = () => {
         {tab === "incidents" && (
           <div className="space-y-4">
             {/* Filters */}
-            <div className="flex flex-col sm:flex-row gap-3">
+            <div className="flex flex-col gap-3 sm:flex-row">
               <div className="relative flex-1">
-                <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+                <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                 <Input
-                  placeholder="Search by name or reference..."
+                  placeholder="Search by name or reference…"
+                  aria-label="Search incidents"
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="pl-9"
+                  className="pl-10"
                 />
               </div>
-              <div className="flex gap-1 p-1 rounded-lg bg-card">
+              <div role="group" aria-label="Filter by status" className="flex gap-1 rounded-2xl bg-card p-1">
                 {(["all", "active", "resolved"] as const).map((s) => (
                   <button
                     key={s}
+                    aria-pressed={statusFilter === s}
                     onClick={() => setStatusFilter(s)}
-                    className={`px-3 py-1.5 rounded-md text-xs font-medium capitalize transition-colors ${
-                      statusFilter === s
-                        ? "bg-secondary text-foreground"
-                        : "text-muted-foreground"
-                    }`}
+                    className={cn(
+                      "min-h-9 flex-1 rounded-xl px-3 text-xs font-medium capitalize transition-colors sm:flex-none",
+                      statusFilter === s ? "bg-secondary text-foreground" : "text-muted-foreground hover:text-foreground",
+                    )}
                   >
                     {s}
                   </button>
@@ -455,114 +442,117 @@ const Dashboard = () => {
             {/* Table */}
             <Card>
               <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Reference</TableHead>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Phone</TableHead>
-                      <TableHead>Status</TableHead>
-                      <TableHead>Date</TableHead>
-                      <TableHead>Location</TableHead>
-                      <TableHead>Audio</TableHead>
-                      <TableHead>Actions</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {filteredIncidents.length === 0 ? (
+                <div className="overflow-x-auto">
+                  <Table>
+                    <TableHeader>
                       <TableRow>
-                        <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
-                          No incidents found
-                        </TableCell>
+                        <TableHead>Reference</TableHead>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Phone</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Date</TableHead>
+                        <TableHead>Location</TableHead>
+                        <TableHead>Audio</TableHead>
+                        <TableHead className="text-right">Actions</TableHead>
                       </TableRow>
-                    ) : (
-                      filteredIncidents.map((incident) => {
-                        const profile = profiles.get(incident.user_id);
-                        return (
-                          <TableRow key={incident.id}>
-                            <TableCell className="font-mono text-xs">{incident.reference_number}</TableCell>
-                            <TableCell className="font-medium">{profile?.full_name || "Unknown"}</TableCell>
-                            <TableCell className="text-xs">{profile?.phone_number || "—"}</TableCell>
-                            <TableCell>
-                              <span
-                                className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                                  incident.status === "active"
-                                    ? "bg-sos/10 text-sos"
-                                    : "bg-safe/10 text-safe"
-                                }`}
-                              >
-                                {incident.status === "active" ? "Active" : "Resolved"}
-                              </span>
-                            </TableCell>
-                            <TableCell className="text-xs text-muted-foreground">
-                              {new Date(incident.created_at).toLocaleDateString()}
-                            </TableCell>
-                            <TableCell>
-                              {incident.latitude ? (
-                                <a
-                                  href={`https://maps.google.com/?q=${incident.latitude},${incident.longitude}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-xs text-sos hover:underline flex items-center gap-1"
-                                >
-                                  <MapPin className="w-3 h-3" /> Map
-                                </a>
-                              ) : (
-                                <span className="text-xs text-muted-foreground">—</span>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              {incident.audio_url ? (
-                                <audio controls src={incident.audio_url} className="h-8 max-w-[180px]" preload="none" />
-                              ) : (
-                                <span className="text-xs text-muted-foreground">—</span>
-                              )}
-                            </TableCell>
-                            <TableCell>
-                              {incident.status === "active" && (
-                                <Button
-                                  size="sm"
-                                  variant="outline"
-                                  onClick={() => handleResolve(incident.id)}
-                                  className="text-xs h-7"
-                                >
-                                  Resolve
-                                </Button>
-                              )}
-                            </TableCell>
-                          </TableRow>
-                        );
-                      })
-                    )}
-                  </TableBody>
-                </Table>
+                    </TableHeader>
+                    <TableBody>
+                      {filteredIncidents.length === 0 ? (
+                        <TableRow className="hover:bg-transparent">
+                          <TableCell colSpan={8} className="p-0">
+                            <EmptyState
+                              icon={<Search />}
+                              title="No incidents found"
+                              description={
+                                search || statusFilter !== "all"
+                                  ? "Nothing matches that search or filter."
+                                  : "No incidents have been reported yet."
+                              }
+                            />
+                          </TableCell>
+                        </TableRow>
+                      ) : (
+                        filteredIncidents.map((incident) => {
+                          const profile = profiles.get(incident.user_id);
+                          return (
+                            <TableRow key={incident.id}>
+                              <TableCell className="font-mono text-xs">{incident.reference_number}</TableCell>
+                              <TableCell className="font-medium">{profile?.full_name || "Unknown"}</TableCell>
+                              <TableCell className="whitespace-nowrap text-xs">
+                                {profile?.phone_number ? (
+                                  <a href={`tel:${profile.phone_number}`} className="hover:text-haven-gold">
+                                    {profile.phone_number}
+                                  </a>
+                                ) : (
+                                  <span className="text-muted-foreground">—</span>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                <StatusPill active={incident.status === "active"} />
+                              </TableCell>
+                              <TableCell className="whitespace-nowrap text-xs text-muted-foreground">
+                                {new Date(incident.created_at).toLocaleDateString()}
+                              </TableCell>
+                              <TableCell>
+                                {incident.latitude ? (
+                                  <a
+                                    href={`https://maps.google.com/?q=${incident.latitude},${incident.longitude}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center gap-1 text-xs font-medium text-haven-gold hover:underline"
+                                  >
+                                    <MapPin className="h-3 w-3" /> Map
+                                  </a>
+                                ) : (
+                                  <span className="text-xs text-muted-foreground">—</span>
+                                )}
+                              </TableCell>
+                              <TableCell>
+                                {incident.audio_url ? (
+                                  <audio controls src={incident.audio_url} className="h-8 max-w-[180px]" preload="none" />
+                                ) : (
+                                  <span className="text-xs text-muted-foreground">—</span>
+                                )}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                {incident.status === "active" && (
+                                  <Button size="sm" variant="safe" onClick={() => handleResolve(incident.id)}>
+                                    Resolve
+                                  </Button>
+                                )}
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })
+                      )}
+                    </TableBody>
+                  </Table>
+                </div>
               </CardContent>
             </Card>
           </div>
         )}
 
         {tab === "analytics" && (
-          <div className="space-y-6">
+          <div className="space-y-5">
             {/* Weekly chart */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <TrendingUp className="w-5 h-5 text-muted-foreground" />
-                  Incidents This Week
+                <CardTitle className="flex items-center gap-2 font-display text-lg">
+                  <TrendingUp className="h-5 w-5 text-muted-foreground" />
+                  Incidents this week
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="flex items-end gap-2 h-40">
+                <div className="flex h-44 items-end gap-2">
                   {incidentsPerDay.map((day) => (
-                    <div key={day.day} className="flex-1 flex flex-col items-center gap-1">
-                      <span className="text-xs text-muted-foreground">{day.count}</span>
+                    <div key={day.day} className="flex flex-1 flex-col items-center gap-1.5">
+                      <span className="tabular text-xs font-medium text-foreground">{day.count}</span>
                       <div
-                        className="w-full rounded-t-lg bg-sos/60 transition-all"
-                        style={{
-                          height: `${Math.max((day.count / maxDayCount) * 100, 4)}%`,
-                        }}
+                        className="w-full rounded-t-lg bg-sos/50 transition-all"
+                        style={{ height: `${Math.max((day.count / maxDayCount) * 100, 3)}%` }}
                       />
-                      <span className="text-[10px] text-muted-foreground">{day.day}</span>
+                      <span className="text-[10px] uppercase tracking-wide text-muted-foreground">{day.day}</span>
                     </div>
                   ))}
                 </div>
@@ -570,137 +560,125 @@ const Dashboard = () => {
             </Card>
 
             {/* Summary cards */}
-            <div className="grid grid-cols-2 gap-4">
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider">Avg Resolution Time</p>
-                  <p className="text-2xl font-display font-bold text-foreground mt-1">
-                    {incidents.filter((i) => i.resolved_at).length > 0
-                      ? `${Math.round(
-                          incidents
-                            .filter((i) => i.resolved_at)
-                            .reduce(
-                              (acc, i) =>
-                                acc +
-                                (new Date(i.resolved_at!).getTime() - new Date(i.created_at).getTime()) /
-                                  60000,
-                              0
-                            ) / incidents.filter((i) => i.resolved_at).length
-                        )} min`
-                      : "—"}
-                  </p>
-                </CardContent>
-              </Card>
-              <Card>
-                <CardContent className="pt-6">
-                  <p className="text-xs text-muted-foreground uppercase tracking-wider">Resolution Rate</p>
-                  <p className="text-2xl font-display font-bold text-foreground mt-1">
-                    {incidents.length > 0
-                      ? `${Math.round((resolvedCount / incidents.length) * 100)}%`
-                      : "—"}
-                  </p>
-                </CardContent>
-              </Card>
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+              <MetricCard
+                label="Avg resolution time"
+                value={
+                  incidents.filter((i) => i.resolved_at).length > 0
+                    ? `${Math.round(
+                        incidents
+                          .filter((i) => i.resolved_at)
+                          .reduce(
+                            (acc, i) =>
+                              acc +
+                              (new Date(i.resolved_at!).getTime() - new Date(i.created_at).getTime()) / 60000,
+                            0
+                          ) / incidents.filter((i) => i.resolved_at).length
+                      )} min`
+                    : "—"
+                }
+              />
+              <MetricCard
+                label="Resolution rate"
+                value={incidents.length > 0 ? `${Math.round((resolvedCount / incidents.length) * 100)}%` : "—"}
+              />
             </div>
           </div>
         )}
 
         {tab === "team" && isAdmin && (
-          <div className="space-y-6">
+          <div className="space-y-5">
             {/* Invite form */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <UserPlus className="w-5 h-5 text-muted-foreground" />
-                  Invite New Responder
+                <CardTitle className="flex items-center gap-2 font-display text-lg">
+                  <UserPlus className="h-5 w-5 text-muted-foreground" />
+                  Invite a responder
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <form onSubmit={handleInvite} className="space-y-4">
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="invite-name">Full Name</Label>
-                      <Input
-                        id="invite-name"
-                        value={inviteName}
-                        onChange={(e) => setInviteName(e.target.value)}
-                        placeholder="Officer Kebede"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="invite-email">Email</Label>
-                      <Input
-                        id="invite-email"
-                        type="email"
-                        value={inviteEmail}
-                        onChange={(e) => setInviteEmail(e.target.value)}
-                        placeholder="kebede@police.gov.et"
-                        required
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="invite-phone">Phone</Label>
-                      <Input
-                        id="invite-phone"
-                        value={invitePhone}
-                        onChange={(e) => setInvitePhone(e.target.value)}
-                        placeholder="+251 9XX XXX XXX"
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="invite-role">Role</Label>
-                      <Select value={inviteRole} onValueChange={setInviteRole}>
-                        <SelectTrigger>
-                          <SelectValue />
-                        </SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="responder">Responder</SelectItem>
-                          <SelectItem value="org_admin">Organization Admin</SelectItem>
-                          <SelectItem value="admin">Admin</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
+                  <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                    <TextField
+                      label="Full name"
+                      required
+                      value={inviteName}
+                      onChange={(e) => setInviteName(e.target.value)}
+                      placeholder="Officer Kebede"
+                    />
+                    <TextField
+                      label="Email"
+                      required
+                      type="email"
+                      value={inviteEmail}
+                      onChange={(e) => setInviteEmail(e.target.value)}
+                      placeholder="kebede@police.gov.et"
+                    />
+                    <TextField
+                      label="Phone"
+                      optional
+                      type="tel"
+                      value={invitePhone}
+                      onChange={(e) => setInvitePhone(e.target.value)}
+                      placeholder="+251 9XX XXX XXX"
+                    />
+                    <Field label="Role">
+                      {(a11y) => (
+                        <Select value={inviteRole} onValueChange={setInviteRole}>
+                          <SelectTrigger id={a11y.id} className="h-11 rounded-xl bg-card">
+                            <SelectValue />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="responder">Responder</SelectItem>
+                            <SelectItem value="org_admin">Organization admin</SelectItem>
+                            <SelectItem value="admin">Admin</SelectItem>
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </Field>
                   </div>
-                  <Button type="submit" className="bg-sos hover:bg-sos/90 text-destructive-foreground" disabled={inviteLoading}>
+                  <Button type="submit" variant="sos" disabled={inviteLoading}>
                     {inviteLoading ? (
-                      <div className="w-4 h-4 border-2 border-destructive-foreground border-t-transparent rounded-full animate-spin" />
+                      <Spinner size="sm" tone="current" label="Creating account" />
                     ) : (
                       <>
-                        <UserPlus className="w-4 h-4 mr-2" />
-                        Create & Invite
+                        <UserPlus />
+                        Create &amp; invite
                       </>
                     )}
                   </Button>
                 </form>
 
                 {tempPassword && (
-                  <div className="mt-4 p-4 rounded-xl bg-safe/10 border border-safe/20">
-                    <p className="text-sm font-semibold text-foreground mb-2">Account created successfully!</p>
-                    <p className="text-xs text-muted-foreground mb-3">Share this temporary password with the new user. They should change it after first login.</p>
-                    <div className="flex items-center gap-2">
-                      <code className="flex-1 bg-card px-3 py-2 rounded-lg text-sm font-mono text-foreground">
+                  <Callout tone="safe" icon={<CheckCircle />} title="Account created" className="mt-4">
+                    <p className="text-xs leading-relaxed">
+                      Share this temporary password with them. They should change it after the first sign-in.
+                    </p>
+                    <div className="mt-3 flex items-center gap-2">
+                      <code className="flex-1 truncate rounded-xl bg-card px-3 py-2.5 font-mono text-sm text-foreground">
                         {showPassword ? tempPassword : "••••••••••••"}
                       </code>
                       <Button
-                        variant="ghost"
+                        variant="subtle"
                         size="icon"
                         onClick={() => setShowPassword(!showPassword)}
+                        aria-label={showPassword ? "Hide password" : "Show password"}
                       >
-                        {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                        {showPassword ? <EyeOff /> : <Eye />}
                       </Button>
                       <Button
-                        variant="ghost"
+                        variant="subtle"
                         size="icon"
+                        aria-label="Copy password"
                         onClick={() => {
                           navigator.clipboard.writeText(tempPassword);
                           toast.success("Password copied to clipboard");
                         }}
                       >
-                        <Copy className="w-4 h-4" />
+                        <Copy />
                       </Button>
                     </div>
-                  </div>
+                  </Callout>
                 )}
               </CardContent>
             </Card>
@@ -708,89 +686,105 @@ const Dashboard = () => {
             {/* Team list */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Users className="w-5 h-5 text-muted-foreground" />
-                  Team Members ({teamMembers.length})
+                <CardTitle className="flex items-center gap-2 font-display text-lg">
+                  <Users className="h-5 w-5 text-muted-foreground" />
+                  Team members ({teamMembers.length})
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Name</TableHead>
-                      <TableHead>Phone</TableHead>
-                      <TableHead>Role</TableHead>
-                      <TableHead>Added</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {teamMembers.length === 0 ? (
-                      <TableRow>
-                        <TableCell colSpan={4} className="text-center py-8 text-muted-foreground">
-                          No team members yet. Invite your first responder above.
-                        </TableCell>
-                      </TableRow>
-                    ) : (
-                      teamMembers.map((member, i) => (
-                        <TableRow key={i}>
-                          <TableCell className="font-medium">
-                            {member.profile?.full_name || "Unknown"}
-                          </TableCell>
-                          <TableCell className="text-xs text-muted-foreground">
-                            {member.profile?.phone_number || "—"}
-                          </TableCell>
-                          <TableCell>
-                            <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${
-                              member.role === "admin"
-                                ? "bg-primary/10 text-primary"
-                                : member.role === "org_admin"
-                                ? "bg-warning/10 text-warning"
-                                : "bg-safe/10 text-safe"
-                            }`}>
-                              {member.role === "org_admin" ? "Org Admin" : member.role.charAt(0).toUpperCase() + member.role.slice(1)}
-                            </span>
-                          </TableCell>
-                          <TableCell className="text-xs text-muted-foreground">
-                            {new Date(member.created_at).toLocaleDateString()}
-                          </TableCell>
+                {teamMembers.length === 0 ? (
+                  <EmptyState
+                    icon={<Users />}
+                    title="No team members yet"
+                    description="Invite your first responder using the form above."
+                  />
+                ) : (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Name</TableHead>
+                          <TableHead>Phone</TableHead>
+                          <TableHead>Role</TableHead>
+                          <TableHead>Added</TableHead>
                         </TableRow>
-                      ))
-                    )}
-                  </TableBody>
-                </Table>
+                      </TableHeader>
+                      <TableBody>
+                        {teamMembers.map((member) => (
+                          <TableRow key={`${member.user_id}-${member.role}`}>
+                            <TableCell className="font-medium">{member.profile?.full_name || "Unknown"}</TableCell>
+                            <TableCell className="whitespace-nowrap text-xs text-muted-foreground">
+                              {member.profile?.phone_number || "—"}
+                            </TableCell>
+                            <TableCell>
+                              <RoleBadge role={member.role} />
+                            </TableCell>
+                            <TableCell className="whitespace-nowrap text-xs text-muted-foreground">
+                              {new Date(member.created_at).toLocaleDateString()}
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
         )}
-      </div>
-    </div>
+      </Container>
+    </Screen>
   );
 };
 
+/**
+ * Tones are picked from a fixed map, never interpolated into a class name —
+ * Tailwind only emits classes it can see as complete strings in the source.
+ */
 const StatCard = ({
   icon,
   label,
   value,
-  color,
+  tone,
 }: {
   icon: React.ReactNode;
   label: string;
   value: number;
-  color: string;
+  tone: Tone;
 }) => (
-  <Card>
-    <CardContent className="pt-6">
-      <div className="flex items-center gap-3">
-        <div className={`w-10 h-10 rounded-xl bg-${color === "muted" ? "muted" : `${color}/10`} flex items-center justify-center text-${color === "muted" ? "muted-foreground" : color}`}>
-          {icon}
-        </div>
-        <div>
-          <p className="text-xs text-muted-foreground">{label}</p>
-          <p className="text-2xl font-display font-bold text-foreground">{value}</p>
-        </div>
+  <div className="rounded-2xl border border-border bg-card p-4">
+    <div className="flex items-center gap-3">
+      <IconTile tone={tone}>{icon}</IconTile>
+      <div className="min-w-0">
+        <p className="truncate text-xs text-muted-foreground">{label}</p>
+        <p className="tabular font-display text-2xl font-bold text-foreground">{value}</p>
       </div>
-    </CardContent>
-  </Card>
+    </div>
+  </div>
+);
+
+const MetricCard = ({ label, value }: { label: string; value: string }) => (
+  <div className="rounded-2xl border border-border bg-card p-5">
+    <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
+    <p className="tabular mt-1 font-display text-2xl font-bold text-foreground">{value}</p>
+  </div>
+);
+
+const ROLE_STYLES: Record<string, string> = {
+  admin: "bg-haven-gold/10 text-haven-gold",
+  org_admin: "bg-warning/10 text-warning",
+  responder: "bg-safe/10 text-safe",
+};
+
+const RoleBadge = ({ role }: { role: string }) => (
+  <span
+    className={cn(
+      "inline-flex whitespace-nowrap rounded-full px-2.5 py-0.5 text-xs font-semibold",
+      ROLE_STYLES[role] ?? "bg-secondary text-muted-foreground",
+    )}
+  >
+    {role === "org_admin" ? "Org admin" : role.charAt(0).toUpperCase() + role.slice(1)}
+  </span>
 );
 
 export default Dashboard;

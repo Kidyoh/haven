@@ -1,0 +1,10 @@
+{
+  "country_code": "ET",
+  "country_name_en": "Ethiopia",
+  "country_name_am": "ኢትዮጵያ",
+  "languages": ["en", "am"],
+  "default_language": "en",
+  "staleness_days": 90,
+  "coverage_note_en": "Coverage is partial. Addis Ababa only, and not every service in Addis Ababa.",
+  "coverage_note_am": "ሽፋኑ ከፊል ነው። አዲስ አበባ ብቻ፣ እና በአዲስ አበባ ያሉ ሁሉም አገልግሎቶች አይደሉም።"
+}

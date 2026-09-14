@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { Shield, LogOut, Share2, Copy, Check } from "lucide-react";
+import { Check, Compass, Copy, LogOut, Share2, ShieldCheck } from "lucide-react";
 import SOSButton from "@/components/SOSButton";
 import CountdownOverlay from "@/components/CountdownOverlay";
 import AlertActive from "@/components/AlertActive";
@@ -9,6 +9,7 @@ import { useSOSPipeline } from "@/hooks/useSOSPipeline";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import PWAInstallPrompt from "@/components/PWAInstallPrompt";
+import { Container, IconTile, PageHeader, Screen } from "@/components/haven/Screen";
 
 type SOSState = "home" | "countdown" | "active";
 
@@ -148,80 +149,98 @@ const SOS = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <header className="flex items-center justify-between px-6 pt-6 pb-4">
-        <div>
-          <h1 className="font-display font-bold text-xl tracking-[0.3em] text-foreground">HAVEN</h1>
-          <p className="text-xs text-muted-foreground">
-            {profile ? `Hi, ${profile.full_name.split(" ")[0]}` : "Your safety network"}
-          </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <button
-            onClick={() => setShowShare(!showShare)}
-            className="w-10 h-10 rounded-xl bg-card flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <Share2 className="w-5 h-5" />
-          </button>
-          <button
-            onClick={handleSignOut}
-            className="w-10 h-10 rounded-xl bg-card flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors"
-          >
-            <LogOut className="w-5 h-5" />
-          </button>
-        </div>
-      </header>
+    <Screen>
+      <PageHeader
+        brand
+        subtitle={profile ? `Hi, ${profile.full_name.split(" ")[0]}` : "Your safety network"}
+        actions={
+          <>
+            <Button
+              variant="subtle"
+              size="icon"
+              onClick={() => setShowShare(!showShare)}
+              aria-label="Share a tracking link"
+              aria-expanded={showShare}
+            >
+              <Share2 />
+            </Button>
+            <Button variant="subtle" size="icon" onClick={handleSignOut} aria-label="Sign out">
+              <LogOut />
+            </Button>
+          </>
+        }
+      />
 
       {showShare && (
-        <div className="mx-6 mb-4 p-4 rounded-2xl bg-card border border-border">
-          <p className="text-sm font-semibold text-foreground mb-2">Share with Next of Kin</p>
-          <p className="text-xs text-muted-foreground mb-3">
-            Generate a tracking link your family can use to monitor your safety — no login needed.
-          </p>
-          {shareLink ? (
-            <div className="flex items-center gap-2">
-              <div className="flex-1 px-3 py-2 rounded-lg bg-secondary text-xs text-foreground font-mono truncate">
-                {shareLink}
+        <Container className="pt-4">
+          <div className="animate-rise rounded-2xl border border-border bg-card p-4">
+            <p className="text-sm font-semibold text-foreground">Share with next of kin</p>
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+              A tracking link your family can open to see whether you are safe. No login needed on their side.
+            </p>
+            {shareLink ? (
+              <div className="mt-3 flex items-center gap-2">
+                <div className="min-w-0 flex-1 truncate rounded-xl bg-secondary px-3 py-2.5 font-mono text-xs text-foreground">
+                  {shareLink}
+                </div>
+                <Button
+                  size="icon"
+                  variant="subtle"
+                  onClick={copyLink}
+                  aria-label={copied ? "Link copied" : "Copy link"}
+                >
+                  {copied ? <Check className="text-safe" /> : <Copy />}
+                </Button>
               </div>
-              <Button size="sm" variant="outline" onClick={copyLink} className="shrink-0">
-                {copied ? <Check className="w-4 h-4 text-safe" /> : <Copy className="w-4 h-4" />}
+            ) : (
+              <Button size="sm" variant="gold" className="mt-3" onClick={generateShareLink}>
+                Generate link
               </Button>
-            </div>
-          ) : (
-            <Button size="sm" className="bg-sos hover:bg-sos/90 text-destructive-foreground" onClick={generateShareLink}>
-              Generate Link
-            </Button>
-          )}
-        </div>
+            )}
+          </div>
+        </Container>
       )}
 
-      <main className="flex-1 flex flex-col items-center justify-center -mt-12">
+      <main className="flex flex-1 flex-col items-center justify-center px-6 py-10">
         <SOSButton onActivate={() => setState("countdown")} />
-        <p className="text-muted-foreground text-sm mt-10 text-center px-12">
-          Press and hold the SOS button for 2 seconds to send an emergency alert
+        <p className="mt-10 max-w-xs text-center text-sm leading-relaxed text-muted-foreground">
+          Press and hold for two seconds to send an emergency alert.
         </p>
       </main>
 
-      <footer className="px-6 pb-8">
-        <div className="flex items-center justify-between p-4 rounded-2xl bg-card">
+      <Container as="footer" className="space-y-2 pb-8">
+        <button
+          onClick={() => navigate("/pathways")}
+          className="flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-4 text-left transition-colors hover:border-haven-gold/50"
+        >
+          <IconTile tone="gold">
+            <Compass />
+          </IconTile>
+          <div className="min-w-0 flex-1">
+            <p className="text-sm font-medium text-foreground">Find help near you</p>
+            <p className="text-xs text-muted-foreground">Shelters, clinics and legal aid — works offline</p>
+          </div>
+        </button>
+
+        <div className="flex items-center justify-between rounded-2xl border border-border bg-card p-4">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-safe/10 flex items-center justify-center">
-              <Shield className="w-4 h-4 text-safe" />
-            </div>
+            <IconTile tone="safe" size="sm">
+              <ShieldCheck />
+            </IconTile>
             <div>
-              <p className="text-sm font-medium text-foreground">Status: Safe</p>
+              <p className="text-sm font-medium text-foreground">Status: safe</p>
               <p className="text-xs text-muted-foreground">All systems ready</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-safe" />
-            <span className="text-xs text-muted-foreground">Online</span>
-          </div>
+          <span className="flex items-center gap-2 text-xs text-muted-foreground">
+            <span className="h-2 w-2 rounded-full bg-safe" />
+            Online
+          </span>
         </div>
-      </footer>
+      </Container>
 
       <PWAInstallPrompt />
-    </div>
+    </Screen>
   );
 };
 

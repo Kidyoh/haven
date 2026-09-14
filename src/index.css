@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ─────────────────────────────────────────────────────────────────────────
+   HAVEN design tokens
+
+   The app is dark-only by design: it is used at night, often one-handed,
+   often with the screen half-hidden. A bright surface is a liability.
+
+   Three accent roles, and only three. Using one outside its role is a bug:
+     sos    (red)   urgent, irreversible, or dangerous. The SOS button, an
+                    active alert, a destructive action. Nothing else.
+     safe   (green) resolved, confirmed, all-clear, success.
+     gold           the calm informational layer — Pathways, wayfinding,
+                    secondary calls to action, non-emergency emphasis.
+   ───────────────────────────────────────────────────────────────────────── */
+
 @layer base {
   :root {
     --background: 220 20% 7%;
@@ -20,7 +34,7 @@
     --secondary-foreground: 0 0% 85%;
 
     --muted: 220 14% 16%;
-    --muted-foreground: 220 10% 55%;
+    --muted-foreground: 220 10% 62%;
 
     --accent: 220 14% 20%;
     --accent-foreground: 0 0% 95%;
@@ -29,8 +43,8 @@
     --destructive-foreground: 0 0% 100%;
 
     --border: 220 14% 18%;
-    --input: 220 14% 18%;
-    --ring: 0 72% 51%;
+    --input: 220 14% 22%;
+    --ring: 42 80% 60%;
 
     --radius: 1rem;
 
@@ -41,6 +55,8 @@
     --safe-green-glow: 142 60% 55%;
     --warning-amber: 38 92% 50%;
     --haven-gold: 42 80% 60%;
+    /* Ink that stays legible on a filled sos / safe / gold surface. */
+    --on-accent: 220 20% 7%;
 
     --sidebar-background: 220 18% 10%;
     --sidebar-foreground: 0 0% 85%;
@@ -58,13 +74,51 @@
     @apply border-border;
   }
 
+  html {
+    -webkit-text-size-adjust: 100%;
+  }
+
   body {
-    @apply bg-background text-foreground font-sans;
-    font-family: 'Inter', sans-serif;
+    @apply bg-background text-foreground font-sans antialiased;
+    /* Ethiopic fallbacks sit behind the Latin faces on every page: font
+       fallback is per-glyph, so Amharic renders in the system Ethiopic face
+       while Latin stays in Inter. Pathways relies on this. */
+    font-family: "Inter", "Noto Sans Ethiopic", "Abyssinica SIL", "Nyala", "Kefa", system-ui, sans-serif;
   }
 
   h1, h2, h3, h4 {
-    font-family: 'Space Grotesk', sans-serif;
+    font-family: "Space Grotesk", "Noto Sans Ethiopic", "Abyssinica SIL", "Nyala", "Kefa", system-ui, sans-serif;
+    text-wrap: balance;
+  }
+
+  /* One focus treatment for the whole app. shadcn components bring their own
+     ring; this catches every hand-rolled button, link and card. */
+  :focus-visible {
+    outline: 2px solid hsl(var(--ring));
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+
+  ::selection {
+    background: hsl(var(--haven-gold) / 0.3);
+  }
+
+  /* Tailwind's display utilities are author-origin and would otherwise beat
+     the user agent's [hidden] rule, silently showing hidden elements. */
+  [hidden] {
+    display: none !important;
+  }
+
+  /* Numbers that update in place (timers, counters, stats) must not jitter. */
+  .tabular {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* The HAVEN wordmark. Letter-spacing is part of the mark, not decoration. */
+  .brand-wordmark {
+    @apply font-display font-bold tracking-[0.3em];
   }
 }
 
@@ -94,6 +148,11 @@
   50% { box-shadow: 0 0 40px hsl(142 60% 45% / 0.5); }
 }
 
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
 .animate-sos-pulse {
   animation: sos-pulse 1.5s ease-in-out infinite;
 }
@@ -108,4 +167,21 @@
 
 .animate-safe-glow {
   animation: safe-glow 2s ease-in-out infinite;
+}
+
+.animate-rise {
+  animation: rise 0.3s ease-out both;
+}
+
+/* A safety app should not strobe at someone who has asked it not to. The
+   status dot stays visible — only the motion stops. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

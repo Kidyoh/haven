@@ -63,6 +63,9 @@ export default {
         haven: {
           gold: "hsl(var(--haven-gold))",
         },
+        // Ink for text sitting on a filled gold / safe / warning surface.
+        // (sos red is dark enough that it keeps white text instead.)
+        ink: "hsl(var(--on-accent))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",
           foreground: "hsl(var(--sidebar-foreground))",

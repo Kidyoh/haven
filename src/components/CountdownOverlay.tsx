@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { X } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 interface CountdownOverlayProps {
   seconds: number;
@@ -22,13 +23,15 @@ const CountdownOverlay = ({ seconds, onComplete, onCancel }: CountdownOverlayPro
   const progress = ((seconds - remaining) / seconds) * 100;
 
   return (
-    <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-sm flex flex-col items-center justify-center">
+    <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background/95 px-5 backdrop-blur-sm sm:px-6">
       {/* Countdown circle */}
-      <div className="relative w-48 h-48 mb-8">
-        <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
+      <div className="relative mb-8 h-48 w-48">
+        <svg className="h-full w-full -rotate-90" viewBox="0 0 100 100" aria-hidden="true">
           <circle cx="50" cy="50" r="45" fill="none" stroke="hsl(var(--sos-red) / 0.15)" strokeWidth="4" />
           <circle
-            cx="50" cy="50" r="45"
+            cx="50"
+            cy="50"
+            r="45"
             fill="none"
             stroke="hsl(var(--sos-red))"
             strokeWidth="4"
@@ -38,25 +41,22 @@ const CountdownOverlay = ({ seconds, onComplete, onCancel }: CountdownOverlayPro
             className="transition-all duration-1000 ease-linear"
           />
         </svg>
-        <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-6xl font-display font-bold text-sos">{remaining}</span>
-          <span className="text-sm text-muted-foreground mt-1">seconds</span>
+        <div className="absolute inset-0 flex flex-col items-center justify-center" role="timer" aria-live="assertive">
+          <span className="tabular font-display text-6xl font-bold text-sos">{remaining}</span>
+          <span className="mt-1 text-sm text-muted-foreground">seconds</span>
         </div>
       </div>
 
-      <p className="text-lg font-semibold text-foreground mb-2">Sending SOS Alert</p>
-      <p className="text-muted-foreground text-sm mb-10 text-center px-8">
-        Your emergency contacts and police will be notified
+      <p className="text-lg font-semibold text-foreground">Sending SOS alert</p>
+      <p className="mt-2 max-w-xs text-center text-sm leading-relaxed text-muted-foreground">
+        Your emergency contacts and the police will be notified.
       </p>
 
-      {/* Cancel button */}
-      <button
-        onClick={onCancel}
-        className="flex items-center gap-3 px-8 py-4 rounded-full border-2 border-muted-foreground/30 text-muted-foreground hover:border-foreground hover:text-foreground transition-all"
-      >
-        <X className="w-5 h-5" />
-        <span className="font-semibold text-lg">Cancel</span>
-      </button>
+      {/* Cancel is the only other thing on screen, and it is large on purpose. */}
+      <Button variant="outline" size="xl" onClick={onCancel} className="mt-10 w-full max-w-xs rounded-full">
+        <X />
+        Cancel
+      </Button>
     </div>
   );
 };

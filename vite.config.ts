@@ -18,7 +18,12 @@ export default defineConfig(({ mode }) => ({
     mode === "development" && componentTagger(),
     VitePWA({
       registerType: "autoUpdate",
-      includeAssets: ["favicon.ico", "pwa-icon-192.png", "pwa-icon-512.png"],
+      // Hand-written worker (src/sw.ts): same precache + SPA fallback as the
+      // generated one, plus Background Sync for the Pathways dataset.
+      strategies: "injectManifest",
+      srcDir: "src",
+      filename: "sw.ts",
+      includeAssets: ["favicon.ico", "pwa-icon-192.png", "pwa-icon-512.png", "pathways/icon.svg"],
       manifest: {
         name: "HAVEN — Women's Safety SOS",
         short_name: "HAVEN",
@@ -48,9 +53,11 @@ export default defineConfig(({ mode }) => ({
           },
         ],
       },
-      workbox: {
-        navigateFallbackDenylist: [/^\/~oauth/],
-        globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,jpg}"],
+      injectManifest: {
+        // pathways/*.json is the generated service directory, precached so the
+        // directory works offline after one visit. The OAuth navigation
+        // denylist lives in src/sw.ts.
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,webp,jpg}", "pathways/*.json"],
       },
     }),
   ].filter(Boolean),

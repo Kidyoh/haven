@@ -1,16 +1,27 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Building2, Plus, Trash2, Pencil, ArrowLeft, MapPin, Phone, Mail } from "lucide-react";
+import { Building2, Mail, MapPin, Pencil, Phone, Plus, Trash2 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
+import { Container, PageHeader, Screen } from "@/components/haven/Screen";
+import { EmptyState, ScreenLoader, Spinner } from "@/components/haven/Feedback";
+import { Field, TextField } from "@/components/haven/Field";
 
 interface Organization {
   id: string;
@@ -40,6 +51,7 @@ const Organizations = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Organization | null>(null);
   const [saving, setSaving] = useState(false);
+  const [pendingDelete, setPendingDelete] = useState<Organization | null>(null);
 
   const [form, setForm] = useState({
     name: "",
@@ -120,213 +132,222 @@ const Organizations = () => {
   };
 
   const handleDelete = async (org: Organization) => {
-    if (!confirm(`Delete "${org.name}"? This cannot be undone.`)) return;
     const { error } = await supabase.from("organizations").delete().eq("id", org.id);
     if (error) toast.error(error.message);
     else {
       toast.success("Organization deleted");
       loadOrgs();
     }
+    setPendingDelete(null);
   };
 
-  if (authorized === null || loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-sos border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
+  if (authorized === null || loading) return <ScreenLoader tone="gold" />;
 
   if (!authorized) {
     return (
-      <div className="min-h-screen bg-background flex items-center justify-center p-6">
-        <Card className="max-w-md">
-          <CardHeader>
-            <CardTitle>Access denied</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-muted-foreground">
-              Only admins can manage organizations.
-            </p>
-            <Button onClick={() => navigate("/dashboard")} variant="outline" className="w-full">
-              Back to dashboard
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+      <Screen center>
+        <div className="w-full max-w-sm">
+          <EmptyState
+            icon={<Building2 />}
+            tone="sos"
+            title="Access denied"
+            description="Only admins can manage responder organizations."
+            action={
+              <Button variant="subtle" size="lg" onClick={() => navigate("/dashboard")}>
+                Back to dashboard
+              </Button>
+            }
+          />
+        </div>
+      </Screen>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <header className="border-b border-border bg-card/30 backdrop-blur sticky top-0 z-10">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => navigate("/dashboard")}
-              aria-label="Back"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Button>
-            <div className="w-10 h-10 rounded-xl bg-haven-gold/10 flex items-center justify-center">
-              <Building2 className="w-5 h-5 text-haven-gold" />
-            </div>
-            <div>
-              <h1 className="font-display text-xl font-bold">Organizations</h1>
-              <p className="text-xs text-muted-foreground">Manage responder agencies</p>
-            </div>
-          </div>
-          <Button onClick={openCreate} className="gap-2">
-            <Plus className="w-4 h-4" />
-            Add organization
+    <Screen>
+      <PageHeader
+        sticky
+        width="wide"
+        icon={<Building2 />}
+        tone="gold"
+        title="Organizations"
+        subtitle="Responder agencies that receive alerts"
+        onBack={() => navigate("/dashboard")}
+        backLabel="Back to dashboard"
+        actions={
+          <Button variant="gold" onClick={openCreate}>
+            <Plus />
+            <span className="hidden sm:inline">Add organization</span>
+            <span className="sm:hidden">Add</span>
           </Button>
-        </div>
-      </header>
+        }
+      />
 
-      <main className="max-w-6xl mx-auto px-6 py-8">
+      <Container width="wide" as="main" className="flex-1 py-6">
         {orgs.length === 0 ? (
-          <Card className="border-dashed">
-            <CardContent className="py-16 flex flex-col items-center text-center gap-4">
-              <Building2 className="w-12 h-12 text-muted-foreground" />
-              <div>
-                <h2 className="font-display text-lg font-semibold">No organizations yet</h2>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Add police stations, hospitals, NGOs, and other responder agencies.
-                </p>
-              </div>
-              <Button onClick={openCreate} className="gap-2">
-                <Plus className="w-4 h-4" />
-                Add your first organization
-              </Button>
-            </CardContent>
-          </Card>
+          <div className="rounded-2xl border border-dashed border-border">
+            <EmptyState
+              icon={<Building2 />}
+              tone="gold"
+              title="No organizations yet"
+              description="Add police stations, hospitals, NGOs and other agencies so alerts have somewhere to go."
+              action={
+                <Button variant="gold" onClick={openCreate}>
+                  <Plus />
+                  Add your first organization
+                </Button>
+              }
+            />
+          </div>
         ) : (
-          <div className="grid gap-4 md:grid-cols-2">
+          <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
             {orgs.map((org) => (
-              <Card key={org.id} className="group">
-                <CardHeader className="flex flex-row items-start justify-between gap-3 space-y-0">
-                  <div className="space-y-1">
-                    <CardTitle className="text-base">{org.name}</CardTitle>
-                    <Badge variant="secondary" className="capitalize">
+              <li
+                key={org.id}
+                className="group flex flex-col rounded-2xl border border-border bg-card p-5 transition-colors hover:border-haven-gold/40"
+              >
+                <div className="flex items-start justify-between gap-3">
+                  <div className="min-w-0">
+                    <h2 className="truncate font-display text-base font-semibold text-foreground">{org.name}</h2>
+                    <Badge variant="secondary" className="mt-1.5 capitalize">
                       {org.type}
                     </Badge>
                   </div>
-                  <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <Button size="icon" variant="ghost" onClick={() => openEdit(org)} aria-label="Edit">
-                      <Pencil className="w-4 h-4" />
+                  <div className="flex shrink-0 gap-1 opacity-60 transition-opacity focus-within:opacity-100 group-hover:opacity-100">
+                    <Button size="icon-sm" variant="ghost" onClick={() => openEdit(org)} aria-label={`Edit ${org.name}`}>
+                      <Pencil />
                     </Button>
                     <Button
-                      size="icon"
+                      size="icon-sm"
                       variant="ghost"
-                      onClick={() => handleDelete(org)}
-                      aria-label="Delete"
-                      className="text-sos hover:text-sos"
+                      onClick={() => setPendingDelete(org)}
+                      aria-label={`Delete ${org.name}`}
+                      className="hover:text-sos"
                     >
-                      <Trash2 className="w-4 h-4" />
+                      <Trash2 />
                     </Button>
                   </div>
-                </CardHeader>
-                <CardContent className="space-y-2 text-sm text-muted-foreground">
-                  {org.location && (
-                    <div className="flex items-center gap-2">
-                      <MapPin className="w-4 h-4 shrink-0" />
-                      <span>{org.location}</span>
-                    </div>
-                  )}
-                  {org.phone && (
-                    <div className="flex items-center gap-2">
-                      <Phone className="w-4 h-4 shrink-0" />
-                      <span>{org.phone}</span>
-                    </div>
-                  )}
-                  {org.email && (
-                    <div className="flex items-center gap-2">
-                      <Mail className="w-4 h-4 shrink-0" />
-                      <span className="truncate">{org.email}</span>
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-      </main>
+                </div>
 
+                <dl className="mt-4 space-y-2 text-sm text-muted-foreground">
+                  <Detail icon={<MapPin />} value={org.location} />
+                  <Detail icon={<Phone />} value={org.phone} href={org.phone ? `tel:${org.phone}` : undefined} />
+                  <Detail icon={<Mail />} value={org.email} href={org.email ? `mailto:${org.email}` : undefined} />
+                  {!org.location && !org.phone && !org.email && (
+                    <p className="text-xs italic">No contact details recorded</p>
+                  )}
+                </dl>
+              </li>
+            ))}
+          </ul>
+        )}
+      </Container>
+
+      {/* Create / edit */}
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent>
+        <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>{editing ? "Edit organization" : "Add organization"}</DialogTitle>
+            <DialogTitle className="font-display">
+              {editing ? "Edit organization" : "Add organization"}
+            </DialogTitle>
           </DialogHeader>
-          <div className="space-y-4 py-2">
-            <div className="space-y-2">
-              <Label htmlFor="org-name">Name *</Label>
-              <Input
-                id="org-name"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                placeholder="e.g. Central Police Station"
+          <div className="space-y-4 py-1">
+            <TextField
+              label="Name"
+              required
+              value={form.name}
+              onChange={(e) => setForm({ ...form, name: e.target.value })}
+              placeholder="e.g. Gulele Police Station"
+            />
+            <Field label="Type">
+              {(a11y) => (
+                <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v })}>
+                  <SelectTrigger id={a11y.id} className="h-11 rounded-xl bg-card">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {ORG_TYPES.map((t) => (
+                      <SelectItem key={t.value} value={t.value}>
+                        {t.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </Field>
+            <TextField
+              label="Location"
+              optional
+              value={form.location}
+              onChange={(e) => setForm({ ...form, location: e.target.value })}
+              placeholder="City, sub-city or address"
+            />
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              <TextField
+                label="Phone"
+                optional
+                type="tel"
+                value={form.phone}
+                onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                placeholder="+251 ..."
               />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="org-type">Type</Label>
-              <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v })}>
-                <SelectTrigger id="org-type">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {ORG_TYPES.map((t) => (
-                    <SelectItem key={t.value} value={t.value}>
-                      {t.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="org-location">Location</Label>
-              <Input
-                id="org-location"
-                value={form.location}
-                onChange={(e) => setForm({ ...form, location: e.target.value })}
-                placeholder="City, district or address"
+              <TextField
+                label="Email"
+                optional
+                type="email"
+                value={form.email}
+                onChange={(e) => setForm({ ...form, email: e.target.value })}
+                placeholder="contact@org.et"
               />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-2">
-                <Label htmlFor="org-phone">Phone</Label>
-                <Input
-                  id="org-phone"
-                  value={form.phone}
-                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                  placeholder="+254..."
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="org-email">Email</Label>
-                <Input
-                  id="org-email"
-                  type="email"
-                  value={form.email}
-                  onChange={(e) => setForm({ ...form, email: e.target.value })}
-                  placeholder="contact@org.com"
-                />
-              </div>
             </div>
           </div>
-          <DialogFooter>
+          <DialogFooter className="gap-2 sm:gap-2">
             <Button variant="ghost" onClick={() => setDialogOpen(false)}>
               Cancel
             </Button>
-            <Button onClick={handleSave} disabled={saving}>
-              {saving ? "Saving..." : editing ? "Save changes" : "Add organization"}
+            <Button variant="gold" onClick={handleSave} disabled={saving}>
+              {saving ? <Spinner size="sm" tone="current" label="Saving" /> : editing ? "Save changes" : "Add organization"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </div>
+
+      {/* Delete confirmation */}
+      <AlertDialog open={pendingDelete !== null} onOpenChange={(open) => !open && setPendingDelete(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle className="font-display">Delete "{pendingDelete?.name}"?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This removes the organization from the responder network. It cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Keep it</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => pendingDelete && handleDelete(pendingDelete)}
+              className="bg-sos text-destructive-foreground hover:bg-sos/90"
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </Screen>
   );
 };
+
+const Detail = ({ icon, value, href }: { icon: React.ReactNode; value: string | null; href?: string }) =>
+  value ? (
+    <div className="flex items-center gap-2">
+      <span className="shrink-0 text-muted-foreground [&_svg]:h-4 [&_svg]:w-4">{icon}</span>
+      {href ? (
+        <a href={href} className="truncate hover:text-haven-gold hover:underline">
+          {value}
+        </a>
+      ) : (
+        <span className="truncate">{value}</span>
+      )}
+    </div>
+  ) : null;
 
 export default Organizations;

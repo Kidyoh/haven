@@ -2,7 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Shield, ArrowLeft, Eye, EyeOff } from "lucide-react";
+import { AlertTriangle, ArrowLeft, Eye, EyeOff, MailCheck, Shield } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { BrandMark, Container, IconTile, Screen } from "@/components/haven/Screen";
+import { Callout, Spinner } from "@/components/haven/Feedback";
+import { Field, TextField } from "@/components/haven/Field";
 
 const Auth = () => {
   const [mode, setMode] = useState<"login" | "signup">("signup");
@@ -53,131 +58,141 @@ const Auth = () => {
 
   if (signupSuccess) {
     return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center px-6">
-        <div className="w-16 h-16 rounded-2xl bg-safe/10 flex items-center justify-center mb-6">
-          <Shield className="w-8 h-8 text-safe" />
+      <Screen center>
+        <div className="w-full max-w-sm animate-rise text-center">
+          <BrandMark stacked tone="safe" icon={<MailCheck />} />
+          <h1 className="mt-6 font-display text-2xl font-bold text-foreground">Check your email</h1>
+          <p className="mx-auto mt-3 max-w-xs text-sm leading-relaxed text-muted-foreground">
+            We sent a confirmation link to <span className="font-medium text-foreground">{email}</span>. Open it to
+            activate your account.
+          </p>
+          <Button
+            variant="ghost"
+            size="lg"
+            className="mt-8 w-full"
+            onClick={() => {
+              setSignupSuccess(false);
+              setMode("login");
+            }}
+          >
+            <ArrowLeft />
+            Back to sign in
+          </Button>
         </div>
-        <h2 className="font-display font-bold text-2xl text-foreground mb-3 text-center">Check your email</h2>
-        <p className="text-muted-foreground text-center text-sm mb-8 max-w-xs">
-          We've sent a confirmation link to <span className="text-foreground font-medium">{email}</span>. Click it to activate your HAVEN account.
-        </p>
-        <button
-          onClick={() => { setSignupSuccess(false); setMode("login"); }}
-          className="text-sos font-semibold text-sm"
-        >
-          Back to login
-        </button>
-      </div>
+      </Screen>
     );
   }
 
+  const isSignup = mode === "signup";
+
   return (
-    <div className="min-h-screen bg-background flex flex-col px-6 py-8">
-      {/* Back button */}
-      <button onClick={() => navigate("/")} className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors mb-8">
-        <ArrowLeft className="w-4 h-4" />
-        <span className="text-sm">Back</span>
-      </button>
+    <Screen>
+      <Container width="form" as="main" className="flex flex-1 flex-col py-6">
+        <Button variant="ghost" size="sm" onClick={() => navigate("/")} className="-ml-3 mb-6 self-start">
+          <ArrowLeft />
+          Back
+        </Button>
 
-      {/* Header */}
-      <div className="mb-8">
-        <div className="w-12 h-12 rounded-xl bg-sos/10 flex items-center justify-center mb-4">
-          <Shield className="w-6 h-6 text-sos" />
+        <div className="mb-7">
+          <IconTile tone="sos" className="mb-4">
+            <Shield />
+          </IconTile>
+          <h1 className="font-display text-3xl font-bold leading-tight text-foreground">
+            {isSignup ? "Create your account" : "Welcome back"}
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {isSignup ? "Join HAVEN — your personal safety network" : "Sign in to reach your safety network"}
+          </p>
         </div>
-        <h1 className="font-display font-bold text-3xl text-foreground mb-2">
-          {mode === "signup" ? "Create your account" : "Welcome back"}
-        </h1>
-        <p className="text-muted-foreground text-sm">
-          {mode === "signup" ? "Join HAVEN — your personal safety network" : "Sign in to access your safety network"}
-        </p>
-      </div>
 
-      {/* Form */}
-      <form onSubmit={handleSubmit} className="flex-1 flex flex-col">
-        <div className="space-y-4 flex-1">
-          {mode === "signup" && (
-            <>
-              <div>
-                <label className="text-sm font-medium text-foreground mb-1.5 block">Full Name</label>
-                <input
+        <form onSubmit={handleSubmit} className="flex flex-1 flex-col">
+          <div className="flex-1 space-y-4">
+            {isSignup && (
+              <>
+                <TextField
+                  label="Full name"
+                  required
                   value={fullName}
-                  onChange={e => setFullName(e.target.value)}
+                  onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. Tigist Alemu"
-                  required
-                  className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-sos/50"
+                  autoComplete="name"
                 />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-foreground mb-1.5 block">Phone Number</label>
-                <input
+                <TextField
+                  label="Phone number"
+                  required
                   value={phone}
-                  onChange={e => setPhone(e.target.value)}
+                  onChange={(e) => setPhone(e.target.value)}
                   placeholder="+251 9XX XXX XXX"
-                  required
-                  className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-sos/50"
+                  type="tel"
+                  autoComplete="tel"
+                  hint="Responders use this to reach you during an alert."
                 />
-              </div>
-            </>
-          )}
-          <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">Email</label>
-            <input
+              </>
+            )}
+
+            <TextField
+              label="Email"
+              required
               type="email"
               value={email}
-              onChange={e => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}
               placeholder="your@email.com"
-              required
-              className="w-full px-4 py-3 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-sos/50"
+              autoComplete="email"
             />
+
+            <Field label="Password" required>
+              {(a11y) => (
+                <div className="relative">
+                  <Input
+                    {...a11y}
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="At least 6 characters"
+                    required
+                    minLength={6}
+                    autoComplete={isSignup ? "new-password" : "current-password"}
+                    className="pr-12"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                    className="absolute right-1 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
+              )}
+            </Field>
+
+            {error && (
+              <Callout tone="danger" icon={<AlertTriangle />}>
+                {error}
+              </Callout>
+            )}
           </div>
-          <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">Password</label>
-            <div className="relative">
-              <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="Min 6 characters"
-                required
-                minLength={6}
-                className="w-full px-4 py-3 pr-12 rounded-xl bg-card border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-sos/50"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground"
-              >
-                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-          </div>
 
-          {error && (
-            <p className="text-sm text-sos bg-sos/10 px-4 py-3 rounded-xl">{error}</p>
-          )}
-        </div>
+          <Button type="submit" variant="sos" size="xl" disabled={loading} className="mt-7 w-full">
+            {loading ? <Spinner size="sm" tone="current" label="Signing in" /> : isSignup ? "Create account" : "Sign in"}
+          </Button>
 
-        {/* Submit */}
-        <button
-          type="submit"
-          disabled={loading}
-          className="w-full py-4 rounded-2xl bg-sos text-destructive-foreground font-display font-bold text-lg transition-all active:scale-[0.98] disabled:opacity-50 mt-6"
-        >
-          {loading ? "Please wait..." : mode === "signup" ? "Create Account" : "Sign In"}
-        </button>
-
-        <p className="text-center text-sm text-muted-foreground mt-4">
-          {mode === "signup" ? "Already have an account?" : "Don't have an account?"}{" "}
-          <button
-            type="button"
-            onClick={() => { setMode(mode === "signup" ? "login" : "signup"); setError(""); }}
-            className="text-sos font-semibold"
-          >
-            {mode === "signup" ? "Sign in" : "Sign up"}
-          </button>
-        </p>
-      </form>
-    </div>
+          <p className="mt-4 text-center text-sm text-muted-foreground">
+            {isSignup ? "Already have an account?" : "Don't have an account?"}{" "}
+            <button
+              type="button"
+              onClick={() => {
+                setMode(isSignup ? "login" : "signup");
+                setError("");
+              }}
+              className="rounded font-semibold text-haven-gold hover:underline"
+            >
+              {isSignup ? "Sign in" : "Sign up"}
+            </button>
+          </p>
+        </form>
+      </Container>
+    </Screen>
   );
 };
 

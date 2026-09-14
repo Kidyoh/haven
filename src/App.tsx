@@ -2,6 +2,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { lazy, Suspense } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import Landing from "./pages/Landing";
@@ -14,6 +15,9 @@ import Dashboard from "./pages/Dashboard";
 import Organizations from "./pages/Organizations";
 import Install from "./pages/Install";
 import NotFound from "./pages/NotFound";
+
+// Pathways is public, offline-first and lazy-loaded so the SOS bundle does not grow.
+const Pathways = lazy(() => import("./pages/Pathways"));
 
 const queryClient = new QueryClient();
 
@@ -46,6 +50,7 @@ const App = () => (
           <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
           <Route path="/organizations" element={<ProtectedRoute><Organizations /></ProtectedRoute>} />
           <Route path="/install" element={<Install />} />
+          <Route path="/pathways/*" element={<Suspense fallback={null}><Pathways /></Suspense>} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

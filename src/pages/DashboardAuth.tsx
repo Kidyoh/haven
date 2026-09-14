@@ -1,11 +1,12 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Shield, LogIn, AlertTriangle } from "lucide-react";
+import { AlertTriangle, ArrowLeft, LogIn, ShieldCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { BrandMark, Screen } from "@/components/haven/Screen";
+import { Callout, Spinner } from "@/components/haven/Feedback";
+import { TextField } from "@/components/haven/Field";
 
 const DashboardAuth = () => {
   const [email, setEmail] = useState("");
@@ -51,68 +52,67 @@ const DashboardAuth = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center px-6">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 rounded-2xl bg-sos/10 flex items-center justify-center mx-auto mb-4">
-            <Shield className="w-8 h-8 text-sos" />
-          </div>
-          <h1 className="font-display font-bold text-2xl tracking-[0.2em] text-foreground">HAVEN</h1>
-          <p className="text-sm text-muted-foreground mt-1">Response Dashboard Login</p>
-          <p className="text-xs text-muted-foreground mt-1">For Police, NGOs & Authorized Responders</p>
-        </div>
+    <Screen center>
+      <div className="w-full max-w-sm animate-rise">
+        <BrandMark
+          stacked
+          tone="gold"
+          icon={<ShieldCheck />}
+          subtitle="Response dashboard"
+          note="For police, NGOs and authorised responders"
+        />
 
-        <form onSubmit={handleLogin} className="space-y-4">
+        <form onSubmit={handleLogin} className="mt-8 space-y-4">
           {error && (
-            <div className="p-3 rounded-xl bg-sos/10 border border-sos/20 flex items-start gap-2">
-              <AlertTriangle className="w-4 h-4 text-sos mt-0.5 shrink-0" />
-              <p className="text-xs text-sos">{error}</p>
-            </div>
+            <Callout tone="danger" icon={<AlertTriangle />}>
+              {error}
+            </Callout>
           )}
 
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="responder@police.gov.et"
-              required
-            />
-          </div>
+          <TextField
+            label="Email"
+            required
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="responder@police.gov.et"
+            autoComplete="email"
+          />
 
-          <div className="space-y-2">
-            <Label htmlFor="password">Password</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              required
-            />
-          </div>
+          <TextField
+            label="Password"
+            required
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="••••••••"
+            autoComplete="current-password"
+          />
 
-          <Button type="submit" className="w-full bg-sos hover:bg-sos/90 text-destructive-foreground" disabled={loading}>
+          <Button type="submit" variant="gold" size="lg" className="w-full" disabled={loading}>
             {loading ? (
-              <div className="w-4 h-4 border-2 border-destructive-foreground border-t-transparent rounded-full animate-spin" />
+              <Spinner size="sm" tone="current" label="Signing in" />
             ) : (
               <>
-                <LogIn className="w-4 h-4 mr-2" />
-                Sign In
+                <LogIn />
+                Sign in
               </>
             )}
           </Button>
         </form>
 
-        <p className="text-center text-xs text-muted-foreground mt-6">
-          Only authorized responders can access this dashboard.
+        <p className="mt-6 text-center text-xs leading-relaxed text-muted-foreground">
+          Only authorised responders can open this dashboard.
           <br />
-          Contact your organization admin for access.
+          Contact your organisation admin for access.
         </p>
+
+        <Button variant="ghost" size="sm" className="mt-4 w-full" onClick={() => navigate("/")}>
+          <ArrowLeft />
+          Back to HAVEN
+        </Button>
       </div>
-    </div>
+    </Screen>
   );
 };
 

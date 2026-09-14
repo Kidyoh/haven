@@ -1,14 +1,21 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { User, Users, Bell, ChevronRight, Plus, Trash2 } from "lucide-react";
+import { AlertTriangle, Bell, Camera, ChevronRight, MapPin, Mic, Plus, Trash2, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Container, IconTile, Screen } from "@/components/haven/Screen";
+import { Callout, ScreenLoader, Spinner } from "@/components/haven/Feedback";
+import { Field, TextField } from "@/components/haven/Field";
 
 interface Contact {
   name: string;
   phone: string;
   relationship: string;
 }
+
+const RELATIONSHIPS = ["family", "spouse", "friend", "colleague", "neighbor"];
 
 const Setup = () => {
   const [step, setStep] = useState(0);
@@ -38,8 +45,8 @@ const Setup = () => {
   }, [user, navigate]);
 
   const steps = [
-    { icon: <Users className="w-6 h-6" />, title: "Emergency Contacts", desc: "Who should we alert in an emergency?" },
-    { icon: <Bell className="w-6 h-6" />, title: "Permissions", desc: "Enable location, mic & camera" },
+    { icon: <Users />, title: "Emergency contacts", desc: "Who should we alert in an emergency?" },
+    { icon: <Bell />, title: "Permissions", desc: "Location, microphone and camera power your alerts." },
   ];
 
   const addContact = () => {
@@ -88,8 +95,8 @@ const Setup = () => {
       if (profileError) throw profileError;
 
       navigate("/sos");
-    } catch (err: any) {
-      setError(err.message || "Something went wrong");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
     } finally {
       setSaving(false);
     }
@@ -100,120 +107,142 @@ const Setup = () => {
     else handleComplete();
   };
 
-  if (checkingSetup) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-sos border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
+  if (checkingSetup) return <ScreenLoader />;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col px-6 py-8">
-      {/* Progress */}
-      <div className="flex gap-2 mb-8">
-        {steps.map((_, i) => (
-          <div key={i} className={`h-1 flex-1 rounded-full transition-all ${i <= step ? "bg-sos" : "bg-muted"}`} />
-        ))}
-      </div>
-
-      {/* Step header */}
-      <div className="flex items-center gap-3 mb-2">
-        <div className="w-10 h-10 rounded-xl bg-sos/10 flex items-center justify-center text-sos">
-          {steps[step].icon}
+    <Screen>
+      <Container width="form" as="main" className="flex flex-1 flex-col py-6">
+        {/* Progress */}
+        <div className="mb-7 flex gap-2" role="group" aria-label={`Step ${step + 1} of ${steps.length}`}>
+          {steps.map((_, i) => (
+            <div key={i} className={`h-1 flex-1 rounded-full transition-colors ${i <= step ? "bg-sos" : "bg-secondary"}`} />
+          ))}
         </div>
-        <div>
-          <p className="text-xs text-muted-foreground">Step {step + 1} of 2</p>
-          <h2 className="font-display font-bold text-xl text-foreground">{steps[step].title}</h2>
-        </div>
-      </div>
-      <p className="text-muted-foreground text-sm mb-8">{steps[step].desc}</p>
 
-      {/* Step content */}
-      <div className="flex-1">
-        {step === 0 && (
-          <div className="space-y-4">
-            {contacts.map((c, i) => (
-              <div key={i} className="p-4 rounded-xl bg-card border border-border space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground font-medium">
-                    {i === 0 ? "Primary Contact" : `Contact ${i + 1}`}
-                  </span>
-                  {contacts.length > 1 && (
-                    <button onClick={() => removeContact(i)} className="text-muted-foreground hover:text-sos">
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-                <input
-                  value={c.name}
-                  onChange={e => updateContact(i, "name", e.target.value)}
-                  placeholder="Contact name"
-                  className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-sos/50"
-                />
-                <input
-                  value={c.phone}
-                  onChange={e => updateContact(i, "phone", e.target.value)}
-                  placeholder="Phone number"
-                  className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground placeholder:text-muted-foreground text-sm focus:outline-none focus:ring-2 focus:ring-sos/50"
-                />
-                <select
-                  value={c.relationship}
-                  onChange={e => updateContact(i, "relationship", e.target.value)}
-                  className="w-full px-3 py-2.5 rounded-lg bg-background border border-border text-foreground text-sm focus:outline-none focus:ring-2 focus:ring-sos/50"
-                >
-                  <option value="family">Family</option>
-                  <option value="spouse">Spouse</option>
-                  <option value="friend">Friend</option>
-                  <option value="colleague">Colleague</option>
-                  <option value="neighbor">Neighbor</option>
-                </select>
-              </div>
-            ))}
-            {contacts.length < 6 && (
-              <button onClick={addContact} className="w-full py-3 rounded-xl border border-dashed border-muted-foreground/30 text-muted-foreground text-sm flex items-center justify-center gap-2 hover:border-foreground hover:text-foreground transition-all">
-                <Plus className="w-4 h-4" /> Add another contact
-              </button>
-            )}
-          </div>
-        )}
-
-        {step === 1 && (
-          <div className="space-y-4">
-            <PermissionRow emoji="📍" title="Location" desc="Required for GPS coordinates in alerts" />
-            <PermissionRow emoji="🎤" title="Microphone" desc="Records audio evidence during SOS" />
-            <PermissionRow emoji="📷" title="Camera" desc="Captures photo evidence on activation" />
-            <PermissionRow emoji="🔔" title="Notifications" desc="Receive alerts from other HAVEN users" />
-            <p className="text-xs text-muted-foreground text-center mt-4">
-              Permissions will be requested when you first use SOS. No data is stored on your device after transmission.
+        {/* Step header */}
+        <div className="flex items-center gap-3">
+          <IconTile tone="sos">{steps[step].icon}</IconTile>
+          <div>
+            <p className="text-xs text-muted-foreground">
+              Step {step + 1} of {steps.length}
             </p>
+            <h1 className="font-display text-xl font-bold leading-tight text-foreground">{steps[step].title}</h1>
           </div>
+        </div>
+        <p className="mb-7 mt-2 text-sm text-muted-foreground">{steps[step].desc}</p>
+
+        {/* Step content */}
+        <div className="flex-1">
+          {step === 0 && (
+            <div className="space-y-3">
+              {contacts.map((c, i) => (
+                <div key={i} className="animate-rise space-y-3 rounded-2xl border border-border bg-card p-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                      {i === 0 ? "Primary contact" : `Contact ${i + 1}`}
+                    </span>
+                    {contacts.length > 1 && (
+                      <Button
+                        variant="ghost"
+                        size="icon-sm"
+                        onClick={() => removeContact(i)}
+                        aria-label={`Remove contact ${i + 1}`}
+                        className="-mr-1 hover:text-sos"
+                      >
+                        <Trash2 />
+                      </Button>
+                    )}
+                  </div>
+                  <TextField
+                    label="Name"
+                    value={c.name}
+                    onChange={(e) => updateContact(i, "name", e.target.value)}
+                    placeholder="Contact name"
+                  />
+                  <TextField
+                    label="Phone"
+                    type="tel"
+                    value={c.phone}
+                    onChange={(e) => updateContact(i, "phone", e.target.value)}
+                    placeholder="+251 9XX XXX XXX"
+                  />
+                  <Field label="Relationship">
+                    {(a11y) => (
+                      <Select value={c.relationship} onValueChange={(v) => updateContact(i, "relationship", v)}>
+                        <SelectTrigger id={a11y.id} className="h-11 rounded-xl bg-card capitalize">
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {RELATIONSHIPS.map((r) => (
+                            <SelectItem key={r} value={r} className="capitalize">
+                              {r}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  </Field>
+                </div>
+              ))}
+              {contacts.length < 6 && (
+                <button
+                  onClick={addContact}
+                  className="flex min-h-12 w-full items-center justify-center gap-2 rounded-2xl border border-dashed border-border text-sm text-muted-foreground transition-colors hover:border-haven-gold/50 hover:text-foreground"
+                >
+                  <Plus className="h-4 w-4" /> Add another contact
+                </button>
+              )}
+              <p className="px-1 pt-1 text-xs text-muted-foreground">
+                Up to six people. The first is your primary contact and is alerted first.
+              </p>
+            </div>
+          )}
+
+          {step === 1 && (
+            <div className="space-y-3">
+              <PermissionRow icon={<MapPin />} title="Location" desc="Puts GPS coordinates in every alert" />
+              <PermissionRow icon={<Mic />} title="Microphone" desc="Records audio evidence during an SOS" />
+              <PermissionRow icon={<Camera />} title="Camera" desc="Captures a photo when the alert fires" />
+              <PermissionRow icon={<Bell />} title="Notifications" desc="Tells you when a responder acts" />
+              <p className="px-1 pt-1 text-xs leading-relaxed text-muted-foreground">
+                Nothing is requested now. Your phone will ask the first time you use SOS, and nothing is kept on the
+                device after it is sent.
+              </p>
+            </div>
+          )}
+        </div>
+
+        {error && (
+          <Callout tone="danger" icon={<AlertTriangle />} className="mt-4">
+            {error}
+          </Callout>
         )}
-      </div>
 
-      {error && <p className="text-sm text-sos bg-sos/10 px-4 py-3 rounded-xl mb-4">{error}</p>}
-
-      {/* Bottom action */}
-      <button
-        onClick={handleNext}
-        disabled={!canProceed() || saving}
-        className={`w-full py-4 rounded-2xl font-display font-bold text-lg flex items-center justify-center gap-2 transition-all mt-6 ${
-          canProceed() && !saving
-            ? "bg-sos text-destructive-foreground active:scale-[0.98]"
-            : "bg-muted text-muted-foreground cursor-not-allowed"
-        }`}
-      >
-        {saving ? "Saving..." : step === 1 ? "Complete Setup" : "Continue"}
-        {!saving && <ChevronRight className="w-5 h-5" />}
-      </button>
-    </div>
+        <Button
+          variant="sos"
+          size="xl"
+          onClick={handleNext}
+          disabled={!canProceed() || saving}
+          className="mt-6 w-full"
+        >
+          {saving ? (
+            <Spinner size="sm" tone="current" label="Saving" />
+          ) : (
+            <>
+              {step === steps.length - 1 ? "Complete setup" : "Continue"}
+              <ChevronRight />
+            </>
+          )}
+        </Button>
+      </Container>
+    </Screen>
   );
 };
 
-const PermissionRow = ({ emoji, title, desc }: { emoji: string; title: string; desc: string }) => (
-  <div className="flex items-center gap-4 p-4 rounded-xl bg-card border border-border">
-    <span className="text-2xl">{emoji}</span>
-    <div>
+const PermissionRow = ({ icon, title, desc }: { icon: React.ReactNode; title: string; desc: string }) => (
+  <div className="flex items-center gap-4 rounded-2xl border border-border bg-card p-4">
+    <IconTile tone="gold">{icon}</IconTile>
+    <div className="min-w-0">
       <p className="text-sm font-medium text-foreground">{title}</p>
       <p className="text-xs text-muted-foreground">{desc}</p>
     </div>

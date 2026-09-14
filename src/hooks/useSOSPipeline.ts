@@ -184,9 +184,13 @@ export const useSOSPipeline = (userId: string | undefined) => {
       // Get battery level
       let batteryLevel: number | null = null;
       try {
-        const battery = await (navigator as any).getBattery?.();
+        // Battery Status API: Chromium-only, and absent from lib.dom.
+        const nav = navigator as Navigator & { getBattery?: () => Promise<{ level: number }> };
+        const battery = await nav.getBattery?.();
         if (battery) batteryLevel = Math.round(battery.level * 100);
-      } catch {}
+      } catch {
+        /* no battery API, or the browser refused: leave it null */
+      }
 
       // Create incident
       const { data: incident, error } = await supabase

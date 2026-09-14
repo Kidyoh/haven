@@ -1,0 +1,42 @@
+/* Pathways-only rules that Tailwind utilities do not express well.
+   The Ethiopic font fallbacks are global (see index.css); what is local here
+   is the type scale. Pathways runs a step larger and looser than the rest of
+   HAVEN because it is read, not tapped through, and because Ethiopic glyphs
+   are taller and wider than Latin at the same size. Sizing for the worse case
+   means switching language never reflows the layout. */
+.pathways {
+  font-size: 17px;
+  line-height: 1.6;
+}
+
+/* Simple (low-literacy) view: bigger type, one tile per row, icon first,
+   long quotations hidden. Facts stay; paragraphs go. */
+.pathways.simple {
+  font-size: 19px;
+  line-height: 1.7;
+}
+.pathways.simple .needs {
+  grid-template-columns: 1fr;
+}
+.pathways.simple .need {
+  flex-direction: row;
+  align-items: center;
+  min-height: 96px;
+  font-size: 1.1em;
+}
+.pathways.simple .need svg {
+  width: 44px;
+  height: 44px;
+}
+.pathways.simple .detail-text,
+.pathways.simple blockquote {
+  display: none;
+}
+.pathways.simple ul.services {
+  list-style: none;
+  padding-left: 0;
+}
+.pathways.simple ul.services li::before {
+  content: "• ";
+  color: hsl(var(--haven-gold));
+}

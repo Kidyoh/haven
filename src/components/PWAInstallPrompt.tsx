@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
-import { Download, X, Share, Smartphone } from "lucide-react";
+import { Download, Share, Smartphone, X } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { IconTile } from "@/components/haven/Screen";
 
+type BeforeInstallPromptEvent = Event & {
+  prompt: () => Promise<void>;
+  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
+};
 const PWAInstallPrompt = () => {
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null);
   const [showPrompt, setShowPrompt] = useState(false);
   const [isIOS, setIsIOS] = useState(false);
   const [dismissed, setDismissed] = useState(false);
@@ -13,7 +19,7 @@ const PWAInstallPrompt = () => {
     if (sessionStorage.getItem("pwa-dismissed")) return;
 
     const ua = navigator.userAgent;
-    const ios = /iPad|iPhone|iPod/.test(ua) && !(window as any).MSStream;
+    const ios = /iPad|iPhone|iPod/.test(ua) && !("MSStream" in window);
     setIsIOS(ios);
 
     // Show iOS prompt after 3 seconds
@@ -25,7 +31,7 @@ const PWAInstallPrompt = () => {
     // Android/Chrome: listen for beforeinstallprompt
     const handler = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e);
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
       setShowPrompt(true);
     };
     window.addEventListener("beforeinstallprompt", handler);
@@ -56,43 +62,38 @@ const PWAInstallPrompt = () => {
   if (!showPrompt || dismissed) return null;
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-50 animate-in slide-in-from-bottom-4 duration-300">
-      <div className="max-w-sm mx-auto p-4 rounded-2xl bg-card border border-border shadow-lg">
+    <div className="fixed inset-x-4 bottom-4 z-40 animate-rise">
+      <div className="mx-auto max-w-sm rounded-2xl border border-border bg-card p-4 shadow-2xl shadow-black/40">
         <div className="flex items-start gap-3">
-          <div className="w-10 h-10 rounded-xl bg-sos/10 flex items-center justify-center shrink-0">
-            <Smartphone className="w-5 h-5 text-sos" />
-          </div>
-          <div className="flex-1 min-w-0">
+          <IconTile tone="gold" size="sm">
+            <Smartphone />
+          </IconTile>
+          <div className="min-w-0 flex-1">
             <p className="text-sm font-semibold text-foreground">Install HAVEN</p>
-            <p className="text-xs text-muted-foreground mt-0.5">
+            <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
               {isIOS
-                ? "Add to your home screen for instant SOS access"
-                : "Install for instant emergency access — no app store needed"}
+                ? "Add it to your home screen so SOS is one tap away."
+                : "Keep SOS one tap away — no app store needed."}
             </p>
           </div>
-          <button
-            onClick={handleDismiss}
-            className="shrink-0 w-6 h-6 flex items-center justify-center text-muted-foreground hover:text-foreground"
-          >
-            <X className="w-4 h-4" />
-          </button>
+          <Button variant="ghost" size="icon-sm" onClick={handleDismiss} aria-label="Dismiss" className="-mr-1 -mt-1">
+            <X />
+          </Button>
         </div>
 
         {isIOS ? (
-          <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
-            <Share className="w-3.5 h-3.5" />
+          <p className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+            <Share className="h-3.5 w-3.5 shrink-0" />
             <span>
-              Tap <strong className="text-foreground">Share</strong> → <strong className="text-foreground">Add to Home Screen</strong>
+              Tap <strong className="text-foreground">Share</strong> →{" "}
+              <strong className="text-foreground">Add to Home Screen</strong>
             </span>
-          </div>
+          </p>
         ) : deferredPrompt ? (
-          <button
-            onClick={handleInstall}
-            className="mt-3 w-full py-2.5 rounded-xl bg-sos text-destructive-foreground font-display font-bold text-sm flex items-center justify-center gap-2 active:scale-[0.98] transition-transform"
-          >
-            <Download className="w-4 h-4" />
-            Install Now
-          </button>
+          <Button variant="gold" className="mt-3 w-full" onClick={handleInstall}>
+            <Download />
+            Install now
+          </Button>
         ) : null}
       </div>
     </div>
