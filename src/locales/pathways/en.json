@@ -150,7 +150,7 @@
   "directions.denied": "Location is blocked for this site. Allow it in your browser settings, or use Google Maps.",
   "directions.unavailable": "Your location could not be found. Try again near a window or outside.",
   "directions.tiles_offline": "The map pictures need internet. Distance and direction still work.",
-  "directions.privacy": "Your location stays on this phone. The map pictures come from OpenStreetMap, which can see the area you are looking at. Google Maps is a separate app and may keep a history.",
+  "directions.privacy": "Your location is never sent anywhere by Pathways. The map pictures come from OpenStreetMap, which can see the area shown on the map. Google Maps is a separate app and may keep a history.",
   "directions.compass.n": "north",
   "directions.compass.ne": "north-east",
   "directions.compass.e": "east",
@@ -161,5 +161,7 @@
   "directions.compass.nw": "north-west",
 
   "sos.alert_on": "Your SOS alert is still on",
-  "sos.back": "Back to alert"
+  "sos.back": "Back to alert",
+  "directions.straight_line_far": "Straight line, not the road. Too far to walk.",
+  "directions.privacy_both": "The map stays on this place. \"Show both on the map\" zooms out to include you, and loading those map pictures lets OpenStreetMap see roughly where you are."
 }

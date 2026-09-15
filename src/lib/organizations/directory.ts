@@ -327,6 +327,13 @@ export function referralCounts(rows: { status: string }[]): ReferralCounts {
   return counts;
 }
 
+/** Mirrors check_referral_transition() in the migration. Declined and completed are final. */
+export function nextReferralStatuses(status: string): ReferralStatus[] {
+  if (status === "referred") return ["accepted", "declined"];
+  if (status === "accepted") return ["completed", "declined"];
+  return [];
+}
+
 /** Mirrors the update policy: admins, or an org admin of the receiving organization. */
 export function canUpdateReferrals(access: { isAdmin: boolean; orgAdminOf: string[] }, organizationId: string) {
   return access.isAdmin || access.orgAdminOf.includes(organizationId);

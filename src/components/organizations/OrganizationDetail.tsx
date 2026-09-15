@@ -8,6 +8,7 @@ import { Callout, Spinner } from "@/components/haven/Feedback";
 import { ActivePill, QuickActions, ReferralStatusPill, TypeBadge } from "./Badges";
 import {
   canUpdateReferrals,
+  nextReferralStatuses,
   deleteBlockedReason,
   normalizeWebsite,
   REFERRAL_STATUSES,
@@ -234,9 +235,9 @@ function Referrals({
 
   const changeStatus = async (item: ReferralItem, status: string) => {
     setUpdating(item.id);
-    const { error: err } = await updateReferralStatus(item.id, status);
+    const err = await updateReferralStatus(item.id, status);
     setUpdating(null);
-    if (err) toast.error(err.message);
+    if (err) toast.error(err);
     else {
       toast.success(`Referral marked ${status}`);
       reload();
@@ -274,7 +275,7 @@ function Referrals({
                     <p className="truncate font-mono text-xs text-foreground">{item.reference_number ?? "—"}</p>
                     <p className="text-xs text-muted-foreground">{new Date(item.created_at).toLocaleDateString()}</p>
                   </div>
-                  {editable ? (
+                  {editable && nextReferralStatuses(item.status).length > 0 ? (
                     <Select
                       value={item.status}
                       onValueChange={(v) => changeStatus(item, v)}
@@ -287,7 +288,7 @@ function Referrals({
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {REFERRAL_STATUSES.map((s) => (
+                        {[item.status, ...nextReferralStatuses(item.status)].map((s) => (
                           <SelectItem key={s} value={s} className="capitalize">
                             {s}
                           </SelectItem>

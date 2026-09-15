@@ -71,11 +71,18 @@ const Organizations = () => {
 
   useEffect(() => {
     if (!user) return;
-    fetchAccess(user.id).then((a) => {
-      setAccess(a);
-      if (a.isAdmin || a.isOrgAdmin) loadOrgs();
-      else setLoading(false);
-    });
+    fetchAccess(user.id)
+      .then((a) => {
+        setAccess(a);
+        if (a.isAdmin || a.isOrgAdmin) loadOrgs();
+        else setLoading(false);
+      })
+      .catch(() => {
+        // Not "access denied": we could not find out. Show the load error and its retry.
+        setAccess({ isAdmin: false, isOrgAdmin: true, orgAdminOf: [] });
+        setLoadError(true);
+        setLoading(false);
+      });
   }, [user, loadOrgs]);
 
   const visible = useMemo(() => applyDirectoryQuery(orgs, query), [orgs, query]);
@@ -112,8 +119,13 @@ const Organizations = () => {
   };
 
   const handleToggleActive = async (org: Organization) => {
-    const { error } = await supabase.from("organizations").update({ is_active: !org.is_active }).eq("id", org.id);
+    const { data, error } = await supabase
+      .from("organizations")
+      .update({ is_active: !org.is_active })
+      .eq("id", org.id)
+      .select("id");
     if (error) toast.error(error.message);
+    else if (!data || data.length === 0) toast.error("You no longer have permission to change this organization.");
     else {
       toast.success(org.is_active ? `${org.name} deactivated` : `${org.name} reactivated`);
       loadOrgs();
@@ -134,13 +146,17 @@ const Organizations = () => {
   };
 
   const handleExport = () => {
-    const blob = new Blob([organizationsToCsv(visible)], { type: "text/csv;charset=utf-8" });
+    // The byte-order mark makes Excel read the file as UTF-8, so Amharic names survive.
+    const blob = new Blob(["\uFEFF", organizationsToCsv(visible)], { type: "text/csv;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
     a.download = csvFilename(new Date());
+    document.body.appendChild(a);
     a.click();
-    URL.revokeObjectURL(url);
+    a.remove();
+    // Revoking straight away can cancel the download in Safari and Firefox.
+    setTimeout(() => URL.revokeObjectURL(url), 10_000);
   };
 
   if (access === null || loading) return <ScreenLoader tone="gold" />;

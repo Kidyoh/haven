@@ -9,8 +9,8 @@
     ],
     "region": "Sidama",
     "subcity": null,
-    "location_description_en": "Hawassa. The safe house location is not public. Ask the Dilla one-stop centre, the police or the 7711 hotline for a referral.",
-    "location_description_am": "ሀዋሳ። የመጠለያው ቦታ ለሕዝብ ይፋ አይደለም። ከዲላ የተቀናጀ አገልግሎት ማዕከል፣ ከፖሊስ ወይም ከ7711 መስመር ሪፈራል ይጠይቁ።",
+    "location_description_en": "Hawassa. The safe house location is not public. Ask the police, a one-stop centre or the 7711 hotline.",
+    "location_description_am": "ሀዋሳ። የመጠለያው ቦታ ለሕዝብ ይፋ አይደለም። ፖሊስን፣ የተቀናጀ አገልግሎት ማዕከልን ወይም የ7711 መስመርን ይጠይቁ።",
     "coordinates": {
       "lat": null,
       "lng": null
@@ -35,8 +35,8 @@
     "verified_on": "2026-09-15",
     "verified_via": "document",
     "status": "unverified",
-    "notes_en": "Entry is by referral. No phone number is published for this safe house; AWSAD's Addis Ababa office numbers are listed on the Addis Ababa AWSAD entry.",
-    "notes_am": "መግቢያ በሪፈራል ነው። ለዚህ መጠለያ ስልክ ቁጥር አልተገለጸም፤ የAWSAD የአዲስ አበባ ቢሮ ቁጥሮች በአዲስ አበባው የAWSAD ዝርዝር ላይ አሉ።"
+    "notes_en": "Survivors have been referred here from the Dilla one-stop centre. How else to get a place is not stated. No phone number is published for this safe house; AWSAD's Addis Ababa office numbers are on the Addis Ababa AWSAD entry.",
+    "notes_am": "ከዲላ የተቀናጀ አገልግሎት ማዕከል ወደዚህ የተላኩ ተጎጂዎች አሉ። ሌላ የመግቢያ መንገድ አልተገለጸም። ለዚህ መጠለያ ስልክ ቁጥር አልተገለጸም፤ የAWSAD የአዲስ አበባ ቢሮ ቁጥሮች በአዲስ አበባው የAWSAD ዝርዝር ላይ አሉ።"
   },
   {
     "id": "et-si-hawassa-ewla-office-001",

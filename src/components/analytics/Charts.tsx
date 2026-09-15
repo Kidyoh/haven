@@ -162,7 +162,7 @@ export function ColumnChart({
   return (
     <div ref={ref} className="relative w-full" onPointerLeave={() => setActive(null)}>
       {width > 0 && (
-        <svg width={width} height={height} role="img" aria-label={label} className="block overflow-visible">
+        <svg width={width} height={height} role="group" aria-label={label} className="block overflow-visible">
           {ticks.map((t) => (
             <g key={t}>
               <line
@@ -210,6 +210,7 @@ export function ColumnChart({
                   aria-label={`${d.detail}: ${unit(d.value)}`}
                   className="cursor-default outline-none focus-visible:stroke-[hsl(var(--ring))]"
                   onPointerMove={() => setActive(i)}
+                  onPointerDown={() => setActive(i)}
                   onFocus={() => setActive(i)}
                   onBlur={() => setActive(null)}
                 />
@@ -262,6 +263,7 @@ export function Heatmap({
                     <div
                       key={c}
                       onPointerEnter={() => setActive({ r, c })}
+                      onPointerDown={() => setActive({ r, c })}
                       className={cn("h-5 rounded-[3px] transition-[outline] lg:h-6", isActive && "outline outline-2 outline-foreground")}
                       style={{ background: bin < 0 ? VIZ.empty : VIZ.ramp[bin] }}
                     />

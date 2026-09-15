@@ -186,7 +186,7 @@ export function OrganizationForm({
             placeholder="Counselling, medical care, legal advice"
           />
 
-          <Field label="Notes" optional hint="Visible to responders and admins">
+          <Field label="Notes" optional hint="Visible to responders, org admins and admins">
             {(a11y) => (
               <Textarea
                 {...a11y}

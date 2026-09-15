@@ -54,10 +54,29 @@ const hourOf = (t: number) => new Date(t + TZ_OFFSET_MS).getUTCHours();
 
 export const isAlert = (r: IncidentRow) => r.status === "active" || r.status === "resolved";
 
+/**
+ * The window, aligned to the chart's buckets so the headline and the bars count
+ * the same alerts: whole days (today included), whole Monday-start weeks, or
+ * whole calendar months. The previous window is the same length, just before.
+ */
 export function rangeBounds(key: RangeKey, now: number) {
-  const days = RANGES.find((r) => r.key === key)!.days;
-  const start = now - days * DAY_MS;
-  return { start, end: now, prevStart: start - days * DAY_MS, days };
+  const range = RANGES.find((r) => r.key === key)!;
+  const today = localDay(now);
+  let startDay: number;
+  let start: number;
+  if (range.bucket === "day") {
+    startDay = today - range.days + 1;
+    start = startDay * DAY_MS - TZ_OFFSET_MS;
+  } else if (range.bucket === "week") {
+    const thisMonday = today - ((today + 3) % 7);
+    startDay = thisMonday - (Math.ceil(range.days / 7) - 1) * 7;
+    start = startDay * DAY_MS - TZ_OFFSET_MS;
+  } else {
+    const local = new Date(now + TZ_OFFSET_MS);
+    start = Date.UTC(local.getUTCFullYear(), local.getUTCMonth() - 11, 1) - TZ_OFFSET_MS;
+  }
+  const length = now - start;
+  return { start, end: now, prevStart: start - length, days: range.days };
 }
 
 /** Rows from the current window and the one before it, for deltas. */
@@ -296,7 +315,7 @@ export interface Hotspot {
  * Areas with repeated alerts, on a ~1 km grid (two decimal places). Coarse on
  * purpose: this is for placing responders, not for pinpointing anyone.
  */
-export function hotspots(rows: IncidentRow[], limit = 6): Hotspot[] {
+export function hotspots(rows: IncidentRow[], limit = 6, minAlerts = 2): Hotspot[] {
   const cells = new Map<string, { lat: number; lng: number; alerts: number; users: Set<string>; lastAt: string }>();
   for (const r of rows.filter(isAlert)) {
     if (r.latitude === null || r.longitude === null) continue;
@@ -309,7 +328,9 @@ export function hotspots(rows: IncidentRow[], limit = 6): Hotspot[] {
     if (r.created_at > cell.lastAt) cell.lastAt = r.created_at;
     cells.set(key, cell);
   }
+  // A cell with a single alert points at one person, not a pattern: leave it out.
   return [...cells.values()]
+    .filter((c) => c.alerts >= minAlerts)
     .sort((a, b) => b.alerts - a.alerts || (a.lastAt < b.lastAt ? 1 : -1))
     .slice(0, limit)
     .map(({ users, ...c }) => ({ ...c, people: users.size }));
@@ -349,7 +370,7 @@ export function insights(summary: Summary, matrix: number[][]): Insight[] {
     const missed = summary.alerts - summary.sms.alertsReached;
     out.push({
       tone: "warning",
-      text: `${missed} of ${summary.alerts} alerts reached no emergency contact by text (${pct(summary.sms.reachRate)} reached). Check the SMS provider and contact numbers.`,
+      text: `${missed} of ${summary.alerts} alerts reached no emergency contact by text (${pct(summary.sms.reachRate)} reached). Check the SMS provider, and whether these users have contacts saved.`,
     });
   }
 

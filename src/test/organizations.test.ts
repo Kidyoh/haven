@@ -263,3 +263,13 @@ describe("csv", () => {
     expect(csvFilename(new Date("2026-09-15T10:00:00Z"))).toBe("haven-organizations-2026-09-15.csv");
   });
 });
+
+describe("referral lifecycle", () => {
+  test("only forward moves are offered, and final states offer none", async () => {
+    const { nextReferralStatuses } = await import("@/lib/organizations/directory");
+    expect(nextReferralStatuses("referred")).toEqual(["accepted", "declined"]);
+    expect(nextReferralStatuses("accepted")).toEqual(["completed", "declined"]);
+    expect(nextReferralStatuses("declined")).toEqual([]);
+    expect(nextReferralStatuses("completed")).toEqual([]);
+  });
+});

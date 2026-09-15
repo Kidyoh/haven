@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, Info, MapPin, RotateCw, TrendingDown, TrendingUp } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
@@ -88,13 +88,17 @@ const AnalyticsTab = () => {
     return () => clearInterval(id);
   }, []);
 
+  // Only the newest request may write: a slow 7-day reply must not replace a 12-month one.
+  const requestId = useRef(0);
   const load = useCallback(async (key: RangeKey) => {
+    const id = ++requestId.current;
     setLoading(true);
     const at = Date.now();
     const { prevStart } = rangeBounds(key, at);
     const { data, error: rpcError } = await supabase.rpc("get_incident_analytics", {
       p_since: new Date(prevStart).toISOString(),
     });
+    if (id !== requestId.current) return;
     if (rpcError) {
       const missing = rpcError.code === "PGRST202" || /could not find the function/i.test(rpcError.message);
       setError({ missing, message: rpcError.message });
@@ -255,13 +259,17 @@ function Report({
           <StatTile
             label="Median time to resolve"
             value={duration(s.resolve.median)}
-            sub={s.resolve.count > 0 ? `90% within ${duration(s.resolve.p90)} · ${plural(s.resolve.count, "resolved alert")}` : "No resolved alerts yet"}
+            sub={
+              s.resolve.count > 0
+                ? `90% within ${duration(s.resolve.p90)} · ${plural(s.resolve.count, "resolved alert")}${s.open > 0 ? `, ${s.open} still open` : ""}`
+                : "No resolved alerts yet"
+            }
             delta={minutesDelta(s.resolve.median, prev.resolve.median, periodLabel)}
           />
           <StatTile
             label="Alerts that reached a contact"
             value={pct(s.sms.reachRate)}
-            sub={`${plural(s.sms.sent, "text")} delivered · ${s.sms.failed.toLocaleString()} failed`}
+            sub={`${plural(s.sms.sent, "text")} accepted by the SMS provider · ${s.sms.failed.toLocaleString()} failed`}
             delta={shareDelta(s.sms.reachRate, prev.sms.reachRate, periodLabel)}
           />
           <StatTile
@@ -317,7 +325,7 @@ function Report({
       <div className="grid gap-5 lg:grid-cols-2">
         <ChartCard
           title="How long alerts stay open"
-          subtitle="From sending to resolved, for alerts resolved in this period."
+          subtitle="From sending to resolved, for alerts sent in this period that have been resolved. Open alerts are not included."
           table={{ columns: ["Time open", "Alerts"], rows: view.resolve.map((b) => [b.detail, b.value]) }}
         >
           {s.resolve.count === 0 ? (
@@ -336,13 +344,13 @@ function Report({
               detail={`${s.sms.alertsReached} of ${plural(s.alerts, "alert")}`}
             />
             <Meter
-              label="Texts delivered"
+              label="Texts accepted by the SMS provider"
               value={s.sms.deliveryRate}
               warnBelow={0.95}
               detail={
                 s.sms.sent + s.sms.failed === 0
                   ? "No texts attempted. SMS may not be configured."
-                  : `${s.sms.sent} delivered, ${s.sms.failed} failed`
+                  : `${s.sms.sent} accepted, ${s.sms.failed} failed. Delivery to the phone is not tracked.`
               }
             />
             <Meter
@@ -368,14 +376,14 @@ function Report({
       <div className="grid gap-5 lg:grid-cols-2">
         <ChartCard
           title="Where alerts cluster"
-          subtitle="Areas of about 1 km with the most alerts. Coarse on purpose."
+          subtitle="Areas of about 1 km with two or more alerts. Coarse on purpose."
           table={{
             columns: ["Area (lat, lng)", "Alerts", "People"],
             rows: view.spots.map((h) => [`${h.lat.toFixed(2)}, ${h.lng.toFixed(2)}`, h.alerts, h.people]),
           }}
         >
           {view.spots.length === 0 ? (
-            <EmptyChart text="No alerts in this period had a location." />
+            <EmptyChart text="No area had two or more alerts with a location in this period." />
           ) : (
             <ol className="space-y-2">
               {view.spots.map((h, i) => {

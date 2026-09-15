@@ -42,6 +42,7 @@ export function ReferIncident({ incidentId, reference }: { incidentId: string; r
     setOpen(next);
     if (next) {
       setPick("");
+      setOptions(null);
       load();
     }
   };

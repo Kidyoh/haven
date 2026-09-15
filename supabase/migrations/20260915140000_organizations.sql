@@ -2,8 +2,10 @@
 --
 --  1. A richer organization profile: where it is, what it does, when it is open,
 --     and whether it takes referrals. Deliberately no latitude/longitude: a
---     shelter's coordinates are a safe-house location, and the directory is
---     readable by every signed-in account.
+--     shelter's coordinates are a safe-house location.
+--  1b. The directory is staff-only. It used to be readable by every signed-in
+--     account, and anyone can sign up, including someone looking for a
+--     survivor. Notes and shelter intake points are not for them.
 --  2. Org admins can edit their own organization and see who belongs to it.
 --  3. Incidents can be referred to an organization, and the receiving
 --     organization moves the referral through referred → accepted/declined →
@@ -52,6 +54,11 @@ CREATE TRIGGER update_organizations_updated_at
   BEFORE UPDATE ON public.organizations
   FOR EACH ROW EXECUTE FUNCTION public.update_updated_at_column();
 
+DROP POLICY IF EXISTS "Authenticated users can view organizations" ON public.organizations;
+CREATE POLICY "Staff can view organizations"
+  ON public.organizations FOR SELECT TO authenticated
+  USING (public.has_role(auth.uid(), 'responder') OR public.has_role(auth.uid(), 'org_admin') OR public.has_role(auth.uid(), 'admin'));
+
 -- ---------------------------------------------------------------------------
 -- 2. Org admins
 -- ---------------------------------------------------------------------------
@@ -70,7 +77,11 @@ AS $$
       AND role = 'org_admin'
       AND organization_id = _organization_id
   )
-$$;
+$;
+
+-- Callable by signed-in users only, so nobody can probe who administers what anonymously.
+REVOKE EXECUTE ON FUNCTION public.is_org_admin_of(UUID, UUID) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.is_org_admin_of(UUID, UUID) TO authenticated;
 
 -- Update, not delete. Admins keep full control through "Admins can manage organizations".
 CREATE POLICY "Org admins can update their organization"
@@ -112,12 +123,15 @@ CREATE POLICY "Responders can view referrals"
   ON public.incident_referrals FOR SELECT TO authenticated
   USING (public.has_role(auth.uid(), 'responder') OR public.has_role(auth.uid(), 'org_admin') OR public.has_role(auth.uid(), 'admin'));
 
--- Only to an organization that is open for referrals, and only in your own name.
-CREATE POLICY "Responders can refer incidents"
+-- Only to an organization that is open for referrals, only in your own name,
+-- and only as a new referral: accepting or completing is the receiving
+-- organization's decision.
+CREATE POLICY "Staff can refer incidents"
   ON public.incident_referrals FOR INSERT TO authenticated
   WITH CHECK (
-    (public.has_role(auth.uid(), 'responder') OR public.has_role(auth.uid(), 'admin'))
+    (public.has_role(auth.uid(), 'responder') OR public.has_role(auth.uid(), 'org_admin') OR public.has_role(auth.uid(), 'admin'))
     AND referred_by = auth.uid()
+    AND status = 'referred'
     AND EXISTS (
       SELECT 1 FROM public.organizations o
       WHERE o.id = organization_id AND o.is_active AND o.accepts_referrals
@@ -133,3 +147,26 @@ CREATE POLICY "Admins and the receiving org admins can update referrals"
 -- is the record and stays as written.
 REVOKE UPDATE ON public.incident_referrals FROM authenticated, anon;
 GRANT UPDATE (status, note) ON public.incident_referrals TO authenticated;
+
+-- The lifecycle, enforced: referred -> accepted | declined, accepted -> completed | declined.
+-- Declined and completed are final. Keeping the same status (editing the note) is always allowed.
+CREATE OR REPLACE FUNCTION public.check_referral_transition()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SET search_path = public
+AS $
+BEGIN
+  IF NEW.status = OLD.status THEN
+    RETURN NEW;
+  END IF;
+  IF (OLD.status = 'referred' AND NEW.status IN ('accepted', 'declined'))
+     OR (OLD.status = 'accepted' AND NEW.status IN ('completed', 'declined')) THEN
+    RETURN NEW;
+  END IF;
+  RAISE EXCEPTION 'A referral cannot move from % to %', OLD.status, NEW.status USING ERRCODE = 'check_violation';
+END;
+$;
+
+CREATE TRIGGER check_incident_referral_transition
+  BEFORE UPDATE OF status ON public.incident_referrals
+  FOR EACH ROW EXECUTE FUNCTION public.check_referral_transition();

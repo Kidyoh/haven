@@ -150,7 +150,7 @@
   "directions.denied": "ለዚህ ድረ ገጽ አካባቢ መጠቀም ተከልክሏል። በአሳሽዎ ቅንብሮች ይፍቀዱ፣ ወይም Google Mapsን ይጠቀሙ።",
   "directions.unavailable": "ያሉበት ቦታ ሊገኝ አልቻለም። በመስኮት አጠገብ ወይም ከቤት ውጭ እንደገና ይሞክሩ።",
   "directions.tiles_offline": "የካርታው ምስሎች ኢንተርኔት ያስፈልጋቸዋል። ርቀትና አቅጣጫ ግን ይሠራሉ።",
-  "directions.privacy": "ያሉበት ቦታ በዚህ ስልክ ላይ ብቻ ይቀራል። የካርታው ምስሎች ከOpenStreetMap ይመጣሉ፤ እርስዎ የሚመለከቱትን አካባቢ ማየት ይችላል። Google Maps የተለየ መተግበሪያ ሲሆን ታሪክ ሊያስቀምጥ ይችላል።",
+  "directions.privacy": "Pathways ያሉበትን ቦታ ወደ የትም አይልክም። የካርታው ምስሎች ከOpenStreetMap ይመጣሉ፤ በካርታው ላይ የሚታየውን አካባቢ ማየት ይችላል። Google Maps የተለየ መተግበሪያ ሲሆን ታሪክ ሊያስቀምጥ ይችላል።",
   "directions.compass.n": "ሰሜን",
   "directions.compass.ne": "ሰሜን ምሥራቅ",
   "directions.compass.e": "ምሥራቅ",
@@ -161,5 +161,7 @@
   "directions.compass.nw": "ሰሜን ምዕራብ",
 
   "sos.alert_on": "የድንገተኛ ማንቂያዎ አሁንም እየሠራ ነው",
-  "sos.back": "ወደ ማንቂያው ተመለስ"
+  "sos.back": "ወደ ማንቂያው ተመለስ",
+  "directions.straight_line_far": "ቀጥታ መስመር ነው፣ መንገዱ አይደለም። በእግር ለመሄድ በጣም ሩቅ ነው።",
+  "directions.privacy_both": "ካርታው በዚህ ቦታ ላይ ይቆያል። \"ሁለቱንም በካርታው አሳይ\" እርስዎንም እንዲያካትት ያሳንሳል፤ እነዚያን የካርታ ምስሎች መጫን OpenStreetMap ያሉበትን አካባቢ በግምት እንዲያይ ያደርጋል።"
 }

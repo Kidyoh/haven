@@ -24,7 +24,9 @@ export interface DirectoryAccess {
 }
 
 export async function fetchAccess(userId: string): Promise<DirectoryAccess> {
-  const { data } = await supabase.from("user_roles").select("role, organization_id").eq("user_id", userId);
+  const { data, error } = await supabase.from("user_roles").select("role, organization_id").eq("user_id", userId);
+  // A failed lookup is not the same as having no role: let the page offer a retry.
+  if (error) throw error;
   const rows = data ?? [];
   return {
     isAdmin: rows.some((r) => r.role === "admin"),
@@ -115,5 +117,9 @@ export async function fetchReferralSummary(
   return { counts, latest };
 }
 
-export const updateReferralStatus = (referralId: string, status: string) =>
-  supabase.from("incident_referrals").update({ status }).eq("id", referralId);
+/** Resolves to an error message, or null on success. Zero rows updated counts as a failure. */
+export async function updateReferralStatus(referralId: string, status: string): Promise<string | null> {
+  const { data, error } = await supabase.from("incident_referrals").update({ status }).eq("id", referralId).select("id");
+  if (error) return error.message;
+  return data && data.length > 0 ? null : "You no longer have permission to update this referral.";
+}

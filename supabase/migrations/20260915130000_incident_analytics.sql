@@ -73,14 +73,15 @@ BEGIN
     SELECT
       count(*) FILTER (WHERE an.status = 'sent') AS sent,
       count(*) FILTER (WHERE an.status = 'failed') AS failed,
-      count(DISTINCT an.contact_id) FILTER (WHERE an.status = 'sent') AS reached
+      -- A contact deleted since keeps a row with contact_id NULL; still count it once.
+      count(DISTINCT COALESCE(an.contact_id::text, an.to_phone)) FILTER (WHERE an.status = 'sent') AS reached
     FROM public.alert_notifications an
     WHERE an.incident_id = i.id AND an.kind = 'alert'
   ) n ON true
   WHERE i.created_at >= p_since
     AND i.status <> 'pending'
-  ORDER BY i.created_at DESC
-  LIMIT 20000;
+  -- No row cap: a silent cut would shrink the previous period and inflate the change.
+  ORDER BY i.created_at DESC;
 END;
 $$;
 

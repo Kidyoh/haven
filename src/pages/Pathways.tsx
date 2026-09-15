@@ -65,6 +65,9 @@ export default function Pathways() {
   const [view, setView] = useState<View>({ kind: "home" });
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState<string | null>(null);
+  const regions = useMemo(() => (dataset ? regionOptions(dataset.records) : []), [dataset]);
+  // A saved region only applies while the picker is shown and still offers it.
+  const activeRegion = region && regions.length > 1 && regions.includes(region) ? region : null;
   const [alertActive, setAlertActive] = useState(false);
   const navigate = useNavigate();
 
@@ -176,6 +179,12 @@ export default function Pathways() {
   const quickExit = useCallback(() => {
     setView({ kind: "home" });
     setQuery("");
+    setRegion(null);
+    try {
+      localStorage.removeItem(REGION_KEY);
+    } catch {
+      /* nothing stored */
+    }
     document.title = " ";
     // replace(), not assign(): this page is replaced in history rather than
     // left as the previous entry.
@@ -209,13 +218,11 @@ export default function Pathways() {
 
   const results = useMemo(() => {
     if (!dataset) return [];
-    let list = dataset.records.filter((r) => matchesRegion(r, region));
+    let list = dataset.records.filter((r) => matchesRegion(r, activeRegion));
     const need = view.kind === "results" ? view.need : null;
     if (need) list = list.filter((r) => matchesNeed(r, need)).sort((a, b) => rankForNeed(a, need) - rankForNeed(b, need));
     return searchRecords(query, list, toText);
-  }, [dataset, view, query, toText, region]);
-
-  const regions = useMemo(() => (dataset ? regionOptions(dataset.records) : []), [dataset]);
+  }, [dataset, view, query, toText, activeRegion]);
 
   // ---- actions ------------------------------------------------------------------
   const switchLocale = () => {
@@ -428,7 +435,7 @@ export default function Pathways() {
                   <select
                     id="pathways-region"
                     className="h-11 min-w-0 flex-1 rounded-full border border-border bg-card px-4 text-[0.95em] text-foreground"
-                    value={region ?? ""}
+                    value={activeRegion ?? ""}
                     onChange={(e) => chooseRegion(e.target.value || null)}
                   >
                     <option value="">{t(L, "region.all")}</option>

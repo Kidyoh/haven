@@ -16,7 +16,10 @@ import type { Locale } from "@/lib/pathways/types";
  *  - The line, distance and direction are computed here. No routing service
  *    is called: that would send both the user's position and a GBV service's
  *    address to a third party.
- *  - Map pictures come from OpenStreetMap, which sees the area being viewed.
+ *  - Map pictures come from OpenStreetMap, which sees the area on screen. So
+ *    the map stays on the destination when the position arrives; it only
+ *    zooms out to include the user when they tap "Show both on the map", and
+ *    the text next to that button says what it reveals.
  *    Without a connection the map is blank and distance and direction still work.
  *  - "Open in Google Maps" is an explicit choice to leave, and only passes the
  *    destination.
@@ -34,9 +37,12 @@ export default function Directions({ destination, name, locale }: { destination:
   const map = useRef<L.Map | null>(null);
   const layers = useRef<{ here?: L.CircleMarker; accuracy?: L.Circle; line?: L.Polyline }>({});
   const watchId = useRef<number | null>(null);
-  const fitted = useRef(false);
+  const destMarker = useRef<L.CircleMarker | null>(null);
   const [status, setStatus] = useState<Status>("idle");
   const [here, setHere] = useState<(Point & { accuracy: number }) | null>(null);
+  // The watch callbacks outlive the render that created them; read the latest position from here.
+  const hereRef = useRef<(Point & { accuracy: number }) | null>(null);
+  hereRef.current = here;
   const [tilesFailed, setTilesFailed] = useState(false);
 
   // Map with the destination only.
@@ -51,22 +57,28 @@ export default function Directions({ destination, name, locale }: { destination:
     tiles.on("tileerror", () => setTilesFailed(true));
     tiles.on("tileload", () => setTilesFailed(false));
     tiles.addTo(m);
-    L.circleMarker([destination.lat, destination.lng], {
+    destMarker.current = L.circleMarker([destination.lat, destination.lng], {
       radius: 9,
       color: "#15181e",
       weight: 3,
       fillColor: GOLD,
       fillOpacity: 1,
     })
-      .bindTooltip(name, { direction: "top", offset: [0, -8] })
+      .bindTooltip("", { direction: "top", offset: [0, -8] })
       .addTo(m);
     map.current = m;
     return () => {
       m.remove();
       map.current = null;
+      destMarker.current = null;
       layers.current = {};
     };
-  }, [destination.lat, destination.lng, name]);
+  }, [destination.lat, destination.lng]);
+
+  // Renaming (a language switch) only relabels the pin; rebuilding the map would drop the user's position.
+  useEffect(() => {
+    destMarker.current?.setTooltipContent(name);
+  }, [name]);
 
   // Stop following the user when this view goes away.
   useEffect(
@@ -94,19 +106,18 @@ export default function Directions({ destination, name, locale }: { destination:
       l.accuracy!.setLatLng(pos).setRadius(here.accuracy);
       l.here!.setLatLng(pos);
     }
-    if (!fitted.current) {
-      m.fitBounds(L.latLngBounds([pos, dest]), { padding: [36, 36], maxZoom: 17 });
-      fitted.current = true;
-    }
+    // No automatic zoom to the user's position: see the privacy note at the top.
   }, [here, destination.lat, destination.lng]);
+
+  const showBoth = () => {
+    const pos = hereRef.current;
+    if (!pos || !map.current) return;
+    map.current.fitBounds(L.latLngBounds([[pos.lat, pos.lng], [destination.lat, destination.lng]]), { padding: [36, 36], maxZoom: 17 });
+  };
 
   const locate = () => {
     if (!navigator.geolocation) return setStatus("unavailable");
-    if (watchId.current !== null) {
-      // Already following: just re-centre on both points.
-      if (here && map.current) map.current.fitBounds(L.latLngBounds([[here.lat, here.lng], [destination.lat, destination.lng]]), { padding: [36, 36], maxZoom: 17 });
-      return;
-    }
+    if (watchId.current !== null) return showBoth();
     setStatus("locating");
     watchId.current = navigator.geolocation.watchPosition(
       (p) => {
@@ -118,7 +129,8 @@ export default function Directions({ destination, name, locale }: { destination:
           setStatus("denied");
           if (watchId.current !== null) navigator.geolocation.clearWatch(watchId.current);
           watchId.current = null;
-        } else if (!here) {
+        } else if (!hereRef.current) {
+          // A timeout while already tracking is not a failure; only report it before the first fix.
           setStatus("unavailable");
         }
       },
@@ -148,7 +160,9 @@ export default function Directions({ destination, name, locale }: { destination:
               {t(locale, "directions.distance", { distance: formatDistance(meters), direction: t(locale, `directions.compass.${point}`) })}
             </p>
             <p className="text-[0.86em] text-muted-foreground">
-              {t(locale, "directions.straight_line", { minutes: walkingMinutes(meters) })}
+              {meters <= 5000
+                ? t(locale, "directions.straight_line", { minutes: walkingMinutes(meters) })
+                : t(locale, "directions.straight_line_far")}
               {here && here.accuracy > 100 && ` ${t(locale, "directions.low_accuracy", { meters: Math.round(here.accuracy) })}`}
             </p>
           </div>
@@ -174,7 +188,9 @@ export default function Directions({ destination, name, locale }: { destination:
           </a>
         </Button>
       </div>
-      <p className="mt-2 text-[0.82em] leading-relaxed text-muted-foreground">{t(locale, "directions.privacy")}</p>
+      <p className="mt-2 text-[0.82em] leading-relaxed text-muted-foreground">
+        {t(locale, status === "ok" ? "directions.privacy_both" : "directions.privacy")}
+      </p>
     </div>
   );
 }

@@ -84,8 +84,6 @@
     "category": "one_stop_centre",
     "services": [
       "medical_care",
-      "counselling",
-      "case_management",
       "forensic_exam"
     ],
     "region": "Addis Ababa",
@@ -146,11 +144,10 @@
       "shelter",
       "counselling",
       "medical_referral",
-      "legal_advice",
-      "case_management"
+      "legal_advice"
     ],
     "region": "Addis Ababa",
-    "subcity": "Akaki Kality",
+    "subcity": null,
     "location_description_en": "Organisation office: Akaki Kality sub-city, Woreda 08. Safe house locations are not public. Call first, or ask the 7711 hotline, the police, or a one-stop centre for a referral.",
     "location_description_am": "የድርጅቱ ቢሮ፦ አቃቂ ቃሊቲ ክፍለ ከተማ፣ ወረዳ 08። የመጠለያው አድራሻ ለሕዝብ ይፋ አይደለም። መጀመሪያ ይደውሉ፣ ወይም የ7711 መስመርን፣ ፖሊስን ወይም የተቀናጀ አገልግሎት ማዕከልን ሪፈራል ይጠይቁ።",
     "coordinates": {
@@ -183,11 +180,11 @@
         "note": "\"EWLA refers them to AWSAD and other safe houses to shelter them.\""
       }
     ],
-    "verified_on": "2026-09-14",
+    "verified_on": "2026-09-15",
     "verified_via": "document",
     "status": "unverified",
-    "notes_en": "Women-only transitional shelter. Entry is usually by referral. Cost and hours are not stated by the sources. The listed address is the organisation's office, not the safe house.",
-    "notes_am": "ለሴቶች ብቻ የሆነ ጊዜያዊ መጠለያ። መግቢያ ብዙውን ጊዜ በሪፈራል ነው። ዋጋና የሥራ ሰዓት በምንጮቹ አልተገለጹም። የተጠቀሰው አድራሻ የድርጅቱ ቢሮ ነው፤ የመጠለያው አይደለም።"
+    "notes_en": "Cost and hours are not stated by the sources. The listed address is the organisation's office, not the safe house.",
+    "notes_am": "ዋጋና የሥራ ሰዓት በምንጮቹ አልተገለጹም። የተጠቀሰው አድራሻ የድርጅቱ ቢሮ ነው፤ የመጠለያው አይደለም።"
   },
   {
     "id": "et-aa-hotline-ambulance-907",
@@ -231,9 +228,7 @@
     "category": "hotline",
     "services": [
       "child_protection",
-      "report_filing",
-      "counselling",
-      "psychosocial_referral"
+      "report_filing"
     ],
     "region": "Addis Ababa",
     "subcity": null,
@@ -255,7 +250,7 @@
     "source_url": "https://hiwotet.org/helpline-services-936/",
     "source_text_original": "Hiwot Ethiopia established 936 free of charge hiplines, through the financial and technical support of its partner organization. … mainly provides services to children and young people to protect them from any form of harms … provides access to reporting cases of sexual abuse and exploitation, violence and other forms of harms",
     "source_language": "en",
-    "verified_on": "2026-09-14",
+    "verified_on": "2026-09-15",
     "verified_via": "document",
     "status": "unverified",
     "notes_en": "Opening hours and languages are not stated by the source.",
@@ -285,7 +280,7 @@
     "hours": null,
     "what_to_bring_en": "Nothing for the call. The call is free.",
     "what_to_bring_am": "ለጥሪው ምንም አያስፈልግም። ጥሪው ነፃ ነው።",
-    "cost": "free",
+    "cost": "unknown",
     "accepts_walk_in": null,
     "source_name": "Marie Stopes Ethiopia — \"Contact us\"",
     "source_url": "https://mariestopes.org.et/contact-us/",
@@ -298,11 +293,11 @@
         "note": "Sexual and reproductive health services including STI screening and treatment and HIV testing and counselling. Post-rape care is not named on the page."
       }
     ],
-    "verified_on": "2026-09-14",
+    "verified_on": "2026-09-15",
     "verified_via": "document",
     "status": "unverified",
-    "notes_en": "Sexual and reproductive health line, not a dedicated GBV service. Cost of clinic services is not stated; the call itself is free.",
-    "notes_am": "የሥነ ተዋልዶ ጤና መስመር ነው፤ ለጾታዊ ጥቃት ብቻ የተለየ አገልግሎት አይደለም። የክሊኒክ አገልግሎቶች ዋጋ አልተገለጸም፤ ጥሪው ራሱ ነፃ ነው።"
+    "notes_en": "Sexual and reproductive health line, not a dedicated GBV service. The call is free; the cost of clinic services is not stated.",
+    "notes_am": "የሥነ ተዋልዶ ጤና መስመር ነው፤ ለጾታዊ ጥቃት ብቻ የተለየ አገልግሎት አይደለም። ጥሪው ነፃ ነው፤ የክሊኒክ አገልግሎቶች ዋጋ አልተገለጸም።"
   },
   {
     "id": "et-aa-hotline-unhcr-call-centre",
@@ -336,11 +331,11 @@
     "source_url": "https://help.unhcr.org/ethiopia/services/violence/",
     "source_text_original": "UNHCR Call Centre 0905012823 as soon as possible, if you are in Addis Ababa … Monday to Friday from 08:30- 17:00, except Friday until 14:00 … GBV partner IMC, IRC, Rado or DICAC … survivor-centered case management, including counselling and referral … Safe spaces … psychosocial services … Health services, including clinical management of rape (CMR) … Legal services",
     "source_language": "en",
-    "verified_on": "2026-09-14",
+    "verified_on": "2026-09-15",
     "verified_via": "document",
     "status": "unverified",
-    "notes_en": "Number normalised from 0905012823 to international format. Callers are connected to a social worker at a UNHCR partner (IMC, IRC, RaDO or DICAC).",
-    "notes_am": "ቁጥሩ ከ0905012823 ወደ ዓለም አቀፍ ቅርጽ ተቀይሯል። ደዋዮች በUNHCR አጋር (IMC፣ IRC፣ RaDO ወይም DICAC) ካለ የማኅበራዊ ሠራተኛ ጋር ይገናኛሉ።"
+    "notes_en": "Number normalised from 0905012823 to international format. UNHCR's GBV partners are IMC, IRC, RaDO and DICAC.",
+    "notes_am": "ቁጥሩ ከ0905012823 ወደ ዓለም አቀፍ ቅርጽ ተቀይሯል። የUNHCR የጾታዊ ጥቃት አጋሮች IMC፣ IRC፣ RaDO እና DICAC ናቸው።"
   },
   {
     "id": "et-aa-kirkos-ewla-office-001",
@@ -375,7 +370,7 @@
       {
         "name": "GOV.UK — \"Ethiopia: information for survivors of rape and sexual assault\" (updated 16 December 2025)",
         "url": "https://www.gov.uk/government/publications/ethiopia-information-for-survivors-of-rape-and-sexual-assault/ethiopia-information-for-survivors-of-rape-and-sexual-assault",
-        "note": "\"The Ethiopian Women Lawyers Association (EWLA) assists women, particularly disadvantaged women, who are victims of gender-based violence free of charge.\" Lists the telephone as \"+251-11-508783\", one digit short of EWLA's own number (likely a typo)."
+        "note": "\"Address: Near Bulgaria Mikael Church, Mexico, Kirkos Subcity, Addis Ababa, Ethiopia\". \"The Ethiopian Women Lawyers Association (EWLA) assists women, particularly disadvantaged women, who are victims of gender-based violence free of charge.\" Lists the telephone as \"+251-11-508783\", one digit short of EWLA's own number (likely a typo). Used for the Mexico area in the location description."
       },
       {
         "name": "EWLA Terms of Reference, reposted by ethiongojobs.com (deadline 31 May 2025)",
@@ -544,8 +539,8 @@
     "verified_on": "2026-09-15",
     "verified_via": "document",
     "status": "unverified",
-    "notes_en": "The official site does not say whether this is an emergency line. In an emergency, call 991.",
-    "notes_am": "ይፋዊው ድረ ገጽ ይህ የአደጋ ጊዜ መስመር መሆኑን አይገልጽም። በአደጋ ጊዜ ወደ 991 ይደውሉ።"
+    "notes_en": "The official site gives only the number: it does not list services or say whether this is an emergency line. In an emergency, call 991.",
+    "notes_am": "ይፋዊው ድረ ገጽ ቁጥሩን ብቻ ይሰጣል፤ አገልግሎቶችን አይዘረዝርም፣ የአደጋ ጊዜ መስመር መሆኑንም አይገልጽም። በአደጋ ጊዜ ወደ 991 ይደውሉ።"
   },
   {
     "id": "et-aa-stpauls-osc-001",
