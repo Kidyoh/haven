@@ -137,6 +137,7 @@ const SOS = () => {
           sos={sos}
           onSafe={handleSafe}
           onResumeAudio={() => void sosEngine.resumeAudio()}
+          onFindHelp={() => navigate("/pathways")}
           contacts={contacts}
           firstName={firstName}
         />

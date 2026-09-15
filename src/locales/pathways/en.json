@@ -158,5 +158,8 @@
   "directions.compass.s": "south",
   "directions.compass.sw": "south-west",
   "directions.compass.w": "west",
-  "directions.compass.nw": "north-west"
+  "directions.compass.nw": "north-west",
+
+  "sos.alert_on": "Your SOS alert is still on",
+  "sos.back": "Back to alert"
 }

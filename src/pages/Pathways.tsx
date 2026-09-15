@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { ArrowLeft, Compass, Cross, FileText, Home, MessageCircle, Phone, Scale, Search, X } from "lucide-react";
 import { RecordDetail } from "@/components/pathways/RecordDetail";
 import { StatusBadge } from "@/components/pathways/StatusBadge";
@@ -28,6 +29,18 @@ import "./pathways.css";
 type View = { kind: "home" } | { kind: "results"; need: Need | null } | { kind: "record"; record: ServiceRecord } | { kind: "about" };
 
 const SIMPLE_KEY = "pathways.simple";
+// Written by the SOS engine. Read directly so Pathways never loads the SOS bundle or Supabase.
+const SOS_SESSION_KEY = "haven-sos-session";
+
+/** True while an SOS alert is on screen-visible "active". A duress stand-down must stay hidden. */
+function readAlertActive(): boolean {
+  try {
+    const raw = localStorage.getItem(SOS_SESSION_KEY);
+    return raw ? JSON.parse(raw).phase === "active" : false;
+  } catch {
+    return false;
+  }
+}
 const REGION_KEY = "pathways.region";
 // Quick exit lands on a neutral, widely visited page.
 const EXIT_URL = "https://www.google.com/";
@@ -52,6 +65,19 @@ export default function Pathways() {
   const [view, setView] = useState<View>({ kind: "home" });
   const [query, setQuery] = useState("");
   const [region, setRegion] = useState<string | null>(null);
+  const [alertActive, setAlertActive] = useState(false);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    setAlertActive(readAlertActive());
+    const onStorage = () => setAlertActive(readAlertActive());
+    window.addEventListener("storage", onStorage);
+    window.addEventListener("focus", onStorage);
+    return () => {
+      window.removeEventListener("storage", onStorage);
+      window.removeEventListener("focus", onStorage);
+    };
+  }, []);
   const [updateMsg, setUpdateMsg] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
   const today = useMemo(() => new Date(), []);
@@ -265,6 +291,18 @@ export default function Pathways() {
       </header>
 
       <Container width="content" className="flex flex-1 flex-col pb-8">
+        {alertActive && (
+          <button
+            type="button"
+            onClick={() => navigate("/sos")}
+            className="mt-3 flex w-full items-center gap-3 rounded-2xl border border-sos/25 bg-sos/10 px-4 py-3 text-left"
+          >
+            <span className="h-2.5 w-2.5 shrink-0 animate-alert-pulse rounded-full bg-sos" />
+            <span className="flex-1 text-[0.95em] font-semibold text-sos">{t(L, "sos.alert_on")}</span>
+            <span className="text-[0.9em] text-foreground">{t(L, "sos.back")}</span>
+          </button>
+        )}
+
         {!online && (
           <p className="mt-3 rounded-2xl bg-secondary px-4 py-2.5 text-[0.95em] text-muted-foreground" role="status">
             {t(L, "offline.banner")}

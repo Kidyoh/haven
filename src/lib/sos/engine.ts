@@ -26,7 +26,8 @@ export const MAX_RECORDING_MS = 10 * 60_000;
 /** How long the alert text waits for a first GPS fix before going without one. */
 export const NOTIFY_WAIT_FOR_FIX_MS = 5_000;
 const STATUS_POLL_MS = 60_000;
-const SESSION_KEY = "haven-sos-session";
+/** Also read by Pathways (without importing the engine) to offer a way back to a running alert. */
+export const SESSION_KEY = "haven-sos-session";
 
 export type Phase = "idle" | "countdown" | "active" | "duress";
 export type NotifyState = "idle" | "waiting" | "sending" | "retrying" | NotifyResult["status"];

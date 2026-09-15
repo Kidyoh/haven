@@ -158,5 +158,8 @@
   "directions.compass.s": "ደቡብ",
   "directions.compass.sw": "ደቡብ ምዕራብ",
   "directions.compass.w": "ምዕራብ",
-  "directions.compass.nw": "ሰሜን ምዕራብ"
+  "directions.compass.nw": "ሰሜን ምዕራብ",
+
+  "sos.alert_on": "የድንገተኛ ማንቂያዎ አሁንም እየሠራ ነው",
+  "sos.back": "ወደ ማንቂያው ተመለስ"
 }

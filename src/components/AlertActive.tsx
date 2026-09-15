@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MapPin, MessageSquare, Mic, Phone, Radio, RotateCw, ShieldCheck, Users } from "lucide-react";
+import { ChevronRight, Compass, MapPin, MessageSquare, Mic, Phone, Radio, RotateCw, ShieldCheck, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { useHold } from "@/hooks/useHold";
@@ -18,6 +18,8 @@ interface AlertActiveProps {
   /** Called once "I am safe" has been held. The page decides whether a PIN is needed. */
   onSafe: () => void;
   onResumeAudio?: () => void;
+  /** Open the Pathways directory. The alert keeps running while it is open. */
+  onFindHelp?: () => void;
   contacts?: CachedContact[];
   firstName?: string | null;
   emergencyNumber?: string;
@@ -31,6 +33,7 @@ const AlertActive = ({
   sos,
   onSafe,
   onResumeAudio,
+  onFindHelp,
   contacts = [],
   firstName = null,
   emergencyNumber = "991",
@@ -110,6 +113,21 @@ const AlertActive = ({
           />
           <StatusRow icon={<MapPin />} label="Location" {...locationRow(sos, now)} />
         </ul>
+
+        {onFindHelp && (
+          <button
+            type="button"
+            onClick={onFindHelp}
+            className="order-4 flex w-full items-center gap-3 rounded-2xl border border-border bg-card p-4 text-left transition-colors hover:border-haven-gold/50"
+          >
+            <Compass className="h-5 w-5 shrink-0 text-haven-gold" />
+            <span className="min-w-0 flex-1">
+              <span className="block text-sm font-medium text-foreground">Places that can help</span>
+              <span className="block text-xs text-muted-foreground">One-stop centres, shelters, legal aid. Your alert stays on.</span>
+            </span>
+            <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+          </button>
+        )}
 
         <div className="order-5 mt-auto space-y-2">
           <button
