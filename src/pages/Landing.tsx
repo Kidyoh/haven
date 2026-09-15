@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import {
-  Camera, ChevronRight, Compass, MapPin, Mic, Radio, Shield, ShieldCheck, Users, WifiOff, Zap,
+  ChevronRight, Compass, MapPin, Mic, Radio, Shield, ShieldCheck, Users, WifiOff, Zap,
 } from "lucide-react";
 import heroImage from "@/assets/hero-shield.jpg";
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,7 @@ const Landing = () => {
           </h1>
 
           <p className="mt-4 max-w-md text-base leading-relaxed text-muted-foreground">
-            One button sends police, family and friends your location, audio and photo. And when the danger has
+            One button texts the people you trust a live link to where you are, and records what is happening. And when the danger has
             passed, a verified directory of the places that can help.
           </p>
 
@@ -61,7 +61,7 @@ const Landing = () => {
       <Container as="section" width="content" className="py-20">
         <SectionLabel>How it works</SectionLabel>
         <h2 className="mt-3 font-display text-2xl font-bold text-foreground">
-          Three seconds between danger and help
+          Seconds between danger and help
         </h2>
 
         <div className="mt-9 space-y-3">
@@ -69,19 +69,19 @@ const Landing = () => {
             number="01"
             icon={<Zap />}
             title="Hold the SOS button"
-            desc="Press and hold for two seconds. A ten-second countdown gives you time to cancel if it was an accident."
+            desc="Press and hold for two seconds. A five-second countdown gives you time to cancel if it was an accident."
           />
           <Step
             number="02"
-            icon={<Camera />}
+            icon={<Mic />}
             title="Evidence captured instantly"
-            desc="Audio starts recording, the camera takes a photo, and your GPS position is pinned."
+            desc="Audio starts recording in short clips that upload as they go, and your GPS position is pinned."
           />
           <Step
             number="03"
             icon={<Radio />}
             title="Alerts reach everyone"
-            desc="Police, family and friends get SMS, email and WhatsApp with your location, audio and photo."
+            desc="Your emergency contacts get a text with a live tracking link, and responders see the alert on their dashboard."
           />
         </div>
       </Container>
@@ -93,12 +93,12 @@ const Landing = () => {
           <h2 className="mt-3 font-display text-2xl font-bold text-foreground">Built for real danger</h2>
 
           <div className="mt-7 grid grid-cols-2 gap-3">
-            <Feature icon={<MapPin />} title="Live tracking" desc="Location updates every 5 minutes" />
-            <Feature icon={<Mic />} title="Audio evidence" desc="30-second automatic recording" />
-            <Feature icon={<Shield />} title="Stealth mode" desc="Looks closed while it alerts" />
+            <Feature icon={<MapPin />} title="Live tracking" desc="Location shared every 30 seconds" />
+            <Feature icon={<Mic />} title="Audio evidence" desc="Recorded in short clips until you are safe" />
+            <Feature icon={<Shield />} title="Duress PIN" desc="Looks stood down, keeps alerting" />
             <Feature icon={<Users />} title="Six contacts" desc="Family, friends and NGOs" />
             <Feature icon={<WifiOff />} title="Offline ready" desc="Queues alerts until signal returns" />
-            <Feature icon={<Radio />} title="Multi-channel" desc="SMS, email and WhatsApp" />
+            <Feature icon={<Radio />} title="Text alerts" desc="Contacts get a live link by SMS" />
           </div>
         </Container>
       </section>

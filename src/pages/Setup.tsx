@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { AlertTriangle, Bell, Camera, ChevronRight, MapPin, Mic, Plus, Trash2, Users } from "lucide-react";
+import { AlertTriangle, Bell, ChevronRight, MapPin, Mic, Plus, Trash2, Users } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -46,7 +46,7 @@ const Setup = () => {
 
   const steps = [
     { icon: <Users />, title: "Emergency contacts", desc: "Who should we alert in an emergency?" },
-    { icon: <Bell />, title: "Permissions", desc: "Location, microphone and camera power your alerts." },
+    { icon: <Bell />, title: "Permissions", desc: "Location and microphone power your alerts." },
   ];
 
   const addContact = () => {
@@ -200,13 +200,11 @@ const Setup = () => {
 
           {step === 1 && (
             <div className="space-y-3">
-              <PermissionRow icon={<MapPin />} title="Location" desc="Puts GPS coordinates in every alert" />
-              <PermissionRow icon={<Mic />} title="Microphone" desc="Records audio evidence during an SOS" />
-              <PermissionRow icon={<Camera />} title="Camera" desc="Captures a photo when the alert fires" />
-              <PermissionRow icon={<Bell />} title="Notifications" desc="Tells you when a responder acts" />
+              <PermissionRow icon={<MapPin />} title="Location" desc="Shares where you are with your contacts during an alert" />
+              <PermissionRow icon={<Mic />} title="Microphone" desc="Records audio evidence until you mark yourself safe" />
               <p className="px-1 pt-1 text-xs leading-relaxed text-muted-foreground">
-                Nothing is requested now. Your phone will ask the first time you use SOS, and nothing is kept on the
-                device after it is sent.
+                Nothing is requested now. You can allow both from the SOS screen ahead of time, so your phone does not
+                have to ask during an emergency. Alerts are kept on the phone only until they have been sent.
               </p>
             </div>
           )}

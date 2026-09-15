@@ -6,7 +6,7 @@ It has two parts:
 
 | | What | Needs an account? | Works offline? |
 |---|---|---|---|
-| **SOS** | One button. Alerts to police, family and friends with audio, photo and GPS; live tracking; responder dashboard. | Yes | Queues alerts for when signal returns |
+| **SOS** | One button. Texts emergency contacts a live tracking link, records audio in clips, shares GPS every 30 s, shows responders the alert. | Yes | Queues the alert, location and audio on the phone until signal returns |
 | **Pathways** (`/pathways`) | A verified directory of gender-based violence and protection services: where to go, what they provide, what to bring, when it was last confirmed. Amharic and English. | No | Fully, after one visit |
 
 > **About Pathways, read this first.** Coverage is partial and not exhaustive. It is a proof of concept. **It is not an emergency service.** It does not contact anyone on your behalf. If you are in immediate danger, call the police or an ambulance directly.
@@ -35,6 +35,15 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ```
 
 Pathways needs no environment variables and no backend.
+
+SOS also needs the Supabase migrations applied and the `send-alert` edge function deployed, with an SMS provider configured (without one, alerts still reach the responder dashboard and the alert screen tells the user their contacts were not texted):
+
+```bash
+supabase db push
+supabase functions deploy send-alert
+supabase secrets set SMS_PROVIDER=africastalking AT_USERNAME=… AT_API_KEY=… AT_SENDER_ID=… PUBLIC_APP_URL=https://haven.kidus-yohannes.engineer
+# or: SMS_PROVIDER=twilio TWILIO_ACCOUNT_SID=… TWILIO_AUTH_TOKEN=… TWILIO_FROM=…
+```
 
 | Script | What it does |
 |---|---|
@@ -190,11 +199,12 @@ src/
 ├── sw.ts                 service worker (precache, SPA fallback, Pathways background sync)
 ├── pages/                route-level pages; Pathways.tsx is the directory
 ├── components/           SOS components, shadcn/ui primitives, components/pathways/
+├── lib/sos/              SOS engine: outbox, segmented recorder, location, PIN, executor
 ├── lib/pathways/         types, staleness, search, needs, i18n, db, dataset
 ├── locales/pathways/     en.json, am.json
-├── hooks/                useAuth, useSOSPipeline, …
+├── hooks/                useAuth, useHold, …
 ├── integrations/supabase
 └── test/                 vitest (jsdom)
 supabase/                 migrations and edge functions for SOS
-NOTES.md                  Pathways decisions, known gaps, verification queue
+NOTES.md                  SOS and Pathways decisions, known gaps, verification queue
 ```

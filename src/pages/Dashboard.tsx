@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { Container, IconTile, PageHeader, Screen, type Tone } from "@/components/haven/Screen";
 import { Callout, EmptyState, ScreenLoader, Spinner, StatusPill } from "@/components/haven/Feedback";
 import { Field, TextField } from "@/components/haven/Field";
+import EvidenceClips from "@/components/EvidenceClips";
 
 type Tab = "overview" | "incidents" | "analytics" | "team";
 
@@ -33,6 +34,7 @@ interface Incident {
   battery_level: number | null;
   signal_strength: string | null;
   audio_url: string | null;
+  duress_at: string | null;
 }
 
 interface Profile {
@@ -73,7 +75,7 @@ async function loadTeam(): Promise<TeamMember[]> {
 
 const Dashboard = () => {
   const [tab, setTab] = useState<Tab>("overview");
-  const [incidents, setIncidents] = useState<Incident[]>([]);
+  const [allIncidents, setIncidents] = useState<Incident[]>([]);
   const [profiles, setProfiles] = useState<Map<string, Profile>>(new Map());
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<"all" | "active" | "resolved">("all");
@@ -138,7 +140,9 @@ const Dashboard = () => {
         { event: "*", schema: "public", table: "incidents" },
         (payload) => {
           if (payload.eventType === "INSERT") {
-            setIncidents((prev) => [payload.new as Incident, ...prev]);
+            setIncidents((prev) =>
+              prev.some((i) => i.id === (payload.new as Incident).id) ? prev : [payload.new as Incident, ...prev],
+            );
           } else if (payload.eventType === "UPDATE") {
             setIncidents((prev) =>
               prev.map((i) => (i.id === (payload.new as Incident).id ? (payload.new as Incident) : i))
@@ -195,6 +199,9 @@ const Dashboard = () => {
       .update({ status: "resolved", resolved_at: new Date().toISOString() })
       .eq("id", incidentId);
   };
+
+  // Pending rows are countdowns still running; cancelled ones were never sent.
+  const incidents = allIncidents.filter((i) => i.status === "active" || i.status === "resolved");
 
   const filteredIncidents = incidents.filter((i) => {
     const matchesSearch =
@@ -321,8 +328,9 @@ const Dashboard = () => {
                           >
                             <div className="flex flex-wrap items-start justify-between gap-3">
                               <div className="min-w-0">
-                                <p className="text-sm font-semibold text-foreground">
+                                <p className="flex flex-wrap items-center gap-2 text-sm font-semibold text-foreground">
                                   {profile?.full_name || "Unknown user"}
+                                  {incident.duress_at && <DuressBadge />}
                                 </p>
                                 <p className="font-mono text-xs text-muted-foreground">
                                   {incident.reference_number}
@@ -355,9 +363,7 @@ const Dashboard = () => {
                                 </Button>
                               </div>
                             </div>
-                            {incident.audio_url && (
-                              <audio controls src={incident.audio_url} className="h-9 w-full" preload="none" />
-                            )}
+                            <EvidenceClips incidentId={incident.id} legacyAudioUrl={incident.audio_url} />
                           </div>
                         );
                       })}
@@ -477,7 +483,12 @@ const Dashboard = () => {
                           return (
                             <TableRow key={incident.id}>
                               <TableCell className="font-mono text-xs">{incident.reference_number}</TableCell>
-                              <TableCell className="font-medium">{profile?.full_name || "Unknown"}</TableCell>
+                              <TableCell className="font-medium">
+                                <span className="flex flex-wrap items-center gap-2">
+                                  {profile?.full_name || "Unknown"}
+                                  {incident.duress_at && <DuressBadge />}
+                                </span>
+                              </TableCell>
                               <TableCell className="whitespace-nowrap text-xs">
                                 {profile?.phone_number ? (
                                   <a href={`tel:${profile.phone_number}`} className="hover:text-haven-gold">
@@ -508,11 +519,7 @@ const Dashboard = () => {
                                 )}
                               </TableCell>
                               <TableCell>
-                                {incident.audio_url ? (
-                                  <audio controls src={incident.audio_url} className="h-8 max-w-[180px]" preload="none" />
-                                ) : (
-                                  <span className="text-xs text-muted-foreground">—</span>
-                                )}
+                                <EvidenceClips incidentId={incident.id} legacyAudioUrl={incident.audio_url} />
                               </TableCell>
                               <TableCell className="text-right">
                                 {incident.status === "active" && (
@@ -768,6 +775,16 @@ const MetricCard = ({ label, value }: { label: string; value: string }) => (
     <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
     <p className="tabular mt-1 font-display text-2xl font-bold text-foreground">{value}</p>
   </div>
+);
+
+/** The user ended the alert with the duress PIN: their phone shows "safe", they may not be. */
+const DuressBadge = () => (
+  <span
+    title="Ended with the duress PIN. The phone shows the alert as over; recording and location continue."
+    className="inline-flex whitespace-nowrap rounded-full bg-warning/10 px-2.5 py-0.5 text-xs font-semibold text-warning"
+  >
+    Duress
+  </span>
 );
 
 const ROLE_STYLES: Record<string, string> = {

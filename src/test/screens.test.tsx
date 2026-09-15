@@ -1,5 +1,5 @@
 import { describe, expect, test, vi } from "vitest";
-import { act, render, screen } from "@testing-library/react";
+import { act, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import AlertActive from "@/components/AlertActive";
 import CountdownOverlay from "@/components/CountdownOverlay";
@@ -15,10 +15,65 @@ import { TextField } from "@/components/haven/Field";
 
 describe("alert screens", () => {
   test("the active-alert screen states what is happening and offers the way out", () => {
-    render(<AlertActive onSafe={() => {}} />);
+    render(
+      <AlertActive
+        onSafe={() => {}}
+        contacts={[{ name: "Sara", phone: "+251911000000" }]}
+        sos={{
+          phase: "active",
+          incidentId: "i",
+          referenceNumber: "HVN-1",
+          startedAt: Date.now(),
+          activatedAt: Date.now(),
+          online: false,
+          pending: 3,
+          pendingClips: 1,
+          delivered: false,
+          notify: { state: "waiting", sent: 0, total: 0 },
+          audio: { status: "recording", clips: 1, uploaded: 0 },
+          location: { status: "locating", lastFix: null, lastSentAt: null },
+        }}
+      />,
+    );
     expect(screen.getByText(/alert active/i)).toBeInTheDocument();
-    expect(screen.getByText(/help is on the way/i)).toBeInTheDocument();
+    expect(screen.getByRole("heading", { name: /waiting for signal/i })).toBeInTheDocument();
+    expect(screen.getByRole("link", { name: /call 991/i })).toHaveAttribute("href", "tel:991");
+    expect(screen.getByRole("link", { name: /text contacts/i })).toHaveAttribute("href", expect.stringMatching(/^sms:/));
     expect(screen.getByRole("button", { name: /i am safe/i })).toBeInTheDocument();
+  });
+
+  test("I am safe needs a hold, not a tap", () => {
+    vi.useFakeTimers();
+    const onSafe = vi.fn();
+    render(
+      <AlertActive
+        onSafe={onSafe}
+        sos={{
+          phase: "active",
+          incidentId: "i",
+          referenceNumber: "HVN-1",
+          startedAt: Date.now(),
+          activatedAt: Date.now(),
+          online: true,
+          pending: 0,
+          pendingClips: 0,
+          delivered: true,
+          notify: { state: "sent", sent: 1, total: 1 },
+          audio: { status: "recording", clips: 1, uploaded: 1 },
+          location: { status: "ok", lastFix: null, lastSentAt: null },
+        }}
+      />,
+    );
+    const button = screen.getByRole("button", { name: /i am safe/i });
+    fireEvent.pointerDown(button, { pointerType: "touch" });
+    fireEvent.pointerUp(button);
+    act(() => vi.advanceTimersByTime(2000));
+    expect(onSafe).not.toHaveBeenCalled();
+
+    fireEvent.pointerDown(button, { pointerType: "touch" });
+    act(() => vi.advanceTimersByTime(1600));
+    expect(onSafe).toHaveBeenCalledTimes(1);
+    vi.useRealTimers();
   });
 
   test("the countdown announces the remaining seconds and can always be cancelled", () => {

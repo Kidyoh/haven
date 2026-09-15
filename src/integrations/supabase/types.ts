@@ -14,6 +14,69 @@ export type Database = {
   }
   public: {
     Tables: {
+      alert_notifications: {
+        Row: {
+          channel: string
+          contact_id: string | null
+          created_at: string
+          error: string | null
+          id: string
+          incident_id: string
+          kind: string
+          provider: string | null
+          provider_message_id: string | null
+          status: string
+          to_phone: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          channel?: string
+          contact_id?: string | null
+          created_at?: string
+          error?: string | null
+          id?: string
+          incident_id: string
+          kind: string
+          provider?: string | null
+          provider_message_id?: string | null
+          status: string
+          to_phone: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          channel?: string
+          contact_id?: string | null
+          created_at?: string
+          error?: string | null
+          id?: string
+          incident_id?: string
+          kind?: string
+          provider?: string | null
+          provider_message_id?: string | null
+          status?: string
+          to_phone?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "alert_notifications_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "emergency_contacts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "alert_notifications_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "incidents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       emergency_contacts: {
         Row: {
           created_at: string
@@ -47,6 +110,53 @@ export type Database = {
         }
         Relationships: []
       }
+      incident_evidence: {
+        Row: {
+          created_at: string
+          duration_ms: number | null
+          id: string
+          incident_id: string
+          mime_type: string | null
+          seq: number
+          size_bytes: number | null
+          started_at: string
+          storage_path: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          duration_ms?: number | null
+          id?: string
+          incident_id: string
+          mime_type?: string | null
+          seq: number
+          size_bytes?: number | null
+          started_at: string
+          storage_path: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          duration_ms?: number | null
+          id?: string
+          incident_id?: string
+          mime_type?: string | null
+          seq?: number
+          size_bytes?: number | null
+          started_at?: string
+          storage_path?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incident_evidence_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "incidents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       incident_shares: {
         Row: {
           created_at: string
@@ -77,10 +187,13 @@ export type Database = {
       incidents: {
         Row: {
           accuracy_meters: number | null
+          activated_at: string | null
           audio_url: string | null
           battery_level: number | null
           created_at: string
+          duress_at: string | null
           id: string
+          last_location_at: string | null
           latitude: number | null
           longitude: number | null
           photo_url: string | null
@@ -92,10 +205,13 @@ export type Database = {
         }
         Insert: {
           accuracy_meters?: number | null
+          activated_at?: string | null
           audio_url?: string | null
           battery_level?: number | null
           created_at?: string
+          duress_at?: string | null
           id?: string
+          last_location_at?: string | null
           latitude?: number | null
           longitude?: number | null
           photo_url?: string | null
@@ -107,10 +223,13 @@ export type Database = {
         }
         Update: {
           accuracy_meters?: number | null
+          activated_at?: string | null
           audio_url?: string | null
           battery_level?: number | null
           created_at?: string
+          duress_at?: string | null
           id?: string
+          last_location_at?: string | null
           latitude?: number | null
           longitude?: number | null
           photo_url?: string | null
@@ -130,6 +249,7 @@ export type Database = {
           incident_id: string
           latitude: number
           longitude: number
+          recorded_at: string | null
           user_id: string
         }
         Insert: {
@@ -139,6 +259,7 @@ export type Database = {
           incident_id: string
           latitude: number
           longitude: number
+          recorded_at?: string | null
           user_id: string
         }
         Update: {
@@ -148,6 +269,7 @@ export type Database = {
           incident_id?: string
           latitude?: number
           longitude?: number
+          recorded_at?: string | null
           user_id?: string
         }
         Relationships: [
@@ -257,6 +379,12 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_tracking: {
+        Args: {
+          p_token: string
+        }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

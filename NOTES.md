@@ -1,3 +1,42 @@
+# NOTES — SOS
+
+How an alert works, what was decided, and what is still weak. Code lives in `src/lib/sos/`; the engine's header comment has the state diagram.
+
+## Flow
+
+1. **Hold 2 s** → **5 s countdown**. The countdown already creates the incident as `pending` (client-generated id), turns on the mic and GPS, and takes a battery reading. Cancel marks it `cancelled` and discards the audio; nothing else has left the phone.
+2. **Countdown ends** → `active`. Queued in order: activate, audio captured during the countdown, the latest fix, then "text my contacts". The text waits up to 5 s for a first GPS fix so it can include a map pin.
+3. **While active**: audio is recorded as independent 10 s clips (capped at 10 min), each uploaded as it finishes. Location is sent on the first fix, on 25 m of movement (at most every 10 s), and at least every 30 s. The screen wake lock is held.
+4. **I am safe** is press-and-hold. With a PIN set, the PIN is then required. The **safe PIN** resolves the incident and texts the contacts who got the alert; the **duress PIN** makes the phone look stood down while recording and location continue, and the dashboard shows a Duress badge.
+5. A responder resolving the incident on the dashboard ends the alert on the phone within a minute.
+
+Every write goes through the **outbox** (IndexedDB): status changes and notifications for an incident go strictly in order, nothing goes before its create, clips go last in every flush, and every op is idempotent so retries are safe. A reload during an alert restores it (a reload mid-countdown counts as a request for help).
+
+## Decisions
+
+- **SMS through an edge function, not the client.** `send-alert` claims each (incident, contact, kind) row in `alert_notifications` before sending, so retries only text people a previous attempt missed. Twilio and Africa's Talking are both supported via `SMS_PROVIDER`. At most 5 alerting incidents per account per hour.
+- **The alert screen only says what happened.** Its headline comes from the engine snapshot (`src/lib/sos/wording.ts`). When contacts were not reached (offline, SMS not configured, no contacts, rate-limited, failing), "Call 991" and "Text contacts" (a prefilled `sms:` link built from contacts cached on the phone) move to the top.
+- **Family links go through `get_tracking(token)`.** The previous anon RLS policies did not check the token: anyone with the anon key could list every share token and read every incident and location for those users. They are dropped. The tracking page polls (15 s during an alert) because a realtime subscription cannot be scoped to a token for an anonymous viewer. Family sees the location trail, never audio.
+- **Evidence bucket is private.** Responders play clips through one-hour signed URLs. Old incidents with a public `audio_url` are converted to a signed URL on demand.
+- **No noise suppression on the mic.** Evidence wants the room, including other voices, not a clean call.
+- **PINs live on the device** as salted SHA-256, so they work offline. They are a barrier against someone standing over the user, not a secret against someone with the phone and time.
+- **Pending and cancelled incidents are hidden from the dashboard and the tracking link.**
+
+## Deploying
+
+`supabase db push` (migration `20260915120000_sos_pipeline.sql`), `supabase functions deploy send-alert`, then set secrets: `SMS_PROVIDER` plus the provider's keys, `PUBLIC_APP_URL`, optionally `DEFAULT_COUNTRY_CODE` (251) and `EMERGENCY_NUMBER` (991). The migration and the new client must ship together: the old client reads the public audio URL and the anon tracking policies, both of which the migration removes.
+
+## Known gaps
+
+- **Background on phones.** A web page gets throttled or suspended when the screen locks, iOS most aggressively. The wake lock keeps the screen on while the alert screen is open. It cannot help once the user locks the phone or switches apps: recording and location pause until the page is visible again. The queued writes survive and send on return. Only a native wrapper fixes this properly.
+- **No sending while the app is closed.** The outbox flushes from the page (on load, on `online`, with backoff). Background Sync from the service worker would need the Supabase session in the worker; not done.
+- **The mic indicator gives duress away** to someone who knows to look for the OS recording dot.
+- **Stuck in duress.** If the user never re-opens the alert, a duress alert runs until a responder resolves it or the 10 min audio cap is reached (location keeps going).
+- **Tracking link is shared across all contacts.** One active token per account, created on first alert. Revoking it means deactivating the row.
+- **Not tested on real devices yet.** The MediaRecorder MIME fallbacks (`audio/mp4` on iOS Safari), `sms:` links and wake lock need a pass on an Android phone and an iPhone.
+
+---
+
 # NOTES — Pathways
 
 Working notes for HAVEN Pathways: decisions, known gaps, and the human to-do list that the tooling is not allowed to do.

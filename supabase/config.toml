@@ -2,3 +2,6 @@ project_id = "hjlyuiolextfsdwprokq"
 
 [functions.invite-responder]
 verify_jwt = false
+
+[functions.send-alert]
+verify_jwt = true
