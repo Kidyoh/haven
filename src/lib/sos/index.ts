@@ -14,7 +14,8 @@ export const sosEngine = new SOSEngine({
   store: createIdbStore(),
   executor: createSupabaseExecutor(supabase),
   storage: localStorage,
-  events: Object.assign(window, { document }),
+  // A plain object: window.document is read-only, so it cannot be assigned onto window.
+  events: { addEventListener: window.addEventListener.bind(window), document },
   fetchIncidentStatus: async (id) => {
     const { data } = await supabase.from("incidents").select("status").eq("id", id).maybeSingle();
     return data?.status ?? null;
