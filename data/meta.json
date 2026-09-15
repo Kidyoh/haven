@@ -2,9 +2,12 @@
   "country_code": "ET",
   "country_name_en": "Ethiopia",
   "country_name_am": "ኢትዮጵያ",
-  "languages": ["en", "am"],
+  "languages": [
+    "en",
+    "am"
+  ],
   "default_language": "en",
   "staleness_days": 90,
-  "coverage_note_en": "Coverage is partial. Addis Ababa only, and not every service in Addis Ababa.",
-  "coverage_note_am": "ሽፋኑ ከፊል ነው። አዲስ አበባ ብቻ፣ እና በአዲስ አበባ ያሉ ሁሉም አገልግሎቶች አይደሉም።"
+  "coverage_note_en": "Coverage is partial. Most places are in Addis Ababa; the rest are nationwide phone lines, EWLA legal aid offices, and one-stop centres and shelters named by UN agencies in other regions. It is not every service.",
+  "coverage_note_am": "ሽፋኑ ከፊል ነው። አብዛኞቹ ቦታዎች በአዲስ አበባ ናቸው፤ የቀሩት በመላ ሀገሪቱ የሚሠሩ የስልክ መስመሮች፣ የEWLA የሕግ ድጋፍ ቢሮዎች፣ እና በሌሎች ክልሎች በተባበሩት መንግሥታት ድርጅቶች የተጠቀሱ የተቀናጀ አገልግሎት ማዕከላትና መጠለያዎች ናቸው። ሁሉንም አገልግሎቶች አያካትትም።"
 }

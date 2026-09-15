@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Activity, AlertTriangle, Building2, CheckCircle, Copy, Eye, EyeOff, LogOut,
-  MapPin, Phone, Search, TrendingUp, UserPlus, Users,
+  MapPin, Phone, Search, UserPlus, Users,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -19,6 +19,8 @@ import { Container, IconTile, PageHeader, Screen, type Tone } from "@/components
 import { Callout, EmptyState, ScreenLoader, Spinner, StatusPill } from "@/components/haven/Feedback";
 import { Field, TextField } from "@/components/haven/Field";
 import EvidenceClips from "@/components/EvidenceClips";
+import AnalyticsTab from "@/components/analytics/AnalyticsTab";
+import { ReferIncident } from "@/components/organizations/ReferIncident";
 
 type Tab = "overview" | "incidents" | "analytics" | "team";
 
@@ -219,20 +221,6 @@ const Dashboard = () => {
   const resolvedCount = incidents.filter((i) => i.status !== "active").length;
   const totalUsers = new Set(incidents.map((i) => i.user_id)).size;
 
-  // Analytics: incidents per day (last 7 days)
-  const last7Days = Array.from({ length: 7 }, (_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (6 - i));
-    return d.toISOString().split("T")[0];
-  });
-
-  const incidentsPerDay = last7Days.map((day) => ({
-    day: new Date(day).toLocaleDateString(undefined, { weekday: "short" }),
-    count: incidents.filter((i) => i.created_at.startsWith(day)).length,
-  }));
-
-  const maxDayCount = Math.max(...incidentsPerDay.map((d) => d.count), 1);
-
   if (loading || authorized === null) return <ScreenLoader />;
 
   const tabs: Tab[] = ["overview", "incidents", "analytics", ...(isAdmin ? (["team"] as Tab[]) : [])];
@@ -358,6 +346,7 @@ const Dashboard = () => {
                                     </a>
                                   </Button>
                                 )}
+                                <ReferIncident incidentId={incident.id} reference={incident.reference_number} />
                                 <Button variant="safe" onClick={() => handleResolve(incident.id)}>
                                   Resolve
                                 </Button>
@@ -540,58 +529,7 @@ const Dashboard = () => {
           </div>
         )}
 
-        {tab === "analytics" && (
-          <div className="space-y-5">
-            {/* Weekly chart */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 font-display text-lg">
-                  <TrendingUp className="h-5 w-5 text-muted-foreground" />
-                  Incidents this week
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex h-44 items-end gap-2">
-                  {incidentsPerDay.map((day) => (
-                    <div key={day.day} className="flex flex-1 flex-col items-center gap-1.5">
-                      <span className="tabular text-xs font-medium text-foreground">{day.count}</span>
-                      <div
-                        className="w-full rounded-t-lg bg-sos/50 transition-all"
-                        style={{ height: `${Math.max((day.count / maxDayCount) * 100, 3)}%` }}
-                      />
-                      <span className="text-[10px] uppercase tracking-wide text-muted-foreground">{day.day}</span>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Summary cards */}
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-              <MetricCard
-                label="Avg resolution time"
-                value={
-                  incidents.filter((i) => i.resolved_at).length > 0
-                    ? `${Math.round(
-                        incidents
-                          .filter((i) => i.resolved_at)
-                          .reduce(
-                            (acc, i) =>
-                              acc +
-                              (new Date(i.resolved_at!).getTime() - new Date(i.created_at).getTime()) / 60000,
-                            0
-                          ) / incidents.filter((i) => i.resolved_at).length
-                      )} min`
-                    : "—"
-                }
-              />
-              <MetricCard
-                label="Resolution rate"
-                value={incidents.length > 0 ? `${Math.round((resolvedCount / incidents.length) * 100)}%` : "—"}
-              />
-            </div>
-          </div>
-        )}
+        {tab === "analytics" && <AnalyticsTab />}
 
         {tab === "team" && isAdmin && (
           <div className="space-y-5">
@@ -767,13 +705,6 @@ const StatCard = ({
         <p className="tabular font-display text-2xl font-bold text-foreground">{value}</p>
       </div>
     </div>
-  </div>
-);
-
-const MetricCard = ({ label, value }: { label: string; value: string }) => (
-  <div className="rounded-2xl border border-border bg-card p-5">
-    <p className="text-xs uppercase tracking-wider text-muted-foreground">{label}</p>
-    <p className="tabular mt-1 font-display text-2xl font-bold text-foreground">{value}</p>
   </div>
 );
 

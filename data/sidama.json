@@ -1,0 +1,83 @@
+[
+  {
+    "id": "et-si-hawassa-awsad-safe-house-001",
+    "name_en": "AWSAD safe house, Hawassa",
+    "name_am": "የሴቶች መጠለያና ልማት ማኅበር (AWSAD) መጠለያ፣ ሀዋሳ",
+    "category": "shelter",
+    "services": [
+      "shelter"
+    ],
+    "region": "Sidama",
+    "subcity": null,
+    "location_description_en": "Hawassa. The safe house location is not public. Ask the Dilla one-stop centre, the police or the 7711 hotline for a referral.",
+    "location_description_am": "ሀዋሳ። የመጠለያው ቦታ ለሕዝብ ይፋ አይደለም። ከዲላ የተቀናጀ አገልግሎት ማዕከል፣ ከፖሊስ ወይም ከ7711 መስመር ሪፈራል ይጠይቁ።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "UNFPA Ethiopia — \"Joint Donor Mission to Hawassa and Dilla Strengthens Support for Women's and Youth Health and Protection Services\" (10 June 2024)",
+    "source_url": "https://ethiopia.unfpa.org/en/news/joint-donor-mission-hawassa-and-dilla-strengthens-support-womens-and-youth-health-and",
+    "source_text_original": "From June 4 to 5, 2024, a high-profile joint donor mission visited UNFPA-supported interventions in Hawassa and Dilla towns. … Finally, delegates also visited the AWSAD's Safehouse in Hawassa, providing comprehensive support to GBV survivors. … The second day included a courtesy visit to the Vice President of the Regional Government of Sidama.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "UNFPA Ethiopia — \"GBV survivors receiving integrated response services as part of UNFPA supported programme\" (10 November 2022)",
+        "url": "https://ethiopia.unfpa.org/en/news/gbv-survivors-receiving-integrated-response-services-part-unfpa-supported-programme",
+        "note": "\"referred … to the UNFPA supported safe house in Hawassa which is run by the Association for Women Sanctuary and Development.\""
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Entry is by referral. No phone number is published for this safe house; AWSAD's Addis Ababa office numbers are listed on the Addis Ababa AWSAD entry.",
+    "notes_am": "መግቢያ በሪፈራል ነው። ለዚህ መጠለያ ስልክ ቁጥር አልተገለጸም፤ የAWSAD የአዲስ አበባ ቢሮ ቁጥሮች በአዲስ አበባው የAWSAD ዝርዝር ላይ አሉ።"
+  },
+  {
+    "id": "et-si-hawassa-ewla-office-001",
+    "name_en": "EWLA Hawassa office — free legal aid",
+    "name_am": "የኢትዮጵያ የሴቶች ሕግ ባለሙያዎች ማኅበር (EWLA) ሀዋሳ ቢሮ – ነፃ የሕግ ድጋፍ",
+    "category": "legal_aid",
+    "services": [
+      "legal_advice",
+      "court_representation"
+    ],
+    "region": "Sidama",
+    "subcity": null,
+    "location_description_en": "Hawassa, around the Women's and Children's Affairs office.",
+    "location_description_am": "ሀዋሳ፣ በሴቶችና ሕፃናት ጉዳይ ቢሮ አካባቢ።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "+251462204800"
+    ],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "free",
+    "accepts_walk_in": null,
+    "source_name": "EWLA — \"Contact Us\"",
+    "source_url": "https://ewla-et.org/contact/",
+    "source_text_original": "Hawassa Around Women’s and Children’s Affair’s office SNNPR, Ethiopia Tel: 0462204800 … We provide free legal advice and representation to all women and girls, ensuring equitable access to justice across both development and crisis-affected environments.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "EWLA — Annual Report 2023 (published June 2024)",
+        "url": "https://ewla-et.org/wp-content/uploads/2024/06/EWLA-2023-Annual-Report%E1%8D%9F_-.pdf",
+        "note": "\"has opened its regional offices in seven regions and one city administration namely Adama, Hawassa, Bahir Dar, Gambella, Asosa, Jigjiiga, Semera regions and city administration of Dire Dawa.\""
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "For women and girls. Hours are not stated. Number normalised to international format. The source still names SNNPR; Hawassa is now in Sidama region (UNFPA, June 2024: \"the Regional Government of Sidama\").",
+    "notes_am": "ለሴቶችና ልጃገረዶች። የሥራ ሰዓት አልተገለጸም። ቁጥሩ ወደ ዓለም አቀፍ ቅርጽ ተቀይሯል። ምንጩ አሁንም ደቡብ ብሔሮች (SNNPR) ይላል፤ ሀዋሳ አሁን በሲዳማ ክልል ነው (UNFPA፣ ሰኔ 2024)።"
+  }
+]

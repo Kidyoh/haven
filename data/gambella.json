@@ -1,0 +1,44 @@
+[
+  {
+    "id": "et-ga-gambella-ewla-office-001",
+    "name_en": "EWLA Gambella office — free legal aid",
+    "name_am": "የኢትዮጵያ የሴቶች ሕግ ባለሙያዎች ማኅበር (EWLA) ጋምቤላ ቢሮ – ነፃ የሕግ ድጋፍ",
+    "category": "legal_aid",
+    "services": [
+      "legal_advice",
+      "court_representation"
+    ],
+    "region": "Gambella",
+    "subcity": null,
+    "location_description_en": "Kebele 03, Kier Gambella shopping centre, office No. 69, Gambella.",
+    "location_description_am": "ቀበሌ 03፣ ኪር ጋምቤላ የገበያ ማዕከል፣ ቢሮ ቁ. 69፣ ጋምቤላ።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "+251475511656"
+    ],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "free",
+    "accepts_walk_in": null,
+    "source_name": "EWLA — \"Contact Us\"",
+    "source_url": "https://ewla-et.org/contact/",
+    "source_text_original": "Kebele 03, Kier gambella shopping center office No-69 Gambella Sub-city Tel: 0475511656 … We provide free legal advice and representation to all women and girls, ensuring equitable access to justice across both development and crisis-affected environments.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "EWLA — Annual Report 2023 (published June 2024)",
+        "url": "https://ewla-et.org/wp-content/uploads/2024/06/EWLA-2023-Annual-Report%E1%8D%9F_-.pdf",
+        "note": "\"has opened its regional offices in seven regions and one city administration namely Adama, Hawassa, Bahir Dar, Gambella, Asosa, Jigjiiga, Semera regions and city administration of Dire Dawa.\""
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "For women and girls. Hours are not stated. Number normalised to international format. The source gives the town only; the region (Gambella) was added for filtering.",
+    "notes_am": "ለሴቶችና ልጃገረዶች። የሥራ ሰዓት አልተገለጸም። ቁጥሩ ወደ ዓለም አቀፍ ቅርጽ ተቀይሯል። ምንጩ ከተማውን ብቻ ይጠቅሳል፤ ክልሉ (ጋምቤላ) ለማጣሪያ ተጨምሯል።"
+  }
+]

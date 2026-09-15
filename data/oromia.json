@@ -1,0 +1,44 @@
+[
+  {
+    "id": "et-or-adama-ewla-office-001",
+    "name_en": "EWLA Adama office — free legal aid",
+    "name_am": "የኢትዮጵያ የሴቶች ሕግ ባለሙያዎች ማኅበር (EWLA) አዳማ ቢሮ – ነፃ የሕግ ድጋፍ",
+    "category": "legal_aid",
+    "services": [
+      "legal_advice",
+      "court_representation"
+    ],
+    "region": "Oromia",
+    "subcity": null,
+    "location_description_en": "Inside the high court compound, Adama.",
+    "location_description_am": "በከፍተኛ ፍርድ ቤት ግቢ ውስጥ፣ አዳማ።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "+251221125340"
+    ],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "free",
+    "accepts_walk_in": null,
+    "source_name": "EWLA — \"Contact Us\"",
+    "source_url": "https://ewla-et.org/contact/",
+    "source_text_original": "Inside the high court compound Adama Mebrat Hayle Leyu Zone … Tel: 0221125340 … We provide free legal advice and representation to all women and girls, ensuring equitable access to justice across both development and crisis-affected environments.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "EWLA — Annual Report 2023 (published June 2024)",
+        "url": "https://ewla-et.org/wp-content/uploads/2024/06/EWLA-2023-Annual-Report%E1%8D%9F_-.pdf",
+        "note": "\"has opened its regional offices in seven regions and one city administration namely Adama, Hawassa, Bahir Dar, Gambella, Asosa, Jigjiiga, Semera regions and city administration of Dire Dawa.\""
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "For women and girls. Hours are not stated. Number normalised to international format. The source gives the town only; the region (Oromia) was added for filtering.",
+    "notes_am": "ለሴቶችና ልጃገረዶች። የሥራ ሰዓት አልተገለጸም። ቁጥሩ ወደ ዓለም አቀፍ ቅርጽ ተቀይሯል። ምንጩ ከተማውን ብቻ ይጠቅሳል፤ ክልሉ (ኦሮሚያ) ለማጣሪያ ተጨምሯል።"
+  }
+]

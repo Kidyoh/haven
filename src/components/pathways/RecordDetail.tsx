@@ -1,6 +1,12 @@
-import { ArrowLeft, Briefcase, Clock, Coins, DoorOpen, ExternalLink, ListChecks, MapPin, Phone, StickyNote } from "lucide-react";
+import { lazy, Suspense, useState } from "react";
+import { ArrowLeft, Briefcase, Clock, Coins, DoorOpen, ExternalLink, ListChecks, Map as MapIcon, MapPin, Phone, StickyNote } from "lucide-react";
 import { StatusBadge } from "./StatusBadge";
 import { field, formatDate, t } from "@/lib/pathways/i18n";
+import { NATIONWIDE, regionLabel } from "@/lib/pathways/regions";
+import { hasCoordinates } from "@/lib/pathways/geo";
+
+// Leaflet is only downloaded by someone who opens the map.
+const Directions = lazy(() => import("./Directions"));
 import type { Locale, ServiceRecord } from "@/lib/pathways/types";
 import { Button } from "@/components/ui/button";
 
@@ -33,6 +39,8 @@ export function RecordDetail({
   const where = field(record, "location_description", locale);
   const bring = field(record, "what_to_bring", locale);
   const notes = field(record, "notes", locale);
+  const [showMap, setShowMap] = useState(false);
+  const pin = hasCoordinates(record.coordinates) ? record.coordinates : null;
 
   return (
     <article>
@@ -46,7 +54,8 @@ export function RecordDetail({
       </h1>
       <p className="mb-3 text-[0.9em] text-muted-foreground">
         {t(locale, `category.${record.category}`)}
-        {record.subcity ? ` · ${record.subcity}` : ""} · {record.region}
+        {record.subcity ? ` · ${record.subcity}` : ""} ·{" "}
+        {record.region === NATIONWIDE ? t(locale, "region.nationwide") : regionLabel(locale, record.region)}
       </p>
       <StatusBadge record={record} locale={locale} stalenessDays={stalenessDays} today={today} detailed />
 
@@ -68,6 +77,17 @@ export function RecordDetail({
       <div className="mt-4 flex flex-col">
         <Row icon={<MapPin />} label={t(locale, "record.where")}>
           {where ?? notStated}
+          {pin && !showMap && (
+            <Button variant="subtle" className="mt-2" onClick={() => setShowMap(true)}>
+              <MapIcon />
+              {t(locale, "directions.open")}
+            </Button>
+          )}
+          {pin && showMap && (
+            <Suspense fallback={<p className="mt-2 text-muted-foreground">{t(locale, "directions.loading")}</p>}>
+              <Directions destination={pin} name={field(record, "name", locale) ?? record.name_en} locale={locale} />
+            </Suspense>
+          )}
         </Row>
 
         <Row icon={<ListChecks />} label={t(locale, "record.what")}>

@@ -1,0 +1,86 @@
+[
+  {
+    "id": "et-bg-assosa-ewla-office-001",
+    "name_en": "EWLA Assosa office — free legal aid",
+    "name_am": "የኢትዮጵያ የሴቶች ሕግ ባለሙያዎች ማኅበር (EWLA) አሶሳ ቢሮ – ነፃ የሕግ ድጋፍ",
+    "category": "legal_aid",
+    "services": [
+      "legal_advice",
+      "court_representation"
+    ],
+    "region": "Benishangul-Gumuz",
+    "subcity": null,
+    "location_description_en": "Assosa, around the city administration office and the National Election Board of Ethiopia.",
+    "location_description_am": "አሶሳ፣ በከተማ አስተዳደር ቢሮና በኢትዮጵያ ብሔራዊ ምርጫ ቦርድ አካባቢ።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "+251577750598"
+    ],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "free",
+    "accepts_walk_in": null,
+    "source_name": "EWLA — \"Contact Us\"",
+    "source_url": "https://ewla-et.org/contact/",
+    "source_text_original": "Assosa, around the city administration office Ethiopian national election board Bensahangul Gumuze,Ethiopia Tel: 0577750598 … We provide free legal advice and representation to all women and girls, ensuring equitable access to justice across both development and crisis-affected environments.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "EWLA — Annual Report 2023 (published June 2024)",
+        "url": "https://ewla-et.org/wp-content/uploads/2024/06/EWLA-2023-Annual-Report%E1%8D%9F_-.pdf",
+        "note": "\"has opened its regional offices in seven regions and one city administration namely Adama, Hawassa, Bahir Dar, Gambella, Asosa, Jigjiiga, Semera regions and city administration of Dire Dawa.\""
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "For women and girls. Hours are not stated. Number normalised to international format.",
+    "notes_am": "ለሴቶችና ልጃገረዶች። የሥራ ሰዓት አልተገለጸም። ቁጥሩ ወደ ዓለም አቀፍ ቅርጽ ተቀይሯል።"
+  },
+  {
+    "id": "et-bg-assosa-osc-001",
+    "name_en": "Assosa Hospital One-Stop Centre",
+    "name_am": "አሶሳ ሆስፒታል – የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
+    "category": "one_stop_centre",
+    "services": [
+      "medical_care",
+      "counselling",
+      "report_filing",
+      "legal_advice"
+    ],
+    "region": "Benishangul-Gumuz",
+    "subcity": null,
+    "location_description_en": "Inside Assosa Hospital, Assosa.",
+    "location_description_am": "በአሶሳ ሆስፒታል ውስጥ፣ አሶሳ።",
+    "coordinates": {
+      "lat": 10.0684217,
+      "lng": 34.5447126
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "UNFPA Ethiopia — \"Canada's support strengthens protection and economic opportunities for women in Benishangul-Gumuz\" (13 March 2026)",
+    "source_url": "https://ethiopia.unfpa.org/en/news/canadas-support-strengthens-protection-and-economic-opportunities-women-benishangul-gumuz",
+    "source_text_original": "At the Assosa Hospital One Stop Center for survivors of gender-based violence (GBV), women and girls can access police, justice, health and psychosocial services in one location. This integrated approach ensures that survivors receive immediate protection, care and support without having to navigate multiple institutions.",
+    "source_language": "en",
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Police and justice services are on site. Phone, hours and cost are not stated.",
+    "notes_am": "የፖሊስና የፍትሕ አገልግሎቶች በቦታው አሉ። ስልክ፣ የሥራ ሰዓትና ዋጋ አልተገለጹም።",
+    "additional_sources": [
+      {
+        "name": "OpenStreetMap via Nominatim, amenity=hospital (queried 15 September 2026)",
+        "url": "https://www.openstreetmap.org/way/188189774",
+        "note": "Coordinates of the host hospital: \"Assosa Hospital (way 188189774), Asosa - Kurmuk/Guba Road\". The centre is inside the hospital grounds; the pin is the hospital, not the centre's door."
+      }
+    ]
+  }
+]

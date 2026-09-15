@@ -1,0 +1,76 @@
+[
+  {
+    "id": "et-af-dubti-osc-001",
+    "name_en": "Dubti General Hospital One-Stop Centre",
+    "name_am": "ዱብቲ ጠቅላላ ሆስፒታል – የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
+    "category": "one_stop_centre",
+    "services": [
+      "medical_care",
+      "counselling",
+      "legal_advice"
+    ],
+    "region": "Afar",
+    "subcity": null,
+    "location_description_en": "At Dubti General Hospital, Dubti.",
+    "location_description_am": "በዱብቲ ጠቅላላ ሆስፒታል፣ ዱብቲ።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "Amref Health Africa — \"USAID Transform: Health in Developing Regions Program Launches GBV One-Stop Centre in Afar Region\" (12 April 2019)",
+    "source_url": "https://amref.org/news/usaid-transform-health-developing-regions-program-launches-gbv-one-stop-centre-afar-region/",
+    "source_text_original": "USAID Transform: Health in Developing Region program launched a one-stop centre at Dubti hospital in Afar region to provide medical treatment, psychosocial and legal services to those who undergo Gender-Based Violence (GBV) in an integrated approach. Working in close collaboration with Afar Regional Health Bureau and Dubti General Hospital, the program established the centre to deliver a coordinated response to survivors of sexual assaults in particular.",
+    "source_language": "en",
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "The source is from 2019 and the programme that set it up was USAID-funded; whether the centre still runs has not been confirmed. Phone, hours and cost are not stated.",
+    "notes_am": "ምንጩ ከ2019 ሲሆን ያቋቋመው ፕሮግራም በUSAID የተደገፈ ነበር፤ ማዕከሉ አሁንም እየሠራ መሆኑ አልተረጋገጠም። ስልክ፣ የሥራ ሰዓትና ዋጋ አልተገለጹም።"
+  },
+  {
+    "id": "et-af-semera-ewla-office-001",
+    "name_en": "EWLA Semera office — free legal aid",
+    "name_am": "የኢትዮጵያ የሴቶች ሕግ ባለሙያዎች ማኅበር (EWLA) ሰመራ ቢሮ – ነፃ የሕግ ድጋፍ",
+    "category": "legal_aid",
+    "services": [
+      "legal_advice",
+      "court_representation"
+    ],
+    "region": "Afar",
+    "subcity": null,
+    "location_description_en": "Semera, at the Afar supreme court, first floor.",
+    "location_description_am": "ሰመራ፣ በአፋር ጠቅላይ ፍርድ ቤት፣ አንደኛ ፎቅ።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "free",
+    "accepts_walk_in": null,
+    "source_name": "EWLA — \"Contact Us\"",
+    "source_url": "https://ewla-et.org/contact/",
+    "source_text_original": "Semera Afar national region semera city supreme court of afar on first flor … We provide free legal advice and representation to all women and girls, ensuring equitable access to justice across both development and crisis-affected environments.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "EWLA — Annual Report 2023 (published June 2024)",
+        "url": "https://ewla-et.org/wp-content/uploads/2024/06/EWLA-2023-Annual-Report%E1%8D%9F_-.pdf",
+        "note": "\"has opened its regional offices in seven regions and one city administration namely Adama, Hawassa, Bahir Dar, Gambella, Asosa, Jigjiiga, Semera regions and city administration of Dire Dawa.\""
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "For women and girls. Hours are not stated. No phone number is published for this office; call the 7711 hotline.",
+    "notes_am": "ለሴቶችና ልጃገረዶች። የሥራ ሰዓት አልተገለጸም። ለዚህ ቢሮ ስልክ ቁጥር አልተገለጸም፤ ወደ 7711 ይደውሉ።"
+  }
+]

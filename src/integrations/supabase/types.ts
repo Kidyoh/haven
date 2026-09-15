@@ -157,6 +157,54 @@ export type Database = {
           },
         ]
       }
+      incident_referrals: {
+        Row: {
+          created_at: string
+          id: string
+          incident_id: string
+          note: string | null
+          organization_id: string
+          referred_by: string | null
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          incident_id: string
+          note?: string | null
+          organization_id: string
+          referred_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          incident_id?: string
+          note?: string | null
+          organization_id?: string
+          referred_by?: string | null
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "incident_referrals_incident_id_fkey"
+            columns: ["incident_id"]
+            isOneToOne: false
+            referencedRelation: "incidents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "incident_referrals_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       incident_shares: {
         Row: {
           created_at: string
@@ -284,31 +332,61 @@ export type Database = {
       }
       organizations: {
         Row: {
+          accepts_referrals: boolean
+          address: string | null
           created_at: string
           email: string | null
+          hours: string | null
           id: string
+          is_active: boolean
           location: string | null
           name: string
+          notes: string | null
           phone: string | null
+          region: string | null
+          services: string[]
+          subcity: string | null
           type: string
+          updated_at: string
+          website: string | null
         }
         Insert: {
+          accepts_referrals?: boolean
+          address?: string | null
           created_at?: string
           email?: string | null
+          hours?: string | null
           id?: string
+          is_active?: boolean
           location?: string | null
           name: string
+          notes?: string | null
           phone?: string | null
+          region?: string | null
+          services?: string[]
+          subcity?: string | null
           type?: string
+          updated_at?: string
+          website?: string | null
         }
         Update: {
+          accepts_referrals?: boolean
+          address?: string | null
           created_at?: string
           email?: string | null
+          hours?: string | null
           id?: string
+          is_active?: boolean
           location?: string | null
           name?: string
+          notes?: string | null
           phone?: string | null
+          region?: string | null
+          services?: string[]
+          subcity?: string | null
           type?: string
+          updated_at?: string
+          website?: string | null
         }
         Relationships: []
       }
@@ -379,6 +457,31 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_incident_analytics: {
+        Args: {
+          p_since: string
+        }
+        Returns: {
+          accuracy_meters: number | null
+          activated_at: string | null
+          audio_seconds: number
+          battery_level: number | null
+          clips: number
+          contacts_reached: number
+          created_at: string
+          duress_at: string | null
+          id: string
+          latitude: number | null
+          location_fixes: number
+          longitude: number | null
+          resolved_at: string | null
+          signal_strength: string | null
+          sms_failed: number
+          sms_sent: number
+          status: string
+          user_id: string
+        }[]
+      }
       get_tracking: {
         Args: {
           p_token: string
@@ -388,6 +491,13 @@ export type Database = {
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      is_org_admin_of: {
+        Args: {
+          _organization_id: string
           _user_id: string
         }
         Returns: boolean

@@ -1,0 +1,193 @@
+[
+  {
+    "id": "et-aa-hotline-alegnta-6388",
+    "name_en": "Alegnta 6388 counselling hotline (Setaweet)",
+    "name_am": "አለኝታ 6388 የምክር የስልክ መስመር (ሴታዊት)",
+    "category": "hotline",
+    "services": [
+      "counselling",
+      "psychosocial_referral",
+      "medical_referral",
+      "legal_referral",
+      "shelter_referral"
+    ],
+    "region": "Nationwide",
+    "subcity": null,
+    "location_description_en": "Phone line. Referrals mainly to services in Addis Ababa.",
+    "location_description_am": "የስልክ መስመር ነው። ሪፈራል በዋናነት በአዲስ አበባ ወደሚገኙ አገልግሎቶች ነው።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "6388"
+    ],
+    "hours": null,
+    "what_to_bring_en": "Nothing. The call is free.",
+    "what_to_bring_am": "ምንም አያስፈልግም። ጥሪው ነፃ ነው።",
+    "cost": "free",
+    "accepts_walk_in": null,
+    "source_name": "UN Women Africa — \"What happened after COVID-19 hit Ethiopia\" (24 November 2020)",
+    "source_url": "https://africa.unwomen.org/en/news-and-events/stories/2020/11/what-happened-after-covid-19-hit-ethiopia",
+    "source_text_original": "Alegnta was an integral part of the efforts of our organization, Setaweet … The Toll-free service provides information regarding gender-based violence, in-depth counselling and referral services for callers focusing on rape, domestic violence, sexual harassment, marital rape, acid attack, forced confinement, forced marriage, verbal/psychological abuse, child marriage, Female Genital Mutilation (FGM) cyberbullying, trafficking and more. … referrals to services in Addis Ababa and a few other regions",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "UN Women Ethiopia (Facebook) — \"#GBV hotlines in Ethiopia 6388 (Alegnta) by Setaweet and 8044 by Marie Stopes\"",
+        "url": "https://www.facebook.com/unwomenethiopia/posts/177744013717678/",
+        "note": "Lists 6388 alongside 8044 and 7711 as GBV hotlines."
+      },
+      {
+        "name": "Global Health NOW — \"Ethiopian Feminists on a Mission to Help Sexual Assault Survivors\" (January 2022)",
+        "url": "https://pulitzercenter.org/stories/ethiopian-feminists-mission-help-sexual-assault-survivors",
+        "note": "\"a national hotline service, launched in November 2019.\" \"The hotline, named Alegnta … provides psychological counseling and referrals to callers who have experienced rape, attempted rape, and domestic violence.\" \"has received over 1,600 calls\". \"Survivors in Ethiopia can call Alegnta at 6388\". Republished by the Pulitzer Center; the Global Health NOW page itself could not be loaded."
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Launched November 2019. The newest source is from January 2022, and Setaweet's own hotline page no longer loads (checked 15 September 2026). Whether the line is still staffed has not been confirmed by phone.",
+    "notes_am": "በኅዳር 2019 ተጀመረ። አዲሱ ምንጭ ከጥር 2022 ነው፤ የሴታዊት የስልክ መስመር ገጽ አሁን አይከፈትም (መስከረም 15 ቀን 2026 ተረጋግጧል)። መስመሩ አሁንም እየሠራ መሆኑ በስልክ አልተረጋገጠም።"
+  },
+  {
+    "id": "et-aa-hotline-ewla-7711",
+    "name_en": "EWLA free legal aid hotline 7711",
+    "name_am": "የኢትዮጵያ የሴቶች ሕግ ባለሙያዎች ማኅበር (EWLA) ነፃ የሕግ ድጋፍ የስልክ መስመር 7711",
+    "category": "hotline",
+    "services": [
+      "legal_advice",
+      "legal_referral",
+      "shelter_referral",
+      "psychosocial_referral",
+      "counselling"
+    ],
+    "region": "Nationwide",
+    "subcity": null,
+    "location_description_en": "Phone line. Works from anywhere in Ethiopia.",
+    "location_description_am": "የስልክ መስመር ነው። ከየትኛውም የኢትዮጵያ ክፍል ይሠራል።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "7711"
+    ],
+    "hours": null,
+    "what_to_bring_en": "Nothing. The call is free.",
+    "what_to_bring_am": "ምንም አያስፈልግም። ጥሪው ነፃ ነው።",
+    "cost": "free",
+    "accepts_walk_in": null,
+    "source_name": "UNFPA Ethiopia — \"UNFPA supported hotline for sexual and gender-based violence launched\" (26 March 2021)",
+    "source_url": "https://ethiopia.unfpa.org/en/news/unfpa-supported-hotline-sexual-and-gender-based-violence-launched",
+    "source_text_original": "The national hotline has a toll free number of 7711 … established through the partnership of the Ethiopian Women Lawyers Association (EWLA) and Ethio Telecom … the services will be given in the Amharic, Afan Oromo and Tigrigna languages … provide vital support, information and advice to survivors of sexual and gender-based violence through offering counselling and referrals to existing appropriate services across the country",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "UNFPA Ethiopia — \"Hotline service helping GBV survivors seek legal aid, protection\" (27 February 2023)",
+        "url": "https://ethiopia.unfpa.org/en/news/hotline-service-helping-gbv-survivors-seek-legal-aid-protection",
+        "note": "\"Callers are immediately connected with lawyers and would receive advice on what they should do, where to go, and, if crimes have been committed, how to communicate with the police.\" \"EWLA refers them to AWSAD and other safe houses to shelter them. For psychosocial support, they are directed to Setawit.\""
+      },
+      {
+        "name": "EWLA — Annual Report 2023 (published June 2024)",
+        "url": "https://ewla-et.org/wp-content/uploads/2024/06/EWLA-2023-Annual-Report%E1%8D%9F_-.pdf",
+        "note": "\"Besides, it has established a hotline service (7711) which operates in 3 local languages: Amharic, Afan Oromo and Tigrigna.\" \"This service reached 3,635 clients\" in 2023."
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Languages: Amharic, Afan Oromo, Tigrigna. Still operating in 2023 per EWLA's annual report. Opening hours are not stated, and no source confirms the call is free from every mobile network. EWLA also runs walk-in legal aid offices in Addis Ababa and eight other cities; they are listed separately.",
+    "notes_am": "ቋንቋዎች፦ አማርኛ፣ አፋን ኦሮሞ፣ ትግርኛ። በEWLA ዓመታዊ ሪፖርት መሠረት በ2023 እየሠራ ነበር። የሥራ ሰዓት አልተገለጸም፤ ጥሪው ከሁሉም የሞባይል ኔትወርኮች ነፃ መሆኑን የሚያረጋግጥ ምንጭ የለም። EWLA በአዲስ አበባና በሌሎች ስምንት ከተሞች በአካል የሚሄዱበት የሕግ ድጋፍ ቢሮዎች አሉት፤ ለብቻቸው ተዘርዝረዋል።"
+  },
+  {
+    "id": "et-aa-hotline-police-991",
+    "name_en": "Police emergency line 991",
+    "name_am": "የፖሊስ የአደጋ ጊዜ መስመር 991",
+    "category": "police",
+    "services": [
+      "emergency_response",
+      "report_filing"
+    ],
+    "region": "Nationwide",
+    "subcity": null,
+    "location_description_en": "Phone line. Press 1 for the Federal Police (outside Addis Ababa) or 2 for Addis Ababa police.",
+    "location_description_am": "የስልክ መስመር ነው። ከአዲስ አበባ ውጭ ለፌዴራል ፖሊስ 1፣ ለአዲስ አበባ ፖሊስ 2 ይጫኑ።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "991"
+    ],
+    "hours": null,
+    "what_to_bring_en": "Nothing. A phone.",
+    "what_to_bring_am": "ምንም አያስፈልግም። ስልክ ብቻ።",
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "GOV.UK — \"Ethiopia: information for survivors of rape and sexual assault\" (updated 16 December 2025)",
+    "source_url": "https://www.gov.uk/government/publications/ethiopia-information-for-survivors-of-rape-and-sexual-assault/ethiopia-information-for-survivors-of-rape-and-sexual-assault",
+    "source_text_original": "contact the local emergency number on 991 (press 1 to reach the Federal Police if crime is committed outside Addis Ababa, or press 2 for Addis Ababa police if the crime occurred within the city). English-speaking operators are available, although keep in mind that their English proficiency may vary",
+    "source_language": "en",
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Some English-speaking operators. The UK travel advice page lists 911 instead; which number works has not been confirmed by phone. In Dire Dawa the French Embassy lists 620 for police. Whether the call is free is not stated.",
+    "notes_am": "አንዳንድ እንግሊዝኛ የሚናገሩ ኦፕሬተሮች አሉ። የዩናይትድ ኪንግደም የጉዞ ምክር ገጽ በምትኩ 911ን ይጠቅሳል፤ የትኛው ቁጥር እንደሚሠራ በስልክ አልተረጋገጠም። በድሬ ዳዋ የፈረንሳይ ኤምባሲ ለፖሊስ 620ን ይጠቅሳል። ጥሪው ነፃ መሆኑ አልተገለጸም።",
+    "additional_sources": [
+      {
+        "name": "Embassy of France in Ethiopia — \"In case of emergency\" (updated 24 February 2026)",
+        "url": "https://et.diplomatie.gouv.fr/en/en/node/7",
+        "note": "\"Police – Addis Ababa 991\"; \"Police – Dire Dawa 620 (emergency number)\"."
+      },
+      {
+        "name": "GOV.UK — \"Getting help - Ethiopia travel advice\" (updated 29 May 2026)",
+        "url": "https://www.gov.uk/foreign-travel-advice/ethiopia/getting-help",
+        "note": "Conflict: lists \"Police and emergency: 911\". Not confirmed by an Ethiopian government source."
+      }
+    ]
+  },
+  {
+    "id": "et-nat-hotline-trafficking-8797",
+    "name_en": "National anti-trafficking hotline 8797",
+    "name_am": "የሰዎች ንግድን የመከላከል ብሔራዊ የስልክ መስመር 8797",
+    "category": "hotline",
+    "services": [
+      "counselling",
+      "legal_advice",
+      "legal_referral",
+      "case_management"
+    ],
+    "region": "Nationwide",
+    "subcity": null,
+    "location_description_en": "Phone line. Works from anywhere in Ethiopia.",
+    "location_description_am": "የስልክ መስመር ነው። ከየትኛውም የኢትዮጵያ ክፍል ይሠራል።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "8797"
+    ],
+    "hours": null,
+    "what_to_bring_en": "Nothing. The call is free.",
+    "what_to_bring_am": "ምንም አያስፈልግም። ጥሪው ነፃ ነው።",
+    "cost": "free",
+    "accepts_walk_in": null,
+    "source_name": "IOM Ethiopia — \"Ethiopia Launches First National Anti-Trafficking Hotline to Protect Vulnerable Individuals\" (25 March 2025)",
+    "source_url": "https://ethiopia.iom.int/news/ethiopia-launches-first-national-anti-trafficking-hotline-protect-vulnerable-individuals",
+    "source_text_original": "accessible through the short code 8797, is a toll-free service available nationwide in four languages; Amharic, Afan Oromo, English, and Tigrigna. … provides vital information on safe migration, the risks of irregular migration including trafficking in persons, as well as mental health and psychosocial support, access to free legal aid, and referrals for victims.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "IOM Ethiopia — \"Ethiopia's Anti-Trafficking Hotlines\" factsheet (May 2025)",
+        "url": "https://ethiopia.iom.int/sites/g/files/tmzbdl996/files/documents/2025-05/anti-trafficking-factsheet.pdf",
+        "note": "\"provides services to victims of trafficking, anti-trafficking organizations, and the general public in three languages: Amharic, Afan Oromo, and Tigrigna.\" \"report abuse and seek help confidentially and at no cost.\""
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Run by the Ministry of Justice. For trafficking, forced labour and unsafe migration. The launch announcement lists four languages including English; IOM's factsheet lists three (no English). Hours are not stated.",
+    "notes_am": "በፍትሕ ሚኒስቴር የሚተዳደር። ለሰዎች ንግድ፣ ለግዳጅ ሥራና ለአደገኛ ፍልሰት። የመክፈቻ ማስታወቂያው እንግሊዝኛን ጨምሮ አራት ቋንቋዎችን ይጠቅሳል፤ የIOM መረጃ ወረቀት ሦስት ብቻ (ያለ እንግሊዝኛ) ይጠቅሳል። የሥራ ሰዓት አልተገለጸም።"
+  }
+]

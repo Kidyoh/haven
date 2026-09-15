@@ -1,0 +1,86 @@
+[
+  {
+    "id": "et-se-dilla-osc-001",
+    "name_en": "Dilla University Referral Hospital One-Stop Centre",
+    "name_am": "ዲላ ዩኒቨርሲቲ ሪፈራል ሆስፒታል – የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
+    "category": "one_stop_centre",
+    "services": [
+      "medical_care",
+      "counselling",
+      "legal_advice",
+      "report_filing",
+      "shelter_referral"
+    ],
+    "region": "South Ethiopia",
+    "subcity": null,
+    "location_description_en": "Inside Dilla University Referral Hospital, Dilla town, Gedeo zone.",
+    "location_description_am": "በዲላ ዩኒቨርሲቲ ሪፈራል ሆስፒታል ውስጥ፣ ዲላ ከተማ፣ ጌዴኦ ዞን።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "UNFPA Ethiopia — \"GBV survivors receiving integrated response services as part of UNFPA supported programme\" (10 November 2022)",
+    "source_url": "https://ethiopia.unfpa.org/en/news/gbv-survivors-receiving-integrated-response-services-part-unfpa-supported-programme",
+    "source_text_original": "The One Stop Center which was set up in the premises of the Dilla University Referral Hospital at the end of 2020 is providing survivors of gender-based violence like Almaz and her daughters with timely and comprehensive medico-legal, counselling, and protection services, placing medical personnel, prosecutors and police officers under one roof. … was referred together with her older sister to the UNFPA supported safe house in Hawassa which is run by the Association for Women Sanctuary and Development.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "UNFPA Ethiopia — \"Joint Donor Mission to Hawassa and Dilla Strengthens Support for Women's and Youth Health and Protection Services\" (10 June 2024)",
+        "url": "https://ethiopia.unfpa.org/en/news/joint-donor-mission-hawassa-and-dilla-strengthens-support-womens-and-youth-health-and",
+        "note": "\"Despite the renovation, the One-Stop Center (OSC) for GBV survivors continued to function, providing integrated services.\" Confirms operation in June 2024."
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Police officers and prosecutors work on site, so a report can be started here. Phone, hours and cost are not stated. Gedeo zone is in South Ethiopia region; the source does not name the region.",
+    "notes_am": "ፖሊሶችና ዐቃቤ ሕጎች በቦታው ይሠራሉ፤ ስለዚህ ክስ እዚህ መጀመር ይቻላል። ስልክ፣ የሥራ ሰዓትና ዋጋ አልተገለጹም። ጌዴኦ ዞን በደቡብ ኢትዮጵያ ክልል ውስጥ ነው፤ ምንጩ ክልሉን አይጠቅስም።"
+  },
+  {
+    "id": "et-se-jinka-osc-001",
+    "name_en": "Jinka General Hospital One-Stop Centre",
+    "name_am": "ጂንካ ጠቅላላ ሆስፒታል – የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
+    "category": "one_stop_centre",
+    "services": [
+      "medical_care",
+      "counselling",
+      "legal_advice"
+    ],
+    "region": "South Ethiopia",
+    "subcity": null,
+    "location_description_en": "On the premises of Jinka General Hospital, South Omo zone.",
+    "location_description_am": "በጂንካ ጠቅላላ ሆስፒታል ግቢ ውስጥ፣ ደቡብ ኦሞ ዞን።",
+    "coordinates": {
+      "lat": 5.7817452,
+      "lng": 36.5633213
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "Amref Health Africa in Canada — \"Supporting Sexual And Gender-Based Violence Survivors In Ethiopia\" (18 August 2022)",
+    "source_url": "https://amrefcanada.org/supporting-sexual-and-gender-based-violence-survivors-in-ethiopia/",
+    "source_text_original": "establishing an integrated One-Stop Centre for children and women who are survivors of sexual and gender-based violence. … Situated on the premises of Jinka General Hospital in the South Omo zone of the Southern Nations, Nationalities, and Peoples' Region (SNNPR) of Ethiopia, the Centre provides medical treatment, psychosocial support and legal services in a coordinated manner to survivors of sexual and gender-based violence.",
+    "source_language": "en",
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "For children and women. The source is from 2022 and names SNNPR; South Omo is now in South Ethiopia region. Phone, hours and cost are not stated.",
+    "notes_am": "ለሕፃናትና ለሴቶች። ምንጩ ከ2022 ሲሆን ደቡብ ብሔሮች (SNNPR) ይላል፤ ደቡብ ኦሞ አሁን በደቡብ ኢትዮጵያ ክልል ውስጥ ነው። ስልክ፣ የሥራ ሰዓትና ዋጋ አልተገለጹም።",
+    "additional_sources": [
+      {
+        "name": "OpenStreetMap via Nominatim, amenity=hospital (queried 15 September 2026)",
+        "url": "https://www.openstreetmap.org/node/10734999584",
+        "note": "Coordinates of the host hospital: \"Jinka Jeneral Hospital (node 10734999584), Jinka\". The centre is inside the hospital grounds; the pin is the hospital, not the centre's door."
+      }
+    ]
+  }
+]

@@ -40,3 +40,27 @@
   content: "• ";
   color: hsl(var(--haven-gold));
 }
+
+/* The map follows HAVEN's dark ground. Inverting the light OpenStreetMap tiles
+   (and turning the hues back) gives a dark map without a second tile provider;
+   markers and the line are vector layers and keep their real colours. */
+.pathways-map .leaflet-tile-pane {
+  filter: invert(1) hue-rotate(180deg) brightness(0.9) contrast(0.9);
+}
+.pathways-map .leaflet-container,
+.pathways-map.leaflet-container {
+  background: hsl(var(--secondary));
+  font: inherit;
+}
+.pathways-map .leaflet-bar a {
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  border-color: hsl(var(--border));
+}
+.pathways-map .leaflet-control-attribution {
+  background: hsl(var(--card) / 0.85);
+  color: hsl(var(--muted-foreground));
+}
+.pathways-map .leaflet-control-attribution a {
+  color: hsl(var(--haven-gold));
+}

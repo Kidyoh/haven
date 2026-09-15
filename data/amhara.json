@@ -1,0 +1,153 @@
+[
+  {
+    "id": "et-am-bahirdar-bdu-legal-aid-001",
+    "name_en": "Bahir Dar University Legal Aid Center",
+    "name_am": "የባሕር ዳር ዩኒቨርሲቲ የሕግ ድጋፍ ማዕከል",
+    "category": "legal_aid",
+    "services": [
+      "legal_advice",
+      "court_representation"
+    ],
+    "region": "Amhara",
+    "subcity": null,
+    "location_description_en": "Amhara Women's Association office, Kebele 13, Bahir Dar.",
+    "location_description_am": "የአማራ ሴቶች ማኅበር ቢሮ፣ ቀበሌ 13፣ ባሕር ዳር።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "free",
+    "accepts_walk_in": null,
+    "source_name": "Rights in Exile — \"Ethiopia Legal Assistance\" (last updated April 2023)",
+    "source_url": "https://rightsinexile.org/legal-assistance-by-country/ethiopia-legal-assistance/",
+    "source_text_original": "Address: Amhara Women's Association Office, Kebele 13 … Bahir Dar University Legal Aid Center provides free legal aid services to vulnerable sections of the population, particularly women, children, people with disabilities, prison inmates and people living with HIV/AIDS. … legal counselling, preparation of pleadings and representation before the courts",
+    "source_language": "en",
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "The source lists a personal mobile for a named staff member; it is not shown here. Hours are not stated. Website: bdu.edu.et/law.",
+    "notes_am": "ምንጩ የአንድ ሠራተኛ የግል ሞባይል ቁጥር ይጠቅሳል፤ እዚህ አልተካተተም። የሥራ ሰዓት አልተገለጸም። ድረ ገጽ፦ bdu.edu.et/law።"
+  },
+  {
+    "id": "et-am-bahirdar-ewla-office-001",
+    "name_en": "EWLA Bahir Dar office — free legal aid",
+    "name_am": "የኢትዮጵያ የሴቶች ሕግ ባለሙያዎች ማኅበር (EWLA) ባሕር ዳር ቢሮ – ነፃ የሕግ ድጋፍ",
+    "category": "legal_aid",
+    "services": [
+      "legal_advice",
+      "court_representation"
+    ],
+    "region": "Amhara",
+    "subcity": null,
+    "location_description_en": "Inside the high court compound, Tana sub-city, Shembete kebele, Bahir Dar.",
+    "location_description_am": "በከፍተኛ ፍርድ ቤት ግቢ ውስጥ፣ ጣና ክፍለ ከተማ፣ ሸምበጤ ቀበሌ፣ ባሕር ዳር።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "+251582207396"
+    ],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "free",
+    "accepts_walk_in": null,
+    "source_name": "EWLA — \"Contact Us\"",
+    "source_url": "https://ewla-et.org/contact/",
+    "source_text_original": "Inside the high court compound of Bahir Dar Tana Sub-city,Shembete Kebele … Tel: 0582207396 … We provide free legal advice and representation to all women and girls, ensuring equitable access to justice across both development and crisis-affected environments.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "EWLA — Annual Report 2023 (published June 2024)",
+        "url": "https://ewla-et.org/wp-content/uploads/2024/06/EWLA-2023-Annual-Report%E1%8D%9F_-.pdf",
+        "note": "\"has opened its regional offices in seven regions and one city administration namely Adama, Hawassa, Bahir Dar, Gambella, Asosa, Jigjiiga, Semera regions and city administration of Dire Dawa.\""
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "For women and girls. Hours are not stated. Number normalised to international format. The source gives the town only; the region (Amhara) was added for filtering.",
+    "notes_am": "ለሴቶችና ልጃገረዶች። የሥራ ሰዓት አልተገለጸም። ቁጥሩ ወደ ዓለም አቀፍ ቅርጽ ተቀይሯል። ምንጩ ከተማውን ብቻ ይጠቅሳል፤ ክልሉ (አማራ) ለማጣሪያ ተጨምሯል።"
+  },
+  {
+    "id": "et-am-dessie-osc-001",
+    "name_en": "Dessie One-Stop Centre",
+    "name_am": "ደሴ የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
+    "category": "one_stop_centre",
+    "services": [
+      "medical_care",
+      "emergency_contraception",
+      "sti_treatment",
+      "counselling",
+      "legal_advice",
+      "shelter_referral"
+    ],
+    "region": "Amhara",
+    "subcity": null,
+    "location_description_en": "Dessie town. The host facility is not named by the source.",
+    "location_description_am": "ደሴ ከተማ። አስተናጋጁ ተቋም በምንጩ አልተጠቀሰም።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "Fana Broadcasting Corporate — \"Gov't inaugurate one-stop centre to provide comprehensive services to gender-based violence victims\" (15 November 2022)",
+    "source_url": "https://www.fanamc.com/english/ethiopia-unicef-inaugurate-one-stop-centre-to-provide-comprehensive-services-to-gender-based-violence-victims/",
+    "source_text_original": "The Government of Ethiopia and UNICEF inaugurated a one-stop centre (OSC) in Dessie town that provides comprehensive medical, legal, and psychosocial services to victims of gender-based violence (GBV) in a safe environment. The centre provides critical medical services including the clinical management of rape, abortion care, emergency contraceptive and treatment for diseases like HIV and sexually transmitted infections and hepatitis B. It also provides mental health and psychosocial services as well as legal aid to victims. In addition, it provides referral services including shelter and livelihood support in collaboration with partners.",
+    "source_language": "en",
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Also offers clinical management of rape, abortion care and hepatitis B treatment. Phone, hours and cost are not stated. The source is from 2022.",
+    "notes_am": "የአስገድዶ መድፈር ክሊኒካዊ ሕክምና፣ የውርጃ እንክብካቤና የሄፓታይተስ ቢ ሕክምናም ይሰጣል። ስልክ፣ የሥራ ሰዓትና ዋጋ አልተገለጹም። ምንጩ ከ2022 ነው።"
+  },
+  {
+    "id": "et-am-kombolcha-safe-house-001",
+    "name_en": "AWSAD safe house, Kombolcha",
+    "name_am": "የሴቶች መጠለያና ልማት ማኅበር (AWSAD) መጠለያ፣ ኮምቦልቻ",
+    "category": "shelter",
+    "services": [
+      "shelter"
+    ],
+    "region": "Amhara",
+    "subcity": null,
+    "location_description_en": "Kombolcha town. The safe house location is not public. Ask the 7711 hotline, the police or a one-stop centre for a referral.",
+    "location_description_am": "ኮምቦልቻ ከተማ። የመጠለያው ቦታ ለሕዝብ ይፋ አይደለም። ከ7711 መስመር፣ ከፖሊስ ወይም ከተቀናጀ አገልግሎት ማዕከል ሪፈራል ይጠይቁ።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "United Nations Ethiopia — \"UN Women, partners launch shelters for GBV/CRSV Survivors in Amhara, Tigray Regions\" (18 December 2024)",
+    "source_url": "https://ethiopia.un.org/en/286852-un-women-partners-launch-shelters-gbvcrsv-survivors-amhara-tigray-regions",
+    "source_text_original": "The shelter in Kombolcha town of the Amhara region, run by UN Women's implementing partner Association of Women in Sanctuary and Development (AWSAD), was launched on August 8, 2024. … supported by the Bill and Melinda Gates Foundation (BMGF), facilitated the establishment of the Kombolcha safe house.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "UNFPA ESARO — \"Supporting GBV survivors in Amhara to recover and build resilience\" (28 March 2024)",
+        "url": "https://esaro.unfpa.org/en/news/supporting-gbv-survivors-amhara-recover-and-build-resilience",
+        "note": "\"The Association of Women Sanctuary and Development (AWSAD) provides safe shelters to survivors in the region, with referrals through the region's Bureau of Women, Children and Social Affairs.\" Used for the referral route."
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "For women and girl survivors of conflict-related sexual violence. Entry is by referral, including through the Amhara Bureau of Women, Children and Social Affairs. No phone number is published.",
+    "notes_am": "ከግጭት ጋር በተያያዘ ጾታዊ ጥቃት ለደረሰባቸው ሴቶችና ልጃገረዶች። መግቢያ በሪፈራል ነው፤ በአማራ ክልል ሴቶች፣ ሕፃናትና ማኅበራዊ ጉዳይ ቢሮ በኩልም ጭምር። ስልክ ቁጥር አልተገለጸም።"
+  }
+]

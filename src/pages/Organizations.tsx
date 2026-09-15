@@ -1,12 +1,13 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Building2, Mail, MapPin, Pencil, Phone, Plus, Trash2 } from "lucide-react";
+import { Building2, CheckCircle, Download, Plus, Search } from "lucide-react";
+import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -17,107 +18,86 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Badge } from "@/components/ui/badge";
-import { toast } from "sonner";
-import { Container, PageHeader, Screen } from "@/components/haven/Screen";
-import { EmptyState, ScreenLoader, Spinner } from "@/components/haven/Feedback";
-import { Field, TextField } from "@/components/haven/Field";
+import { Container, IconTile, PageHeader, Screen, type Tone } from "@/components/haven/Screen";
+import { Callout, EmptyState, ScreenLoader } from "@/components/haven/Feedback";
+import { DirectoryList } from "@/components/organizations/DirectoryList";
+import { OrganizationDetail } from "@/components/organizations/OrganizationDetail";
+import { OrganizationForm } from "@/components/organizations/OrganizationForm";
+import {
+  applyDirectoryQuery,
+  csvFilename,
+  DEFAULT_QUERY,
+  directoryStats,
+  ORG_TYPES,
+  organizationsToCsv,
+  payloadFromForm,
+  type ActiveFilter,
+  type DirectoryQuery,
+  type Organization,
+  type OrganizationFormValues,
+  type OrgType,
+  type SortKey,
+} from "@/lib/organizations/directory";
+import { fetchAccess, fetchOrganizations, type DirectoryAccess } from "@/lib/organizations/data";
 
-interface Organization {
-  id: string;
-  name: string;
-  type: string;
-  location: string | null;
-  phone: string | null;
-  email: string | null;
-  created_at: string;
-}
-
-const ORG_TYPES = [
-  { value: "police", label: "Police" },
-  { value: "hospital", label: "Hospital" },
-  { value: "ngo", label: "NGO" },
-  { value: "fire", label: "Fire & Rescue" },
-  { value: "security", label: "Private Security" },
-  { value: "other", label: "Other" },
-];
-
+/**
+ * The responder organizations directory. Admins manage every organization;
+ * org admins can browse it and edit their own (the RLS policies say the same).
+ */
 const Organizations = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const [authorized, setAuthorized] = useState<boolean | null>(null);
+  const [access, setAccess] = useState<DirectoryAccess | null>(null);
   const [orgs, setOrgs] = useState<Organization[]>([]);
   const [loading, setLoading] = useState(true);
-  const [dialogOpen, setDialogOpen] = useState(false);
+  const [loadError, setLoadError] = useState(false);
+  const [query, setQuery] = useState<DirectoryQuery>(DEFAULT_QUERY);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<Organization | null>(null);
   const [saving, setSaving] = useState(false);
   const [pendingDelete, setPendingDelete] = useState<Organization | null>(null);
 
-  const [form, setForm] = useState({
-    name: "",
-    type: "police",
-    location: "",
-    phone: "",
-    email: "",
-  });
+  const loadOrgs = useCallback(async () => {
+    try {
+      setOrgs(await fetchOrganizations());
+      setLoadError(false);
+    } catch {
+      setLoadError(true);
+      toast.error("Failed to load organizations");
+    }
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
-    const check = async () => {
-      if (!user) return;
-      const { data } = await supabase
-        .from("user_roles")
-        .select("role")
-        .eq("user_id", user.id);
-      const isAdmin = data?.some((r) => r.role === "admin") ?? false;
-      setAuthorized(isAdmin);
-      if (isAdmin) loadOrgs();
+    if (!user) return;
+    fetchAccess(user.id).then((a) => {
+      setAccess(a);
+      if (a.isAdmin || a.isOrgAdmin) loadOrgs();
       else setLoading(false);
-    };
-    check();
-  }, [user]);
+    });
+  }, [user, loadOrgs]);
 
-  const loadOrgs = async () => {
-    setLoading(true);
-    const { data, error } = await supabase
-      .from("organizations")
-      .select("*")
-      .order("created_at", { ascending: false });
-    if (error) toast.error("Failed to load organizations");
-    else setOrgs(data || []);
-    setLoading(false);
-  };
+  const visible = useMemo(() => applyDirectoryQuery(orgs, query), [orgs, query]);
+  const stats = useMemo(() => directoryStats(orgs), [orgs]);
+  // Read from the list so the panel reflects an edit the moment it reloads.
+  const selected = orgs.find((o) => o.id === selectedId) ?? null;
+  const setQ = (patch: Partial<DirectoryQuery>) => setQuery((q) => ({ ...q, ...patch }));
+  const filtered = query.search !== "" || query.type !== "all" || query.active !== "all";
 
   const openCreate = () => {
     setEditing(null);
-    setForm({ name: "", type: "police", location: "", phone: "", email: "" });
-    setDialogOpen(true);
+    setFormOpen(true);
   };
 
   const openEdit = (org: Organization) => {
     setEditing(org);
-    setForm({
-      name: org.name,
-      type: org.type,
-      location: org.location ?? "",
-      phone: org.phone ?? "",
-      email: org.email ?? "",
-    });
-    setDialogOpen(true);
+    setFormOpen(true);
   };
 
-  const handleSave = async () => {
-    if (!form.name.trim()) {
-      toast.error("Name is required");
-      return;
-    }
+  const handleSave = async (values: OrganizationFormValues) => {
     setSaving(true);
-    const payload = {
-      name: form.name.trim(),
-      type: form.type,
-      location: form.location.trim() || null,
-      phone: form.phone.trim() || null,
-      email: form.email.trim() || null,
-    };
+    const payload = payloadFromForm(values);
     const { error } = editing
       ? await supabase.from("organizations").update(payload).eq("id", editing.id)
       : await supabase.from("organizations").insert(payload);
@@ -127,23 +107,45 @@ const Organizations = () => {
       return;
     }
     toast.success(editing ? "Organization updated" : "Organization added");
-    setDialogOpen(false);
+    setFormOpen(false);
     loadOrgs();
+  };
+
+  const handleToggleActive = async (org: Organization) => {
+    const { error } = await supabase.from("organizations").update({ is_active: !org.is_active }).eq("id", org.id);
+    if (error) toast.error(error.message);
+    else {
+      toast.success(org.is_active ? `${org.name} deactivated` : `${org.name} reactivated`);
+      loadOrgs();
+    }
   };
 
   const handleDelete = async (org: Organization) => {
     const { error } = await supabase.from("organizations").delete().eq("id", org.id);
-    if (error) toast.error(error.message);
-    else {
-      toast.success("Organization deleted");
-      loadOrgs();
-    }
     setPendingDelete(null);
+    if (error) {
+      // 23503: referrals arrived after the panel counted them.
+      toast.error(error.code === "23503" ? "This organization has referrals. Deactivate it instead." : error.message);
+      return;
+    }
+    toast.success("Organization deleted");
+    setSelectedId(null);
+    loadOrgs();
   };
 
-  if (authorized === null || loading) return <ScreenLoader tone="gold" />;
+  const handleExport = () => {
+    const blob = new Blob([organizationsToCsv(visible)], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = csvFilename(new Date());
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
-  if (!authorized) {
+  if (access === null || loading) return <ScreenLoader tone="gold" />;
+
+  if (!access.isAdmin && !access.isOrgAdmin) {
     return (
       <Screen center>
         <div className="w-full max-w-sm">
@@ -151,7 +153,7 @@ const Organizations = () => {
             icon={<Building2 />}
             tone="sos"
             title="Access denied"
-            description="Only admins can manage responder organizations."
+            description="Only admins and organization admins can open the organizations directory."
             action={
               <Button variant="subtle" size="lg" onClick={() => navigate("/dashboard")}>
                 Back to dashboard
@@ -171,101 +173,93 @@ const Organizations = () => {
         icon={<Building2 />}
         tone="gold"
         title="Organizations"
-        subtitle="Responder agencies that receive alerts"
+        subtitle="Responder agencies, services and referrals"
         onBack={() => navigate("/dashboard")}
         backLabel="Back to dashboard"
         actions={
-          <Button variant="gold" onClick={openCreate}>
-            <Plus />
-            <span className="hidden sm:inline">Add organization</span>
-            <span className="sm:hidden">Add</span>
-          </Button>
+          access.isAdmin && (
+            <Button variant="gold" onClick={openCreate}>
+              <Plus />
+              <span className="hidden sm:inline">Add organization</span>
+              <span className="sm:hidden">Add</span>
+            </Button>
+          )
         }
       />
 
-      <Container width="wide" as="main" className="flex-1 py-6">
-        {orgs.length === 0 ? (
+      <Container width="wide" as="main" className="flex-1 space-y-5 py-6">
+        {loadError && (
+          <Callout tone="danger" title="Could not load the directory">
+            <button onClick={loadOrgs} className="text-xs font-semibold underline underline-offset-2">
+              Try again
+            </button>
+          </Callout>
+        )}
+
+        {orgs.length === 0 && !loadError ? (
           <div className="rounded-2xl border border-dashed border-border">
             <EmptyState
               icon={<Building2 />}
               tone="gold"
               title="No organizations yet"
-              description="Add police stations, hospitals, NGOs and other agencies so alerts have somewhere to go."
+              description="Add police stations, hospitals, shelters, NGOs and other agencies so incidents have somewhere to be referred."
               action={
-                <Button variant="gold" onClick={openCreate}>
-                  <Plus />
-                  Add your first organization
-                </Button>
+                access.isAdmin && (
+                  <Button variant="gold" onClick={openCreate}>
+                    <Plus />
+                    Add your first organization
+                  </Button>
+                )
               }
             />
           </div>
         ) : (
-          <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
-            {orgs.map((org) => (
-              <li
-                key={org.id}
-                className="group flex flex-col rounded-2xl border border-border bg-card p-5 transition-colors hover:border-haven-gold/40"
-              >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="min-w-0">
-                    <h2 className="truncate font-display text-base font-semibold text-foreground">{org.name}</h2>
-                    <Badge variant="secondary" className="mt-1.5 capitalize">
-                      {org.type}
-                    </Badge>
-                  </div>
-                  <div className="flex shrink-0 gap-1 opacity-60 transition-opacity focus-within:opacity-100 group-hover:opacity-100">
-                    <Button size="icon-sm" variant="ghost" onClick={() => openEdit(org)} aria-label={`Edit ${org.name}`}>
-                      <Pencil />
-                    </Button>
-                    <Button
-                      size="icon-sm"
-                      variant="ghost"
-                      onClick={() => setPendingDelete(org)}
-                      aria-label={`Delete ${org.name}`}
-                      className="hover:text-sos"
-                    >
-                      <Trash2 />
-                    </Button>
-                  </div>
-                </div>
+          <>
+            {/* Stats */}
+            <div className="grid grid-cols-2 gap-3">
+              <StatTile icon={<Building2 />} label="Organizations" value={stats.total} tone="gold" />
+              <StatTile icon={<CheckCircle />} label="Active" value={stats.active} tone="safe" />
+            </div>
+            <div role="group" aria-label="Filter by type" className="flex flex-wrap gap-1.5">
+              {ORG_TYPES.map((t) => {
+                const on = query.type === t.value;
+                return (
+                  <button
+                    key={t.value}
+                    aria-pressed={on}
+                    onClick={() => setQ({ type: on ? "all" : t.value })}
+                    className={cn(
+                      "min-h-9 rounded-full border px-3 text-xs font-medium transition-colors",
+                      on
+                        ? "border-haven-gold/40 bg-haven-gold/10 text-haven-gold"
+                        : "border-border bg-card text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {t.label} <span className="tabular ml-1 text-foreground">{stats.byType[t.value]}</span>
+                  </button>
+                );
+              })}
+            </div>
 
-                <dl className="mt-4 space-y-2 text-sm text-muted-foreground">
-                  <Detail icon={<MapPin />} value={org.location} />
-                  <Detail icon={<Phone />} value={org.phone} href={org.phone ? `tel:${org.phone}` : undefined} />
-                  <Detail icon={<Mail />} value={org.email} href={org.email ? `mailto:${org.email}` : undefined} />
-                  {!org.location && !org.phone && !org.email && (
-                    <p className="text-xs italic">No contact details recorded</p>
-                  )}
-                </dl>
-              </li>
-            ))}
-          </ul>
-        )}
-      </Container>
-
-      {/* Create / edit */}
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-md">
-          <DialogHeader>
-            <DialogTitle className="font-display">
-              {editing ? "Edit organization" : "Add organization"}
-            </DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4 py-1">
-            <TextField
-              label="Name"
-              required
-              value={form.name}
-              onChange={(e) => setForm({ ...form, name: e.target.value })}
-              placeholder="e.g. Gulele Police Station"
-            />
-            <Field label="Type">
-              {(a11y) => (
-                <Select value={form.type} onValueChange={(v) => setForm({ ...form, type: v })}>
-                  <SelectTrigger id={a11y.id} className="h-11 rounded-xl bg-card">
+            {/* Filters */}
+            <div className="flex flex-col gap-3 lg:flex-row">
+              <div className="relative flex-1">
+                <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Search name, sub-city or service…"
+                  aria-label="Search organizations"
+                  value={query.search}
+                  onChange={(e) => setQ({ search: e.target.value })}
+                  className="pl-10"
+                />
+              </div>
+              <div className="flex flex-wrap gap-2">
+                <Select value={query.type} onValueChange={(v) => setQ({ type: v as OrgType | "all" })}>
+                  <SelectTrigger className="h-11 w-40 rounded-xl bg-card" aria-label="Type">
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="all">All types</SelectItem>
                     {ORG_TYPES.map((t) => (
                       <SelectItem key={t.value} value={t.value}>
                         {t.label}
@@ -273,52 +267,91 @@ const Organizations = () => {
                     ))}
                   </SelectContent>
                 </Select>
-              )}
-            </Field>
-            <TextField
-              label="Location"
-              optional
-              value={form.location}
-              onChange={(e) => setForm({ ...form, location: e.target.value })}
-              placeholder="City, sub-city or address"
-            />
-            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              <TextField
-                label="Phone"
-                optional
-                type="tel"
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                placeholder="+251 ..."
-              />
-              <TextField
-                label="Email"
-                optional
-                type="email"
-                value={form.email}
-                onChange={(e) => setForm({ ...form, email: e.target.value })}
-                placeholder="contact@org.et"
-              />
+                <div role="group" aria-label="Filter by status" className="flex gap-1 rounded-2xl bg-card p-1">
+                  {(["all", "active", "inactive"] as ActiveFilter[]).map((s) => (
+                    <button
+                      key={s}
+                      aria-pressed={query.active === s}
+                      onClick={() => setQ({ active: s })}
+                      className={cn(
+                        "min-h-9 rounded-xl px-3 text-xs font-medium capitalize transition-colors",
+                        query.active === s
+                          ? "bg-secondary text-foreground"
+                          : "text-muted-foreground hover:text-foreground",
+                      )}
+                    >
+                      {s}
+                    </button>
+                  ))}
+                </div>
+                <Select value={query.sort} onValueChange={(v) => setQ({ sort: v as SortKey })}>
+                  <SelectTrigger className="h-11 w-44 rounded-xl bg-card" aria-label="Sort">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="name">Name A–Z</SelectItem>
+                    <SelectItem value="updated">Recently updated</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Button variant="subtle" onClick={handleExport} disabled={visible.length === 0}>
+                  <Download />
+                  Export CSV
+                </Button>
+              </div>
             </div>
-          </div>
-          <DialogFooter className="gap-2 sm:gap-2">
-            <Button variant="ghost" onClick={() => setDialogOpen(false)}>
-              Cancel
-            </Button>
-            <Button variant="gold" onClick={handleSave} disabled={saving}>
-              {saving ? <Spinner size="sm" tone="current" label="Saving" /> : editing ? "Save changes" : "Add organization"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
 
-      {/* Delete confirmation */}
+            <p className="text-xs text-muted-foreground" aria-live="polite">
+              Showing {visible.length} of {orgs.length}
+            </p>
+
+            {visible.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-border">
+                <EmptyState
+                  icon={<Search />}
+                  title="No organizations match"
+                  description="Try a different search, or clear the filters."
+                  action={
+                    filtered && (
+                      <Button variant="subtle" onClick={() => setQuery({ ...DEFAULT_QUERY, sort: query.sort })}>
+                        Clear filters
+                      </Button>
+                    )
+                  }
+                />
+              </div>
+            ) : (
+              <DirectoryList orgs={visible} onOpen={(org) => setSelectedId(org.id)} />
+            )}
+          </>
+        )}
+      </Container>
+
+      <OrganizationDetail
+        org={selected}
+        organizations={orgs}
+        access={access}
+        onOpenChange={(open) => !open && setSelectedId(null)}
+        onEdit={openEdit}
+        onToggleActive={handleToggleActive}
+        onDelete={setPendingDelete}
+      />
+
+      <OrganizationForm
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        editing={editing}
+        saving={saving}
+        onSubmit={handleSave}
+      />
+
+      {/* Delete confirmation. Only reachable when the organization has no referrals. */}
       <AlertDialog open={pendingDelete !== null} onOpenChange={(open) => !open && setPendingDelete(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle className="font-display">Delete "{pendingDelete?.name}"?</AlertDialogTitle>
             <AlertDialogDescription>
-              This removes the organization from the responder network. It cannot be undone.
+              This removes the organization from the directory and unassigns its members. It cannot be undone. To
+              keep it on record, deactivate it instead.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -336,18 +369,16 @@ const Organizations = () => {
   );
 };
 
-const Detail = ({ icon, value, href }: { icon: React.ReactNode; value: string | null; href?: string }) =>
-  value ? (
-    <div className="flex items-center gap-2">
-      <span className="shrink-0 text-muted-foreground [&_svg]:h-4 [&_svg]:w-4">{icon}</span>
-      {href ? (
-        <a href={href} className="truncate hover:text-haven-gold hover:underline">
-          {value}
-        </a>
-      ) : (
-        <span className="truncate">{value}</span>
-      )}
+const StatTile = ({ icon, label, value, tone }: { icon: React.ReactNode; label: string; value: number; tone: Tone }) => (
+  <div className="rounded-2xl border border-border bg-card p-4">
+    <div className="flex items-center gap-3">
+      <IconTile tone={tone}>{icon}</IconTile>
+      <div className="min-w-0">
+        <p className="truncate text-xs text-muted-foreground">{label}</p>
+        <p className="tabular font-display text-2xl font-bold text-foreground">{value}</p>
+      </div>
     </div>
-  ) : null;
+  </div>
+);
 
 export default Organizations;

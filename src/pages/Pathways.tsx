@@ -5,6 +5,7 @@ import { StatusBadge } from "@/components/pathways/StatusBadge";
 import { checkForUpdate, fetchDataset, loadCachedDataset, requestBackgroundSync, saveDataset } from "@/lib/pathways/dataset";
 import { AVAILABLE_LOCALES, field, initialLocale, storeLocale, t, tn } from "@/lib/pathways/i18n";
 import { NEEDS, matchesNeed, rankForNeed, type Need } from "@/lib/pathways/needs";
+import { NATIONWIDE, matchesRegion, regionLabel, regionOptions } from "@/lib/pathways/regions";
 import { searchRecords, type SearchableText } from "@/lib/pathways/search";
 import { DEFAULT_STALENESS_DAYS } from "@/lib/pathways/staleness";
 import type { Dataset, Locale, ServiceRecord } from "@/lib/pathways/types";
@@ -27,6 +28,7 @@ import "./pathways.css";
 type View = { kind: "home" } | { kind: "results"; need: Need | null } | { kind: "record"; record: ServiceRecord } | { kind: "about" };
 
 const SIMPLE_KEY = "pathways.simple";
+const REGION_KEY = "pathways.region";
 // Quick exit lands on a neutral, widely visited page.
 const EXIT_URL = "https://www.google.com/";
 // Neutral tab title while on this screen; nothing alarming at a glance.
@@ -49,6 +51,7 @@ export default function Pathways() {
   const [online, setOnline] = useState(true);
   const [view, setView] = useState<View>({ kind: "home" });
   const [query, setQuery] = useState("");
+  const [region, setRegion] = useState<string | null>(null);
   const [updateMsg, setUpdateMsg] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
   const today = useMemo(() => new Date(), []);
@@ -125,6 +128,7 @@ export default function Pathways() {
   useEffect(() => {
     try {
       setSimple(localStorage.getItem(SIMPLE_KEY) === "1");
+      setRegion(localStorage.getItem(REGION_KEY) || null);
     } catch {
       /* storage blocked: default view */
     }
@@ -166,6 +170,7 @@ export default function Pathways() {
       place: [
         r.subcity ?? "",
         r.region,
+        regionLabel(locale, r.region),
         r.location_description_en ?? "",
         r.location_description_am ?? "",
         ...r.services.map((s) => t(locale, `service.${s}`)),
@@ -178,11 +183,13 @@ export default function Pathways() {
 
   const results = useMemo(() => {
     if (!dataset) return [];
-    let list = dataset.records;
+    let list = dataset.records.filter((r) => matchesRegion(r, region));
     const need = view.kind === "results" ? view.need : null;
     if (need) list = list.filter((r) => matchesNeed(r, need)).sort((a, b) => rankForNeed(a, need) - rankForNeed(b, need));
     return searchRecords(query, list, toText);
-  }, [dataset, view, query, toText]);
+  }, [dataset, view, query, toText, region]);
+
+  const regions = useMemo(() => (dataset ? regionOptions(dataset.records) : []), [dataset]);
 
   // ---- actions ------------------------------------------------------------------
   const switchLocale = () => {
@@ -190,6 +197,15 @@ export default function Pathways() {
     const next = AVAILABLE_LOCALES[(i + 1) % AVAILABLE_LOCALES.length];
     setLocale(next);
     storeLocale(next);
+  };
+  const chooseRegion = (next: string | null) => {
+    setRegion(next);
+    try {
+      if (next) localStorage.setItem(REGION_KEY, next);
+      else localStorage.removeItem(REGION_KEY);
+    } catch {
+      /* storage blocked: the choice just does not persist */
+    }
   };
   const toggleSimple = () => {
     setSimple((s) => {
@@ -366,6 +382,27 @@ export default function Pathways() {
                 )}
               </form>
 
+              {regions.length > 1 && (
+                <div className="mt-3 flex items-center gap-2">
+                  <label htmlFor="pathways-region" className="shrink-0 text-[0.9em] text-muted-foreground">
+                    {t(L, "region.label")}
+                  </label>
+                  <select
+                    id="pathways-region"
+                    className="h-11 min-w-0 flex-1 rounded-full border border-border bg-card px-4 text-[0.95em] text-foreground"
+                    value={region ?? ""}
+                    onChange={(e) => chooseRegion(e.target.value || null)}
+                  >
+                    <option value="">{t(L, "region.all")}</option>
+                    {regions.map((name) => (
+                      <option key={name} value={name}>
+                        {regionLabel(L, name)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
+
               <p className="mt-2 text-[0.9em] text-muted-foreground" aria-live="polite">
                 {results.length === 0 ? "" : tn(L, "results.count", results.length)}
               </p>
@@ -386,7 +423,11 @@ export default function Pathways() {
                         <span className="text-[1.05em] font-bold">{field(r, "name", L)}</span>
                         <span className="flex flex-wrap gap-x-3 gap-y-1 text-[0.92em] text-muted-foreground">
                           <span>{t(L, `category.${r.category}`)}</span>
-                          <span>{r.subcity ?? (r.location_description_en ? "" : t(L, "record.area_unknown"))}</span>
+                          <span>
+                            {r.region === NATIONWIDE
+                              ? t(L, "region.nationwide")
+                              : [r.subcity, regionLabel(L, r.region)].filter(Boolean).join(", ")}
+                          </span>
                           {r.phone[0] && <span>{r.phone[0]}</span>}
                         </span>
                         <span className="text-[0.9em]">

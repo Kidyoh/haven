@@ -1,0 +1,291 @@
+[
+  {
+    "id": "et-tg-abi-adi-osc-001",
+    "name_en": "Abi Adi One-Stop Centre",
+    "name_am": "ዓብይ ዓዲ የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
+    "category": "one_stop_centre",
+    "services": [
+      "medical_care",
+      "case_management",
+      "legal_advice",
+      "counselling"
+    ],
+    "region": "Tigray",
+    "subcity": null,
+    "location_description_en": "Abi Adi. The host facility is not named by the source.",
+    "location_description_am": "ዓብይ ዓዲ። አስተናጋጁ ተቋም በምንጩ አልተጠቀሰም።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "UNFPA Ethiopia — \"UNFPA Humanitarian Division and Management Services Directors visit integrated GBV and SRH interventions in Tigray\" (16 October 2023)",
+    "source_url": "https://ethiopia.unfpa.org/en/news/unfpa-humanitarian-division-and-management-services-directors-visit-integrated-gbv-and-srh",
+    "source_text_original": "The One Stop Centre in Adigrat is one of the six additional centres supported by UNFPA across Tigray, the other ones being located in Axum, Shire, Mekelle, Abi Adi, and Maychew.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "UNFPA Ethiopia — \"A holistic approach to GBV survivors sees women rebuilding after conflict\" (15 September 2023)",
+        "url": "https://ethiopia.unfpa.org/en/news/holistic-approach-gbv-survivors-sees-women-rebuilding-after-conflict",
+        "note": "\"One-stop centers are designed to provide coordinated and integrated services to survivors of GBV; including medical services, case management, legal aid, and psychosocial support.\" Used for services."
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Sources are from 2023. Security in Tigray changes; confirm the centre is open before travelling. Host hospital, phone, hours and cost are not stated by the sources.",
+    "notes_am": "ምንጮቹ ከ2023 ናቸው። በትግራይ ያለው የጸጥታ ሁኔታ ይለዋወጣል፤ ከመጓዝዎ በፊት ማዕከሉ ክፍት መሆኑን ያረጋግጡ። አስተናጋጅ ሆስፒታል፣ ስልክ፣ የሥራ ሰዓትና ዋጋ በምንጮቹ አልተገለጹም።"
+  },
+  {
+    "id": "et-tg-adigrat-osc-001",
+    "name_en": "Adigrat One-Stop Centre",
+    "name_am": "ዓዲግራት የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
+    "category": "one_stop_centre",
+    "services": [
+      "medical_care",
+      "case_management",
+      "legal_advice",
+      "counselling"
+    ],
+    "region": "Tigray",
+    "subcity": null,
+    "location_description_en": "Adigrat. The host facility is not named by the source.",
+    "location_description_am": "ዓዲግራት። አስተናጋጁ ተቋም በምንጩ አልተጠቀሰም።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "UNFPA Ethiopia — \"UNFPA Humanitarian Division and Management Services Directors visit integrated GBV and SRH interventions in Tigray\" (16 October 2023)",
+    "source_url": "https://ethiopia.unfpa.org/en/news/unfpa-humanitarian-division-and-management-services-directors-visit-integrated-gbv-and-srh",
+    "source_text_original": "The One Stop Centre in Adigrat is one of the six additional centres supported by UNFPA across Tigray, the other ones being located in Axum, Shire, Mekelle, Abi Adi, and Maychew. … the Adigrat One-Stop Centre supported by UNFPA since its establishment in 2021, in response to conflict-related sexual violence",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "UNFPA Ethiopia — \"A holistic approach to GBV survivors sees women rebuilding after conflict\" (15 September 2023)",
+        "url": "https://ethiopia.unfpa.org/en/news/holistic-approach-gbv-survivors-sees-women-rebuilding-after-conflict",
+        "note": "\"One-stop centers are designed to provide coordinated and integrated services to survivors of GBV; including medical services, case management, legal aid, and psychosocial support.\" Used for services."
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Sources are from 2023. Security in Tigray changes; confirm the centre is open before travelling. Host hospital, phone, hours and cost are not stated by the sources.",
+    "notes_am": "ምንጮቹ ከ2023 ናቸው። በትግራይ ያለው የጸጥታ ሁኔታ ይለዋወጣል፤ ከመጓዝዎ በፊት ማዕከሉ ክፍት መሆኑን ያረጋግጡ። አስተናጋጅ ሆስፒታል፣ ስልክ፣ የሥራ ሰዓትና ዋጋ በምንጮቹ አልተገለጹም።"
+  },
+  {
+    "id": "et-tg-axum-osc-001",
+    "name_en": "Axum One-Stop Centre",
+    "name_am": "አክሱም የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
+    "category": "one_stop_centre",
+    "services": [
+      "medical_care",
+      "case_management",
+      "legal_advice",
+      "counselling"
+    ],
+    "region": "Tigray",
+    "subcity": null,
+    "location_description_en": "Axum. The host facility is not named by the source.",
+    "location_description_am": "አክሱም። አስተናጋጁ ተቋም በምንጩ አልተጠቀሰም።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "UNFPA Ethiopia — \"UNFPA Humanitarian Division and Management Services Directors visit integrated GBV and SRH interventions in Tigray\" (16 October 2023)",
+    "source_url": "https://ethiopia.unfpa.org/en/news/unfpa-humanitarian-division-and-management-services-directors-visit-integrated-gbv-and-srh",
+    "source_text_original": "The One Stop Centre in Adigrat is one of the six additional centres supported by UNFPA across Tigray, the other ones being located in Axum, Shire, Mekelle, Abi Adi, and Maychew.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "UNFPA Ethiopia — \"A holistic approach to GBV survivors sees women rebuilding after conflict\" (15 September 2023)",
+        "url": "https://ethiopia.unfpa.org/en/news/holistic-approach-gbv-survivors-sees-women-rebuilding-after-conflict",
+        "note": "\"One-stop centers are designed to provide coordinated and integrated services to survivors of GBV; including medical services, case management, legal aid, and psychosocial support.\" Used for services."
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Sources are from 2023. Security in Tigray changes; confirm the centre is open before travelling. Host hospital, phone, hours and cost are not stated by the sources.",
+    "notes_am": "ምንጮቹ ከ2023 ናቸው። በትግራይ ያለው የጸጥታ ሁኔታ ይለዋወጣል፤ ከመጓዝዎ በፊት ማዕከሉ ክፍት መሆኑን ያረጋግጡ። አስተናጋጅ ሆስፒታል፣ ስልክ፣ የሥራ ሰዓትና ዋጋ በምንጮቹ አልተገለጹም።"
+  },
+  {
+    "id": "et-tg-axum-wat-shelter-001",
+    "name_en": "Women's Association of Tigray shelter, Axum",
+    "name_am": "የትግራይ ሴቶች ማኅበር መጠለያ፣ አክሱም",
+    "category": "shelter",
+    "services": [
+      "shelter"
+    ],
+    "region": "Tigray",
+    "subcity": null,
+    "location_description_en": "Axum. The shelter location is not public. Ask a one-stop centre or the 7711 hotline for a referral.",
+    "location_description_am": "አክሱም። የመጠለያው ቦታ ለሕዝብ ይፋ አይደለም። ከተቀናጀ አገልግሎት ማዕከል ወይም ከ7711 መስመር ሪፈራል ይጠይቁ።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "United Nations Ethiopia — \"UN Women, partners launch shelters for GBV/CRSV Survivors in Amhara, Tigray Regions\" (18 December 2024)",
+    "source_url": "https://ethiopia.un.org/en/286852-un-women-partners-launch-shelters-gbvcrsv-survivors-amhara-tigray-regions",
+    "source_text_original": "The Women Association of Tigray (WAT) is one of the pioneering organizations in Tigray to provide shelter services for survivors of violence against women and girls (VAWG). … UN Women signed partnership agreement with WAT to address conflict related sexual violence through the provision of comprehensive shelter services. To this end, a shelter, the first of its kind in western Tigray, has been established in Axum to fill a critical gap in the area. On October 10, 2024, WAT inaugurated the shelter",
+    "source_language": "en",
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "For survivors of conflict-related sexual violence. The source does not describe how to get a place, and no phone number is published.",
+    "notes_am": "ከግጭት ጋር በተያያዘ ጾታዊ ጥቃት ለደረሰባቸው። ቦታ እንዴት እንደሚገኝ ምንጩ አይገልጽም፤ ስልክ ቁጥርም አልተገለጸም።"
+  },
+  {
+    "id": "et-tg-maychew-osc-001",
+    "name_en": "Maychew One-Stop Centre",
+    "name_am": "ማይጨው የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
+    "category": "one_stop_centre",
+    "services": [
+      "medical_care",
+      "case_management",
+      "legal_advice",
+      "counselling"
+    ],
+    "region": "Tigray",
+    "subcity": null,
+    "location_description_en": "Maychew. The host facility is not named by the source.",
+    "location_description_am": "ማይጨው። አስተናጋጁ ተቋም በምንጩ አልተጠቀሰም።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "UNFPA Ethiopia — \"UNFPA Humanitarian Division and Management Services Directors visit integrated GBV and SRH interventions in Tigray\" (16 October 2023)",
+    "source_url": "https://ethiopia.unfpa.org/en/news/unfpa-humanitarian-division-and-management-services-directors-visit-integrated-gbv-and-srh",
+    "source_text_original": "The One Stop Centre in Adigrat is one of the six additional centres supported by UNFPA across Tigray, the other ones being located in Axum, Shire, Mekelle, Abi Adi, and Maychew.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "UNFPA Ethiopia — \"A holistic approach to GBV survivors sees women rebuilding after conflict\" (15 September 2023)",
+        "url": "https://ethiopia.unfpa.org/en/news/holistic-approach-gbv-survivors-sees-women-rebuilding-after-conflict",
+        "note": "\"One-stop centers are designed to provide coordinated and integrated services to survivors of GBV; including medical services, case management, legal aid, and psychosocial support.\" Used for services."
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Sources are from 2023. Security in Tigray changes; confirm the centre is open before travelling. Host hospital, phone, hours and cost are not stated by the sources.",
+    "notes_am": "ምንጮቹ ከ2023 ናቸው። በትግራይ ያለው የጸጥታ ሁኔታ ይለዋወጣል፤ ከመጓዝዎ በፊት ማዕከሉ ክፍት መሆኑን ያረጋግጡ። አስተናጋጅ ሆስፒታል፣ ስልክ፣ የሥራ ሰዓትና ዋጋ በምንጮቹ አልተገለጹም።"
+  },
+  {
+    "id": "et-tg-mekelle-ayder-osc-001",
+    "name_en": "Ayder Hospital One-Stop Centre, Mekelle",
+    "name_am": "ዓይደር ሆስፒታል የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)፣ መቐለ",
+    "category": "one_stop_centre",
+    "services": [
+      "medical_care",
+      "case_management",
+      "legal_advice",
+      "counselling"
+    ],
+    "region": "Tigray",
+    "subcity": null,
+    "location_description_en": "Inside Ayder Hospital, Mekelle.",
+    "location_description_am": "በዓይደር ሆስፒታል ውስጥ፣ መቐለ።",
+    "coordinates": {
+      "lat": 13.5097564,
+      "lng": 39.4690226
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "UNFPA Ethiopia — \"A holistic approach to GBV survivors sees women rebuilding after conflict\" (15 September 2023)",
+    "source_url": "https://ethiopia.unfpa.org/en/news/holistic-approach-gbv-survivors-sees-women-rebuilding-after-conflict",
+    "source_text_original": "After seeking medical care at the One-Stop Center at Ayder Hospital in Mekelle, she underwent several surgeries and gradually regained her health. … One-stop centers are designed to provide coordinated and integrated services to survivors of GBV; including medical services, case management, legal aid, and psychosocial support.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "UNFPA — \"Canada funding supports health and protection services for women and girls in Ethiopia\" (9 December 2022)",
+        "url": "https://www.unfpa.org/updates/canada-funding-supports-health-and-protection-services-women-and-girls-ethiopia",
+        "note": "\"UNFPA handed over life-saving reproductive health medicines and equipment to the Ayder Hospital-One Stop Centre in Mekelle.\""
+      },
+      {
+        "name": "OpenStreetMap via Nominatim, amenity=hospital (queried 15 September 2026)",
+        "url": "https://www.openstreetmap.org/way/204060523",
+        "note": "Coordinates of the host hospital: \"Ayder Riferral Hospital (way 204060523), Mekelle\". The centre is inside the hospital grounds; the pin is the hospital, not the centre's door."
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Sources are from 2022–2023. Security in Tigray changes; confirm the centre is open before travelling. Phone, hours and cost are not stated.",
+    "notes_am": "ምንጮቹ ከ2022–2023 ናቸው። በትግራይ ያለው የጸጥታ ሁኔታ ይለዋወጣል፤ ከመጓዝዎ በፊት ማዕከሉ ክፍት መሆኑን ያረጋግጡ። ስልክ፣ የሥራ ሰዓትና ዋጋ አልተገለጹም።"
+  },
+  {
+    "id": "et-tg-shire-osc-001",
+    "name_en": "Shire One-Stop Centre",
+    "name_am": "ሽረ የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
+    "category": "one_stop_centre",
+    "services": [
+      "medical_care",
+      "case_management",
+      "legal_advice",
+      "counselling"
+    ],
+    "region": "Tigray",
+    "subcity": null,
+    "location_description_en": "Shire. The host facility is not named by the source.",
+    "location_description_am": "ሽረ። አስተናጋጁ ተቋም በምንጩ አልተጠቀሰም።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "UNFPA Ethiopia — \"UNFPA Humanitarian Division and Management Services Directors visit integrated GBV and SRH interventions in Tigray\" (16 October 2023)",
+    "source_url": "https://ethiopia.unfpa.org/en/news/unfpa-humanitarian-division-and-management-services-directors-visit-integrated-gbv-and-srh",
+    "source_text_original": "The One Stop Centre in Adigrat is one of the six additional centres supported by UNFPA across Tigray, the other ones being located in Axum, Shire, Mekelle, Abi Adi, and Maychew.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "UNFPA Ethiopia — \"A holistic approach to GBV survivors sees women rebuilding after conflict\" (15 September 2023)",
+        "url": "https://ethiopia.unfpa.org/en/news/holistic-approach-gbv-survivors-sees-women-rebuilding-after-conflict",
+        "note": "\"One-stop centers are designed to provide coordinated and integrated services to survivors of GBV; including medical services, case management, legal aid, and psychosocial support.\" Used for services."
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Sources are from 2023. Security in Tigray changes; confirm the centre is open before travelling. Host hospital, phone, hours and cost are not stated by the sources.",
+    "notes_am": "ምንጮቹ ከ2023 ናቸው። በትግራይ ያለው የጸጥታ ሁኔታ ይለዋወጣል፤ ከመጓዝዎ በፊት ማዕከሉ ክፍት መሆኑን ያረጋግጡ። አስተናጋጅ ሆስፒታል፣ ስልክ፣ የሥራ ሰዓትና ዋጋ በምንጮቹ አልተገለጹም።"
+  }
+]

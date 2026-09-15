@@ -1,227 +1,109 @@
 [
   {
-    "id": "et-aa-hotline-ewla-7711",
-    "name_en": "EWLA free legal aid hotline 7711",
-    "name_am": "የኢትዮጵያ የሴቶች ሕግ ባለሙያዎች ማኅበር (EWLA) ነፃ የሕግ ድጋፍ የስልክ መስመር 7711",
-    "category": "hotline",
-    "services": ["legal_advice", "legal_referral", "shelter_referral", "psychosocial_referral", "counselling"],
-    "region": "Addis Ababa",
-    "subcity": null,
-    "location_description_en": "Phone line. Works from anywhere in Ethiopia.",
-    "location_description_am": "የስልክ መስመር ነው። ከየትኛውም የኢትዮጵያ ክፍል ይሠራል።",
-    "coordinates": { "lat": null, "lng": null },
-    "phone": ["7711"],
-    "hours": null,
-    "what_to_bring_en": "Nothing. The call is free.",
-    "what_to_bring_am": "ምንም አያስፈልግም። ጥሪው ነፃ ነው።",
-    "cost": "free",
-    "accepts_walk_in": null,
-    "source_name": "UNFPA Ethiopia — \"UNFPA supported hotline for sexual and gender-based violence launched\" (26 March 2021)",
-    "source_url": "https://ethiopia.unfpa.org/en/news/unfpa-supported-hotline-sexual-and-gender-based-violence-launched",
-    "source_text_original": "The national hotline has a toll free number of 7711 … established through the partnership of the Ethiopian Women Lawyers Association (EWLA) and Ethio Telecom … the services will be given in the Amharic, Afan Oromo and Tigrigna languages … provide vital support, information and advice to survivors of sexual and gender-based violence through offering counselling and referrals to existing appropriate services across the country",
-    "source_language": "en",
-    "additional_sources": [
-      {
-        "name": "UNFPA Ethiopia — \"Hotline service helping GBV survivors seek legal aid, protection\" (27 February 2023)",
-        "url": "https://ethiopia.unfpa.org/en/news/hotline-service-helping-gbv-survivors-seek-legal-aid-protection",
-        "note": "\"Callers are immediately connected with lawyers and would receive advice on what they should do, where to go, and, if crimes have been committed, how to communicate with the police.\" \"EWLA refers them to AWSAD and other safe houses to shelter them. For psychosocial support, they are directed to Setawit.\""
-      }
+    "id": "et-aa-aau-legal-aid-001",
+    "name_en": "Addis Ababa University Legal Aid Center (refugees and asylum-seekers)",
+    "name_am": "የአዲስ አበባ ዩኒቨርሲቲ የሕግ ድጋፍ ማዕከል (ለስደተኞችና ጥገኝነት ጠያቂዎች)",
+    "category": "legal_aid",
+    "services": [
+      "legal_advice"
     ],
-    "verified_on": "2026-09-14",
-    "verified_via": "document",
-    "status": "unverified",
-    "notes_en": "Languages: Amharic, Afan Oromo, Tigrigna. Opening hours are not stated by the source. EWLA also runs in-person legal aid offices; ask the hotline for the nearest one.",
-    "notes_am": "ቋንቋዎች፦ አማርኛ፣ አፋን ኦሮሞ፣ ትግርኛ። የሥራ ሰዓት በምንጩ አልተገለጸም። EWLA በአካል የሚሰጡ የሕግ ድጋፍ ቢሮዎችም አሉት፤ ቅርብ የሆነውን ከስልክ መስመሩ ይጠይቁ።"
-  },
-  {
-    "id": "et-aa-hotline-alegnta-6388",
-    "name_en": "Alegnta 6388 counselling hotline (Setaweet)",
-    "name_am": "አለኝታ 6388 የምክር የስልክ መስመር (ሴታዊት)",
-    "category": "hotline",
-    "services": ["counselling", "psychosocial_referral", "medical_referral", "legal_referral", "shelter_referral"],
     "region": "Addis Ababa",
     "subcity": null,
-    "location_description_en": "Phone line. Referrals mainly to services in Addis Ababa.",
-    "location_description_am": "የስልክ መስመር ነው። ሪፈራል በዋናነት በአዲስ አበባ ወደሚገኙ አገልግሎቶች ነው።",
-    "coordinates": { "lat": null, "lng": null },
-    "phone": ["6388"],
-    "hours": null,
-    "what_to_bring_en": "Nothing. The call is free.",
-    "what_to_bring_am": "ምንም አያስፈልግም። ጥሪው ነፃ ነው።",
-    "cost": "free",
-    "accepts_walk_in": null,
-    "source_name": "UN Women Africa — \"What happened after COVID-19 hit Ethiopia\" (24 November 2020)",
-    "source_url": "https://africa.unwomen.org/en/news-and-events/stories/2020/11/what-happened-after-covid-19-hit-ethiopia",
-    "source_text_original": "Alegnta was an integral part of the efforts of our organization, Setaweet … The Toll-free service provides information regarding gender-based violence, in-depth counselling and referral services for callers focusing on rape, domestic violence, sexual harassment, marital rape, acid attack, forced confinement, forced marriage, verbal/psychological abuse, child marriage, Female Genital Mutilation (FGM) cyberbullying, trafficking and more. … referrals to services in Addis Ababa and a few other regions",
-    "source_language": "en",
-    "additional_sources": [
-      {
-        "name": "UN Women Ethiopia (Facebook) — \"#GBV hotlines in Ethiopia 6388 (Alegnta) by Setaweet and 8044 by Marie Stopes\"",
-        "url": "https://www.facebook.com/unwomenethiopia/posts/177744013717678/",
-        "note": "Lists 6388 alongside 8044 and 7711 as GBV hotlines."
-      }
-    ],
-    "verified_on": "2026-09-14",
-    "verified_via": "document",
-    "status": "unverified",
-    "notes_en": "The source is from 2020. Whether the line is still staffed has not been confirmed by phone.",
-    "notes_am": "ምንጩ ከ2020 ነው። መስመሩ አሁንም እየሠራ መሆኑ በስልክ አልተረጋገጠም።"
-  },
-  {
-    "id": "et-aa-hotline-hiwot-936",
-    "name_en": "Hiwot Ethiopia child helpline 936",
-    "name_am": "ሕይወት ኢትዮጵያ የሕፃናት እርዳታ የስልክ መስመር 936",
-    "category": "hotline",
-    "services": ["child_protection", "report_filing", "counselling", "psychosocial_referral"],
-    "region": "Addis Ababa",
-    "subcity": null,
-    "location_description_en": "Phone line. For children and young people.",
-    "location_description_am": "የስልክ መስመር ነው። ለሕፃናትና ለወጣቶች።",
-    "coordinates": { "lat": null, "lng": null },
-    "phone": ["936"],
-    "hours": null,
-    "what_to_bring_en": "Nothing. The call is free.",
-    "what_to_bring_am": "ምንም አያስፈልግም። ጥሪው ነፃ ነው።",
-    "cost": "free",
-    "accepts_walk_in": null,
-    "source_name": "Hiwot Ethiopia — \"Helpline services (936)\"",
-    "source_url": "https://hiwotet.org/helpline-services-936/",
-    "source_text_original": "Hiwot Ethiopia established 936 free of charge hiplines, through the financial and technical support of its partner organization. … mainly provides services to children and young people to protect them from any form of harms … provides access to reporting cases of sexual abuse and exploitation, violence and other forms of harms",
-    "source_language": "en",
-    "verified_on": "2026-09-14",
-    "verified_via": "document",
-    "status": "unverified",
-    "notes_en": "Opening hours and languages are not stated by the source.",
-    "notes_am": "የሥራ ሰዓትና ቋንቋዎች በምንጩ አልተገለጹም።"
-  },
-  {
-    "id": "et-aa-hotline-msi-8044",
-    "name_en": "MSI Ethiopia (Marie Stopes) contact centre 8044",
-    "name_am": "ኤምኤስአይ ኢትዮጵያ (ማሪ ስቶፕስ) የመገናኛ ማዕከል 8044",
-    "category": "hotline",
-    "services": ["medical_referral", "sti_treatment", "counselling"],
-    "region": "Addis Ababa",
-    "subcity": null,
-    "location_description_en": "Phone line. Call to find the nearest MSI clinic. Head office: Kirkos sub-city, Woreda 02.",
-    "location_description_am": "የስልክ መስመር ነው። ቅርብ የሆነውን የኤምኤስአይ ክሊኒክ ለማወቅ ይደውሉ። ዋና ቢሮ፦ ቂርቆስ ክፍለ ከተማ፣ ወረዳ 02።",
-    "coordinates": { "lat": null, "lng": null },
-    "phone": ["8044"],
-    "hours": null,
-    "what_to_bring_en": "Nothing for the call. The call is free.",
-    "what_to_bring_am": "ለጥሪው ምንም አያስፈልግም። ጥሪው ነፃ ነው።",
-    "cost": "free",
-    "accepts_walk_in": null,
-    "source_name": "Marie Stopes Ethiopia — \"Contact us\"",
-    "source_url": "https://mariestopes.org.et/contact-us/",
-    "source_text_original": "You can call our contact centre on 8044 (calls are toll-free). … during busy times there may be a wait before your call is answered … Marie Stopes Ethiopia, Kirkos Sub City, Woreda 02, House No.174, P.O. Box 5775, Addis Ababa, Ethiopia",
-    "source_language": "en",
-    "additional_sources": [
-      {
-        "name": "Marie Stopes Ethiopia — \"Services\"",
-        "url": "https://mariestopes.org.et/services/",
-        "note": "Sexual and reproductive health services including STI screening and treatment and HIV testing and counselling. Post-rape care is not named on the page."
-      }
-    ],
-    "verified_on": "2026-09-14",
-    "verified_via": "document",
-    "status": "unverified",
-    "notes_en": "Sexual and reproductive health line, not a dedicated GBV service. Cost of clinic services is not stated; the call itself is free.",
-    "notes_am": "የሥነ ተዋልዶ ጤና መስመር ነው፤ ለጾታዊ ጥቃት ብቻ የተለየ አገልግሎት አይደለም። የክሊኒክ አገልግሎቶች ዋጋ አልተገለጸም፤ ጥሪው ራሱ ነፃ ነው።"
-  },
-  {
-    "id": "et-aa-kirkos-gandhi-osc-001",
-    "name_en": "Gandhi Memorial Hospital One-Stop Centre",
-    "name_am": "ጋንዲ መታሰቢያ ሆስፒታል – የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
-    "category": "one_stop_centre",
-    "services": ["medical_care", "counselling", "report_filing", "legal_advice", "shelter_referral", "case_management"],
-    "region": "Addis Ababa",
-    "subcity": "Kirkos",
-    "location_description_en": "Inside Gandhi Memorial Hospital, Kirkos sub-city.",
-    "location_description_am": "በጋንዲ መታሰቢያ ሆስፒታል ውስጥ፣ ቂርቆስ ክፍለ ከተማ።",
-    "coordinates": { "lat": null, "lng": null },
+    "location_description_en": "Two walk-in locations: Addis Ababa University 6 Kilo Campus, and the Federal High Court in Lideta.",
+    "location_description_am": "በአካል የሚሄዱባቸው ሁለት ቦታዎች፦ የአዲስ አበባ ዩኒቨርሲቲ 6 ኪሎ ግቢ፣ እና ልደታ የሚገኘው የፌዴራል ከፍተኛ ፍርድ ቤት።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
     "phone": [],
     "hours": null,
-    "what_to_bring_en": null,
-    "what_to_bring_am": null,
+    "what_to_bring_en": "Your refugee or asylum-seeker document. It is required.",
+    "what_to_bring_am": "የስደተኛ ወይም የጥገኝነት ጠያቂ ሰነድዎን። ግዴታ ነው።",
     "cost": "free",
     "accepts_walk_in": true,
-    "source_name": "UNFPA Ethiopia — \"Canadian Minister of International Cooperation visits UNFPA supported One Stop Center at Gandhi Memorial Hospital\" (22 May 2023)",
-    "source_url": "https://ethiopia.unfpa.org/en/news/canadian-minister-international-cooperation-visits-unfpa-supported-one-stop-center-gandhi",
-    "source_text_original": "comprehensive services to survivors, including medical, legal, and psychosocial support … Anyone who walks into our doors receives the service free of charge … Up to five gender-based violence survivors from five sub-cities and surrounding areas in Addis Ababa visit the one-stop center at Gandhi Memorial Hospital daily … the Addis Ababa Bureau of Women and Social Affairs, Sub-city Police departments, and referral hospitals for further services. Referrals are also made to safe houses for shelter and rehabilitation",
+    "source_name": "UNHCR Ethiopia Help — \"Legal assistance\"",
+    "source_url": "https://help.unhcr.org/ethiopia/services/legal/",
+    "source_text_original": "In Ethiopia, refugees and asylum seekers can access free legal assistance. … If you are in Addis Ababa, you can access Addis Ababa University (AAU) free legal assistance in person from the following locations: Legal Aid Center, Addis Ababa University, 6 Kilo Campus … Legal Aid Center, Federal High Court, Lideta … ATTENTION! You must present your refugee or asylum seeker document to access AAU free legal assistance.",
     "source_language": "en",
-    "additional_sources": [
-      {
-        "name": "UNHCR Ethiopia Help — \"Have you experienced Violence?\"",
-        "url": "https://help.unhcr.org/ethiopia/services/violence/",
-        "note": "\"One-Stop Centre at Menelik and Gandhi Memorial Hospital, Addis Ababa\" — \"Health care\", \"Counselling and support\", \"short term Safe space services with referral services for long-term shelter\", \"Criminal/legal services (i.e. Police representative from the Child and Women Protection Unit)\"."
-      },
-      {
-        "name": "map.et — \"Ghandi Hospital - Hospital in Kirkos - Addis Ababa, Ethiopia\"",
-        "url": "https://map.et/w50833478/gandi-hospital",
-        "note": "Sub-city (Kirkos) taken from this listing."
-      }
-    ],
-    "verified_on": "2026-09-14",
+    "verified_on": "2026-09-15",
     "verified_via": "document",
     "status": "unverified",
-    "notes_en": "Phone number, opening hours and what to bring are not stated by the sources. A police representative from the Child and Women Protection Unit is on site, so a report can be started here.",
-    "notes_am": "ስልክ ቁጥር፣ የሥራ ሰዓትና ምን መያዝ እንዳለብዎ በምንጮቹ አልተገለጸም። የሕፃናትና ሴቶች ጥበቃ ክፍል የፖሊስ ተወካይ በቦታው አለ፤ ስለዚህ ክስ እዚህ መጀመር ይቻላል።"
+    "notes_en": "This listing is for refugees and asylum-seekers. Phone and hours are not stated; the UNHCR call centre (0905012823) can help.",
+    "notes_am": "ይህ ዝርዝር ለስደተኞችና ለጥገኝነት ጠያቂዎች ነው። ስልክና የሥራ ሰዓት አልተገለጹም፤ የUNHCR የጥሪ ማዕከል (0905012823) ሊረዳ ይችላል።"
   },
   {
-    "id": "et-aa-menelik-osc-001",
-    "name_en": "Menelik II Referral Hospital One-Stop Centre",
-    "name_am": "ምኒልክ ዳግማዊ ሪፈራል ሆስፒታል – የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
+    "id": "et-aa-abebech-gobena-osc-001",
+    "name_en": "Abebech Gobena MCH Hospital One-Stop Centre",
+    "name_am": "አበበች ጎበና የእናቶችና ሕፃናት ሆስፒታል – የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
     "category": "one_stop_centre",
-    "services": ["medical_care", "counselling", "report_filing", "legal_advice", "shelter_referral"],
+    "services": [
+      "medical_care",
+      "forensic_exam",
+      "legal_advice"
+    ],
     "region": "Addis Ababa",
     "subcity": null,
-    "location_description_en": "Inside Menelik II Referral Hospital, near Jan Meda on Russia Street.",
-    "location_description_am": "በምኒልክ ዳግማዊ ሪፈራል ሆስፒታል ውስጥ፣ ጃን ሜዳ አካባቢ፣ ራሽያ ጎዳና።",
-    "coordinates": { "lat": null, "lng": null },
+    "location_description_en": "Inside Abebech Gobena Maternal and Child Health Hospital, Addis Ababa.",
+    "location_description_am": "በአበበች ጎበና የእናቶችና ሕፃናት ጤና ሆስፒታል ውስጥ፣ አዲስ አበባ።",
+    "coordinates": {
+      "lat": 9.0217256,
+      "lng": 38.8898766
+    },
     "phone": [],
     "hours": null,
-    "what_to_bring_en": null,
-    "what_to_bring_am": null,
-    "cost": "unknown",
+    "what_to_bring_en": "If you changed clothes, bring the clothes you were wearing. Try not to wash first: it can make forensic evidence harder to collect.",
+    "what_to_bring_am": "ልብስ ከቀየሩ፣ ለብሰውት የነበረውን ልብስ ይዘው ይምጡ። ከተቻለ አስቀድመው አይታጠቡ፤ የፎረንሲክ ማስረጃ ለመሰብሰብ ያስቸግራል።",
+    "cost": "free",
     "accepts_walk_in": null,
-    "source_name": "UNHCR Ethiopia Help — \"Have you experienced Violence?\"",
-    "source_url": "https://help.unhcr.org/ethiopia/services/violence/",
-    "source_text_original": "One-Stop Centre at Menelik and Gandhi Memorial Hospital, Addis Ababa … Health care … Counselling and support … short term Safe space services with referral services for long-term shelter … Criminal/legal services (i.e. Police representative from the Child and Women Protection Unit)",
+    "source_name": "GOV.UK — \"Ethiopia: information for survivors of rape and sexual assault\" (updated 16 December 2025)",
+    "source_url": "https://www.gov.uk/government/publications/ethiopia-information-for-survivors-of-rape-and-sexual-assault/ethiopia-information-for-survivors-of-rape-and-sexual-assault",
+    "source_text_original": "In Ethiopia, there are one stop centres where you can get medical treatment and legal services in one place. … In Addis Ababa, there are 5 such centres at Gandhi Memorial Hospital, St. Paul’s Hospital, Menelik II Comprehensive Specialized Hospital, Tirunesh Beijing General Hospital and Abebech Gobena MCH Hospital. … All services to victims of rape or sexual assault at the one stop centre are free of charge. … A female member of staff will always be present during these examinations.",
     "source_language": "en",
     "additional_sources": [
       {
-        "name": "Wikipedia — \"Menelik II Referral Hospital\"",
-        "url": "https://en.wikipedia.org/wiki/Menelik_II_Referral_Hospital",
-        "note": "\"located near Jan Meda on Russia St.\" — used for the location description only."
+        "name": "GOV.UK — \"Ethiopia: information for survivors of rape and sexual assault\" (updated 16 December 2025)",
+        "url": "https://www.gov.uk/government/publications/ethiopia-information-for-survivors-of-rape-and-sexual-assault/ethiopia-information-for-survivors-of-rape-and-sexual-assault",
+        "note": "\"Washing yourself or your clothes may make it difficult for the police to obtain forensic evidence. If you change your clothes, think about taking those you were wearing to the police.\" Used for what_to_bring."
       },
       {
-        "name": "PMC — \"Hospital-based services for survivors of sexual violence in Ethiopia: who is missing out? A mixed-methods study\" (2026)",
-        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12959052/",
-        "note": "Names \"Gandhi Memorial Hospital,\" \"Menelik II Referral Hospital,\" and \"Tirunesh Beijing General Hospital\" as One Stop Centres in Addis Ababa."
+        "name": "OpenStreetMap via Nominatim, amenity=hospital (queried 15 September 2026)",
+        "url": "https://www.openstreetmap.org/node/8912951117",
+        "note": "Coordinates of the host hospital: \"Abebech Gobena MCH Hospital (node 8912951117), Yeka\". The centre is inside the hospital grounds; the pin is the hospital, not the centre's door."
       }
     ],
-    "verified_on": "2026-09-14",
+    "verified_on": "2026-09-15",
     "verified_via": "document",
     "status": "unverified",
-    "notes_en": "Sub-city, phone number, hours and cost are not stated by the sources.",
-    "notes_am": "ክፍለ ከተማ፣ ስልክ ቁጥር፣ የሥራ ሰዓትና ዋጋ በምንጮቹ አልተገለጹም።"
+    "notes_en": "Sub-city, phone number and hours are not stated by the source. A female member of staff is present during examinations.",
+    "notes_am": "ክፍለ ከተማ፣ ስልክ ቁጥርና የሥራ ሰዓት በምንጩ አልተገለጹም። በምርመራ ወቅት ሴት ባለሙያ ትገኛለች።"
   },
   {
     "id": "et-aa-akaki-tirunesh-osc-001",
     "name_en": "Tirunesh Beijing General Hospital One-Stop Centre",
     "name_am": "ጥሩነሽ ቤጂንግ ጠቅላላ ሆስፒታል – የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
     "category": "one_stop_centre",
-    "services": ["medical_care", "counselling", "case_management"],
+    "services": [
+      "medical_care",
+      "counselling",
+      "case_management",
+      "forensic_exam"
+    ],
     "region": "Addis Ababa",
     "subcity": "Akaki Kality",
     "location_description_en": "Inside Tirunesh Beijing General Hospital, Akaki Kality sub-city, Woreda 1.",
     "location_description_am": "በጥሩነሽ ቤጂንግ ጠቅላላ ሆስፒታል ውስጥ፣ አቃቂ ቃሊቲ ክፍለ ከተማ፣ ወረዳ 1።",
-    "coordinates": { "lat": null, "lng": null },
-    "phone": ["+251114344217", "+251114342483"],
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "+251114344217",
+      "+251114342483"
+    ],
     "hours": null,
-    "what_to_bring_en": null,
-    "what_to_bring_am": null,
-    "cost": "unknown",
+    "what_to_bring_en": "If you changed clothes, bring the clothes you were wearing. Try not to wash first: it can make forensic evidence harder to collect.",
+    "what_to_bring_am": "ልብስ ከቀየሩ፣ ለብሰውት የነበረውን ልብስ ይዘው ይምጡ። ከተቻለ አስቀድመው አይታጠቡ፤ የፎረንሲክ ማስረጃ ለመሰብሰብ ያስቸግራል።",
+    "cost": "free",
     "accepts_walk_in": null,
     "source_name": "PMC — \"Hospital-based services for survivors of sexual violence in Ethiopia: who is missing out? A mixed-methods study\" (2026)",
     "source_url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12959052/",
@@ -237,26 +119,49 @@
         "name": "Tirunesh Beijing General Hospital — \"About Us\"",
         "url": "https://www.tbgh.gov.et/pages/aboutus.html",
         "note": "\"The hospital is found in Addis Ababa City Akaki Kality Sub-City Woreda 1.\""
+      },
+      {
+        "name": "GOV.UK — \"Ethiopia: information for survivors of rape and sexual assault\" (updated 16 December 2025)",
+        "url": "https://www.gov.uk/government/publications/ethiopia-information-for-survivors-of-rape-and-sexual-assault/ethiopia-information-for-survivors-of-rape-and-sexual-assault",
+        "note": "\"All services to victims of rape or sexual assault at the one stop centre are free of charge.\" \"Police will send (or take) you to a One Stop Centre for a forensic examination.\" Used for cost and forensic_exam."
+      },
+      {
+        "name": "GOV.UK — \"Ethiopia: information for survivors of rape and sexual assault\" (updated 16 December 2025)",
+        "url": "https://www.gov.uk/government/publications/ethiopia-information-for-survivors-of-rape-and-sexual-assault/ethiopia-information-for-survivors-of-rape-and-sexual-assault",
+        "note": "\"Washing yourself or your clothes may make it difficult for the police to obtain forensic evidence. If you change your clothes, think about taking those you were wearing to the police.\" Used for what_to_bring."
       }
     ],
-    "verified_on": "2026-09-14",
+    "verified_on": "2026-09-15",
     "verified_via": "document",
     "status": "unverified",
-    "notes_en": "Phone numbers are the hospital's main and emergency lines. Ask for the one-stop centre. Hours and cost of the centre are not stated by the sources.",
-    "notes_am": "ስልክ ቁጥሮቹ የሆስፒታሉ ዋና እና የአደጋ ጊዜ መስመሮች ናቸው። የተቀናጀ አገልግሎት ማዕከሉን ይጠይቁ። የማዕከሉ የሥራ ሰዓትና ዋጋ በምንጮቹ አልተገለጹም።"
+    "notes_en": "Phone numbers are the hospital's main and emergency lines. Ask for the one-stop centre. Hours are not stated by the sources.",
+    "notes_am": "ስልክ ቁጥሮቹ የሆስፒታሉ ዋና እና የአደጋ ጊዜ መስመሮች ናቸው። የተቀናጀ አገልግሎት ማዕከሉን ይጠይቁ። የሥራ ሰዓት በምንጮቹ አልተገለጸም።"
   },
   {
     "id": "et-aa-awsad-safe-house-001",
     "name_en": "AWSAD safe house (Association for Women's Sanctuary and Development)",
     "name_am": "የሴቶች መጠለያና ልማት ማኅበር (AWSAD) መጠለያ",
     "category": "shelter",
-    "services": ["shelter", "counselling", "medical_referral", "legal_advice", "case_management"],
+    "services": [
+      "shelter",
+      "counselling",
+      "medical_referral",
+      "legal_advice",
+      "case_management"
+    ],
     "region": "Addis Ababa",
     "subcity": "Akaki Kality",
     "location_description_en": "Organisation office: Akaki Kality sub-city, Woreda 08. Safe house locations are not public. Call first, or ask the 7711 hotline, the police, or a one-stop centre for a referral.",
     "location_description_am": "የድርጅቱ ቢሮ፦ አቃቂ ቃሊቲ ክፍለ ከተማ፣ ወረዳ 08። የመጠለያው አድራሻ ለሕዝብ ይፋ አይደለም። መጀመሪያ ይደውሉ፣ ወይም የ7711 መስመርን፣ ፖሊስን ወይም የተቀናጀ አገልግሎት ማዕከልን ሪፈራል ይጠይቁ።",
-    "coordinates": { "lat": null, "lng": null },
-    "phone": ["+251116672290", "+251955938466", "+251911768052"],
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "+251116672290",
+      "+251955938466",
+      "+251911768052"
+    ],
     "hours": null,
     "what_to_bring_en": null,
     "what_to_bring_am": null,
@@ -285,17 +190,143 @@
     "notes_am": "ለሴቶች ብቻ የሆነ ጊዜያዊ መጠለያ። መግቢያ ብዙውን ጊዜ በሪፈራል ነው። ዋጋና የሥራ ሰዓት በምንጮቹ አልተገለጹም። የተጠቀሰው አድራሻ የድርጅቱ ቢሮ ነው፤ የመጠለያው አይደለም።"
   },
   {
+    "id": "et-aa-hotline-ambulance-907",
+    "name_en": "Ethiopian Red Cross ambulance 907 (Addis Ababa)",
+    "name_am": "የኢትዮጵያ ቀይ መስቀል አምቡላንስ 907 (አዲስ አበባ)",
+    "category": "health",
+    "services": [
+      "emergency_response",
+      "medical_referral"
+    ],
+    "region": "Addis Ababa",
+    "subcity": null,
+    "location_description_en": "Phone line.",
+    "location_description_am": "የስልክ መስመር ነው።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "907"
+    ],
+    "hours": null,
+    "what_to_bring_en": "Nothing. A phone.",
+    "what_to_bring_am": "ምንም አያስፈልግም። ስልክ ብቻ።",
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "Embassy of France in Ethiopia — \"In case of emergency\"",
+    "source_url": "https://et.diplomatie.gouv.fr/en/en/node/7",
+    "source_text_original": "Ambulance (ERCS – Red Cross) 907 … Police – Addis Ababa 991 … Fire Brigade 939",
+    "source_language": "en",
+    "verified_on": "2026-09-14",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Hours are not stated by the source. Whether the call is free is not stated by the source.",
+    "notes_am": "የሥራ ሰዓት በምንጩ አልተገለጸም። ጥሪው ነፃ መሆኑ በምንጩ አልተገለጸም።"
+  },
+  {
+    "id": "et-aa-hotline-hiwot-936",
+    "name_en": "Hiwot Ethiopia child helpline 936",
+    "name_am": "ሕይወት ኢትዮጵያ የሕፃናት እርዳታ የስልክ መስመር 936",
+    "category": "hotline",
+    "services": [
+      "child_protection",
+      "report_filing",
+      "counselling",
+      "psychosocial_referral"
+    ],
+    "region": "Addis Ababa",
+    "subcity": null,
+    "location_description_en": "Phone line. For children and young people.",
+    "location_description_am": "የስልክ መስመር ነው። ለሕፃናትና ለወጣቶች።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "936"
+    ],
+    "hours": null,
+    "what_to_bring_en": "Nothing. The call is free.",
+    "what_to_bring_am": "ምንም አያስፈልግም። ጥሪው ነፃ ነው።",
+    "cost": "free",
+    "accepts_walk_in": null,
+    "source_name": "Hiwot Ethiopia — \"Helpline services (936)\"",
+    "source_url": "https://hiwotet.org/helpline-services-936/",
+    "source_text_original": "Hiwot Ethiopia established 936 free of charge hiplines, through the financial and technical support of its partner organization. … mainly provides services to children and young people to protect them from any form of harms … provides access to reporting cases of sexual abuse and exploitation, violence and other forms of harms",
+    "source_language": "en",
+    "verified_on": "2026-09-14",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Opening hours and languages are not stated by the source.",
+    "notes_am": "የሥራ ሰዓትና ቋንቋዎች በምንጩ አልተገለጹም።"
+  },
+  {
+    "id": "et-aa-hotline-msi-8044",
+    "name_en": "MSI Ethiopia (Marie Stopes) contact centre 8044",
+    "name_am": "ኤምኤስአይ ኢትዮጵያ (ማሪ ስቶፕስ) የመገናኛ ማዕከል 8044",
+    "category": "hotline",
+    "services": [
+      "medical_referral",
+      "sti_treatment",
+      "counselling"
+    ],
+    "region": "Addis Ababa",
+    "subcity": null,
+    "location_description_en": "Phone line. Call to find the nearest MSI clinic. Head office: Kirkos sub-city, Woreda 02.",
+    "location_description_am": "የስልክ መስመር ነው። ቅርብ የሆነውን የኤምኤስአይ ክሊኒክ ለማወቅ ይደውሉ። ዋና ቢሮ፦ ቂርቆስ ክፍለ ከተማ፣ ወረዳ 02።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "8044"
+    ],
+    "hours": null,
+    "what_to_bring_en": "Nothing for the call. The call is free.",
+    "what_to_bring_am": "ለጥሪው ምንም አያስፈልግም። ጥሪው ነፃ ነው።",
+    "cost": "free",
+    "accepts_walk_in": null,
+    "source_name": "Marie Stopes Ethiopia — \"Contact us\"",
+    "source_url": "https://mariestopes.org.et/contact-us/",
+    "source_text_original": "You can call our contact centre on 8044 (calls are toll-free). … during busy times there may be a wait before your call is answered … Marie Stopes Ethiopia, Kirkos Sub City, Woreda 02, House No.174, P.O. Box 5775, Addis Ababa, Ethiopia",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "Marie Stopes Ethiopia — \"Services\"",
+        "url": "https://mariestopes.org.et/services/",
+        "note": "Sexual and reproductive health services including STI screening and treatment and HIV testing and counselling. Post-rape care is not named on the page."
+      }
+    ],
+    "verified_on": "2026-09-14",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Sexual and reproductive health line, not a dedicated GBV service. Cost of clinic services is not stated; the call itself is free.",
+    "notes_am": "የሥነ ተዋልዶ ጤና መስመር ነው፤ ለጾታዊ ጥቃት ብቻ የተለየ አገልግሎት አይደለም። የክሊኒክ አገልግሎቶች ዋጋ አልተገለጸም፤ ጥሪው ራሱ ነፃ ነው።"
+  },
+  {
     "id": "et-aa-hotline-unhcr-call-centre",
     "name_en": "UNHCR call centre (refugees and asylum-seekers in Addis Ababa)",
     "name_am": "የUNHCR የጥሪ ማዕከል (በአዲስ አበባ ላሉ ስደተኞችና ጥገኝነት ጠያቂዎች)",
     "category": "hotline",
-    "services": ["case_management", "counselling", "medical_referral", "legal_referral", "shelter_referral"],
+    "services": [
+      "case_management",
+      "counselling",
+      "medical_referral",
+      "legal_referral",
+      "shelter_referral"
+    ],
     "region": "Addis Ababa",
     "subcity": null,
     "location_description_en": "Phone line. For refugees and asylum-seekers in Addis Ababa.",
     "location_description_am": "የስልክ መስመር ነው። በአዲስ አበባ ላሉ ስደተኞችና ጥገኝነት ጠያቂዎች።",
-    "coordinates": { "lat": null, "lng": null },
-    "phone": ["+251905012823"],
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "+251905012823"
+    ],
     "hours": "Monday to Friday from 08:30-17:00, except Friday until 14:00",
     "what_to_bring_en": "Nothing for the call.",
     "what_to_bring_am": "ለጥሪው ምንም አያስፈልግም።",
@@ -312,57 +343,254 @@
     "notes_am": "ቁጥሩ ከ0905012823 ወደ ዓለም አቀፍ ቅርጽ ተቀይሯል። ደዋዮች በUNHCR አጋር (IMC፣ IRC፣ RaDO ወይም DICAC) ካለ የማኅበራዊ ሠራተኛ ጋር ይገናኛሉ።"
   },
   {
-    "id": "et-aa-hotline-police-991",
-    "name_en": "Police emergency line 991 (Addis Ababa)",
-    "name_am": "የፖሊስ የአደጋ ጊዜ መስመር 991 (አዲስ አበባ)",
-    "category": "police",
-    "services": ["emergency_response", "report_filing"],
+    "id": "et-aa-kirkos-ewla-office-001",
+    "name_en": "EWLA head office — free legal aid",
+    "name_am": "የኢትዮጵያ የሴቶች ሕግ ባለሙያዎች ማኅበር (EWLA) ዋና ቢሮ – ነፃ የሕግ ድጋፍ",
+    "category": "legal_aid",
+    "services": [
+      "legal_advice",
+      "court_representation"
+    ],
     "region": "Addis Ababa",
-    "subcity": null,
-    "location_description_en": "Phone line.",
-    "location_description_am": "የስልክ መስመር ነው።",
-    "coordinates": { "lat": null, "lng": null },
-    "phone": ["991"],
+    "subcity": "Kirkos",
+    "location_description_en": "Kirkos sub-city, Wereda 06, House No. 579. Near Bulgaria (St.) Michael church, Temama building, 4th floor. Mexico area.",
+    "location_description_am": "ቂርቆስ ክፍለ ከተማ፣ ወረዳ 06፣ የቤት ቁ. 579። ቡልጋሪያ ቅዱስ ሚካኤል ቤተ ክርስቲያን አጠገብ፣ ተማማ ሕንፃ 4ኛ ፎቅ። ሜክሲኮ አካባቢ።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "+251115508783"
+    ],
     "hours": null,
-    "what_to_bring_en": "Nothing. A phone.",
-    "what_to_bring_am": "ምንም አያስፈልግም። ስልክ ብቻ።",
-    "cost": "unknown",
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "free",
     "accepts_walk_in": null,
-    "source_name": "Embassy of France in Ethiopia — \"In case of emergency\"",
-    "source_url": "https://et.diplomatie.gouv.fr/en/en/node/7",
-    "source_text_original": "Police – Addis Ababa 991 … Ambulance (ERCS – Red Cross) 907 … Fire Brigade 939",
+    "source_name": "EWLA — \"Contact Us\"",
+    "source_url": "https://ewla-et.org/contact/",
+    "source_text_original": "Kirkos Subcity, wereda 06 house No. 579 near Bulgaria Michael church and Temama building 4th floor Addis Ababa, Ethiopia … Tel : +251-11-5508783 … Po.box: 13760 … We provide free legal advice and representation to all women and girls, ensuring equitable access to justice across both development and crisis-affected environments.",
     "source_language": "en",
-    "verified_on": "2026-09-14",
+    "additional_sources": [
+      {
+        "name": "GOV.UK — \"Ethiopia: information for survivors of rape and sexual assault\" (updated 16 December 2025)",
+        "url": "https://www.gov.uk/government/publications/ethiopia-information-for-survivors-of-rape-and-sexual-assault/ethiopia-information-for-survivors-of-rape-and-sexual-assault",
+        "note": "\"The Ethiopian Women Lawyers Association (EWLA) assists women, particularly disadvantaged women, who are victims of gender-based violence free of charge.\" Lists the telephone as \"+251-11-508783\", one digit short of EWLA's own number (likely a typo)."
+      },
+      {
+        "name": "EWLA Terms of Reference, reposted by ethiongojobs.com (deadline 31 May 2025)",
+        "url": "https://www.ethiongojobs.com/terms-of-reference-tor-to-develop-communication-strategy-for-the-ethiopian-women-lawyers-association-ewla/",
+        "note": "\"+251 115 50 8759/+251 115 50 8783/+251 948 342274\" given as recruitment contacts. Not added: not on EWLA's own contact page."
+      }
+    ],
+    "verified_on": "2026-09-15",
     "verified_via": "document",
     "status": "unverified",
-    "notes_en": "Hours are not stated by the source. Whether the call is free is not stated by the source.",
-    "notes_am": "የሥራ ሰዓት በምንጩ አልተገለጸም። ጥሪው ነፃ መሆኑ በምንጩ አልተገለጸም።"
+    "notes_en": "For women and girls. Hours are not stated. For advice by phone from anywhere, call the 7711 hotline.",
+    "notes_am": "ለሴቶችና ልጃገረዶች። የሥራ ሰዓት አልተገለጸም። ከየትኛውም ቦታ በስልክ ምክር ለማግኘት ወደ 7711 ይደውሉ።"
   },
   {
-    "id": "et-aa-hotline-ambulance-907",
-    "name_en": "Ethiopian Red Cross ambulance 907 (Addis Ababa)",
-    "name_am": "የኢትዮጵያ ቀይ መስቀል አምቡላንስ 907 (አዲስ አበባ)",
-    "category": "health",
-    "services": ["emergency_response", "medical_referral"],
+    "id": "et-aa-kirkos-gandhi-osc-001",
+    "name_en": "Gandhi Memorial Hospital One-Stop Centre",
+    "name_am": "ጋንዲ መታሰቢያ ሆስፒታል – የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
+    "category": "one_stop_centre",
+    "services": [
+      "medical_care",
+      "counselling",
+      "report_filing",
+      "legal_advice",
+      "shelter_referral",
+      "case_management",
+      "forensic_exam"
+    ],
     "region": "Addis Ababa",
-    "subcity": null,
-    "location_description_en": "Phone line.",
-    "location_description_am": "የስልክ መስመር ነው።",
-    "coordinates": { "lat": null, "lng": null },
-    "phone": ["907"],
+    "subcity": "Kirkos",
+    "location_description_en": "Inside Gandhi Memorial Hospital, Kirkos sub-city.",
+    "location_description_am": "በጋንዲ መታሰቢያ ሆስፒታል ውስጥ፣ ቂርቆስ ክፍለ ከተማ።",
+    "coordinates": {
+      "lat": 9.0154037,
+      "lng": 38.7554164
+    },
+    "phone": [],
     "hours": null,
-    "what_to_bring_en": "Nothing. A phone.",
-    "what_to_bring_am": "ምንም አያስፈልግም። ስልክ ብቻ።",
-    "cost": "unknown",
-    "accepts_walk_in": null,
-    "source_name": "Embassy of France in Ethiopia — \"In case of emergency\"",
-    "source_url": "https://et.diplomatie.gouv.fr/en/en/node/7",
-    "source_text_original": "Ambulance (ERCS – Red Cross) 907 … Police – Addis Ababa 991 … Fire Brigade 939",
+    "what_to_bring_en": "If you changed clothes, bring the clothes you were wearing. Try not to wash first: it can make forensic evidence harder to collect.",
+    "what_to_bring_am": "ልብስ ከቀየሩ፣ ለብሰውት የነበረውን ልብስ ይዘው ይምጡ። ከተቻለ አስቀድመው አይታጠቡ፤ የፎረንሲክ ማስረጃ ለመሰብሰብ ያስቸግራል።",
+    "cost": "free",
+    "accepts_walk_in": true,
+    "source_name": "UNFPA Ethiopia — \"Canadian Minister of International Cooperation visits UNFPA supported One Stop Center at Gandhi Memorial Hospital\" (22 May 2023)",
+    "source_url": "https://ethiopia.unfpa.org/en/news/canadian-minister-international-cooperation-visits-unfpa-supported-one-stop-center-gandhi",
+    "source_text_original": "comprehensive services to survivors, including medical, legal, and psychosocial support … Anyone who walks into our doors receives the service free of charge … Up to five gender-based violence survivors from five sub-cities and surrounding areas in Addis Ababa visit the one-stop center at Gandhi Memorial Hospital daily … the Addis Ababa Bureau of Women and Social Affairs, Sub-city Police departments, and referral hospitals for further services. Referrals are also made to safe houses for shelter and rehabilitation",
     "source_language": "en",
-    "verified_on": "2026-09-14",
+    "additional_sources": [
+      {
+        "name": "UNHCR Ethiopia Help — \"Have you experienced Violence?\"",
+        "url": "https://help.unhcr.org/ethiopia/services/violence/",
+        "note": "\"One-Stop Centre at Menelik and Gandhi Memorial Hospital, Addis Ababa\" — \"Health care\", \"Counselling and support\", \"short term Safe space services with referral services for long-term shelter\", \"Criminal/legal services (i.e. Police representative from the Child and Women Protection Unit)\"."
+      },
+      {
+        "name": "map.et — \"Ghandi Hospital - Hospital in Kirkos - Addis Ababa, Ethiopia\"",
+        "url": "https://map.et/w50833478/gandi-hospital",
+        "note": "Sub-city (Kirkos) taken from this listing."
+      },
+      {
+        "name": "GOV.UK — \"Ethiopia: information for survivors of rape and sexual assault\" (updated 16 December 2025)",
+        "url": "https://www.gov.uk/government/publications/ethiopia-information-for-survivors-of-rape-and-sexual-assault/ethiopia-information-for-survivors-of-rape-and-sexual-assault",
+        "note": "\"All services to victims of rape or sexual assault at the one stop centre are free of charge.\" \"Police will send (or take) you to a One Stop Centre for a forensic examination.\" Used for cost and forensic_exam."
+      },
+      {
+        "name": "GOV.UK — \"Ethiopia: information for survivors of rape and sexual assault\" (updated 16 December 2025)",
+        "url": "https://www.gov.uk/government/publications/ethiopia-information-for-survivors-of-rape-and-sexual-assault/ethiopia-information-for-survivors-of-rape-and-sexual-assault",
+        "note": "\"Washing yourself or your clothes may make it difficult for the police to obtain forensic evidence. If you change your clothes, think about taking those you were wearing to the police.\" Used for what_to_bring."
+      },
+      {
+        "name": "OpenStreetMap via Nominatim, amenity=hospital (queried 15 September 2026)",
+        "url": "https://www.openstreetmap.org/way/50833478",
+        "note": "Coordinates of the host hospital: \"ጋንዲ ሆስፒታል (way 50833478), Ras Desta Damtew Street, Kirkos\". The centre is inside the hospital grounds; the pin is the hospital, not the centre's door."
+      }
+    ],
+    "verified_on": "2026-09-15",
     "verified_via": "document",
     "status": "unverified",
-    "notes_en": "Hours are not stated by the source. Whether the call is free is not stated by the source.",
-    "notes_am": "የሥራ ሰዓት በምንጩ አልተገለጸም። ጥሪው ነፃ መሆኑ በምንጩ አልተገለጸም።"
+    "notes_en": "Phone number and opening hours are not stated by the sources. A police representative from the Child and Women Protection Unit is on site, so a report can be started here.",
+    "notes_am": "ስልክ ቁጥርና የሥራ ሰዓት በምንጮቹ አልተገለጹም። የሕፃናትና ሴቶች ጥበቃ ክፍል የፖሊስ ተወካይ በቦታው አለ፤ ስለዚህ ክስ እዚህ መጀመር ይቻላል።"
+  },
+  {
+    "id": "et-aa-menelik-osc-001",
+    "name_en": "Menelik II Comprehensive Specialized Hospital One-Stop Centre",
+    "name_am": "ምኒልክ ዳግማዊ አጠቃላይ ስፔሻላይዝድ ሆስፒታል – የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
+    "category": "one_stop_centre",
+    "services": [
+      "medical_care",
+      "counselling",
+      "report_filing",
+      "legal_advice",
+      "shelter_referral",
+      "forensic_exam"
+    ],
+    "region": "Addis Ababa",
+    "subcity": null,
+    "location_description_en": "Inside Menelik II Referral Hospital, near Jan Meda on Russia Street.",
+    "location_description_am": "በምኒልክ ዳግማዊ ሪፈራል ሆስፒታል ውስጥ፣ ጃን ሜዳ አካባቢ፣ ራሽያ ጎዳና።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": "If you changed clothes, bring the clothes you were wearing. Try not to wash first: it can make forensic evidence harder to collect.",
+    "what_to_bring_am": "ልብስ ከቀየሩ፣ ለብሰውት የነበረውን ልብስ ይዘው ይምጡ። ከተቻለ አስቀድመው አይታጠቡ፤ የፎረንሲክ ማስረጃ ለመሰብሰብ ያስቸግራል።",
+    "cost": "free",
+    "accepts_walk_in": null,
+    "source_name": "UNHCR Ethiopia Help — \"Have you experienced Violence?\"",
+    "source_url": "https://help.unhcr.org/ethiopia/services/violence/",
+    "source_text_original": "One-Stop Centre at Menelik and Gandhi Memorial Hospital, Addis Ababa … Health care … Counselling and support … short term Safe space services with referral services for long-term shelter … Criminal/legal services (i.e. Police representative from the Child and Women Protection Unit)",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "Wikipedia — \"Menelik II Referral Hospital\"",
+        "url": "https://en.wikipedia.org/wiki/Menelik_II_Referral_Hospital",
+        "note": "\"located near Jan Meda on Russia St.\" — used for the location description only."
+      },
+      {
+        "name": "PMC — \"Hospital-based services for survivors of sexual violence in Ethiopia: who is missing out? A mixed-methods study\" (2026)",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC12959052/",
+        "note": "Names \"Gandhi Memorial Hospital,\" \"Menelik II Referral Hospital,\" and \"Tirunesh Beijing General Hospital\" as One Stop Centres in Addis Ababa."
+      },
+      {
+        "name": "GOV.UK — \"Ethiopia: information for survivors of rape and sexual assault\" (updated 16 December 2025)",
+        "url": "https://www.gov.uk/government/publications/ethiopia-information-for-survivors-of-rape-and-sexual-assault/ethiopia-information-for-survivors-of-rape-and-sexual-assault",
+        "note": "\"All services to victims of rape or sexual assault at the one stop centre are free of charge.\" \"Police will send (or take) you to a One Stop Centre for a forensic examination.\" Used for cost and forensic_exam."
+      },
+      {
+        "name": "GOV.UK — \"Ethiopia: information for survivors of rape and sexual assault\" (updated 16 December 2025)",
+        "url": "https://www.gov.uk/government/publications/ethiopia-information-for-survivors-of-rape-and-sexual-assault/ethiopia-information-for-survivors-of-rape-and-sexual-assault",
+        "note": "\"Washing yourself or your clothes may make it difficult for the police to obtain forensic evidence. If you change your clothes, think about taking those you were wearing to the police.\" Used for what_to_bring."
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Sub-city, phone number and hours are not stated by the sources. A female member of staff is present during examinations (GOV.UK).",
+    "notes_am": "ክፍለ ከተማ፣ ስልክ ቁጥርና የሥራ ሰዓት በምንጮቹ አልተገለጹም። በምርመራ ወቅት ሴት ባለሙያ ትገኛለች (GOV.UK)።"
+  },
+  {
+    "id": "et-aa-police-commission-001",
+    "name_en": "Addis Ababa Police Commission",
+    "name_am": "የአዲስ አበባ ፖሊስ ኮሚሽን",
+    "category": "police",
+    "services": [
+      "report_filing"
+    ],
+    "region": "Addis Ababa",
+    "subcity": null,
+    "location_description_en": "Phone line of the city police commission.",
+    "location_description_am": "የከተማው ፖሊስ ኮሚሽን የስልክ መስመር።",
+    "coordinates": {
+      "lat": null,
+      "lng": null
+    },
+    "phone": [
+      "+251111110211"
+    ],
+    "hours": null,
+    "what_to_bring_en": null,
+    "what_to_bring_am": null,
+    "cost": "unknown",
+    "accepts_walk_in": null,
+    "source_name": "Addis Ababa Police Commission — \"ያግኙን\" (Contact us)",
+    "source_url": "https://addispolice.gov.et/contactus",
+    "source_text_original": "+251 111 11 02 11",
+    "source_language": "en",
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "The official site does not say whether this is an emergency line. In an emergency, call 991.",
+    "notes_am": "ይፋዊው ድረ ገጽ ይህ የአደጋ ጊዜ መስመር መሆኑን አይገልጽም። በአደጋ ጊዜ ወደ 991 ይደውሉ።"
+  },
+  {
+    "id": "et-aa-stpauls-osc-001",
+    "name_en": "St. Paul's Hospital One-Stop Centre",
+    "name_am": "ቅዱስ ጳውሎስ ሆስፒታል – የተቀናጀ አገልግሎት ማዕከል (One-Stop Centre)",
+    "category": "one_stop_centre",
+    "services": [
+      "medical_care",
+      "forensic_exam",
+      "legal_advice"
+    ],
+    "region": "Addis Ababa",
+    "subcity": null,
+    "location_description_en": "Inside St. Paul's Hospital, Addis Ababa.",
+    "location_description_am": "በቅዱስ ጳውሎስ ሆስፒታል ውስጥ፣ አዲስ አበባ።",
+    "coordinates": {
+      "lat": 9.04783,
+      "lng": 38.7280864
+    },
+    "phone": [],
+    "hours": null,
+    "what_to_bring_en": "If you changed clothes, bring the clothes you were wearing. Try not to wash first: it can make forensic evidence harder to collect.",
+    "what_to_bring_am": "ልብስ ከቀየሩ፣ ለብሰውት የነበረውን ልብስ ይዘው ይምጡ። ከተቻለ አስቀድመው አይታጠቡ፤ የፎረንሲክ ማስረጃ ለመሰብሰብ ያስቸግራል።",
+    "cost": "free",
+    "accepts_walk_in": null,
+    "source_name": "GOV.UK — \"Ethiopia: information for survivors of rape and sexual assault\" (updated 16 December 2025)",
+    "source_url": "https://www.gov.uk/government/publications/ethiopia-information-for-survivors-of-rape-and-sexual-assault/ethiopia-information-for-survivors-of-rape-and-sexual-assault",
+    "source_text_original": "In Ethiopia, there are one stop centres where you can get medical treatment and legal services in one place. … In Addis Ababa, there are 5 such centres at Gandhi Memorial Hospital, St. Paul’s Hospital, Menelik II Comprehensive Specialized Hospital, Tirunesh Beijing General Hospital and Abebech Gobena MCH Hospital. … All services to victims of rape or sexual assault at the one stop centre are free of charge. … A female member of staff will always be present during these examinations.",
+    "source_language": "en",
+    "additional_sources": [
+      {
+        "name": "GOV.UK — \"Ethiopia: information for survivors of rape and sexual assault\" (updated 16 December 2025)",
+        "url": "https://www.gov.uk/government/publications/ethiopia-information-for-survivors-of-rape-and-sexual-assault/ethiopia-information-for-survivors-of-rape-and-sexual-assault",
+        "note": "\"Washing yourself or your clothes may make it difficult for the police to obtain forensic evidence. If you change your clothes, think about taking those you were wearing to the police.\" Used for what_to_bring."
+      },
+      {
+        "name": "OpenStreetMap via Nominatim, amenity=hospital (queried 15 September 2026)",
+        "url": "https://www.openstreetmap.org/node/8296886217",
+        "note": "Coordinates of the host hospital: \"ቅድስ ፓውሎስ ሆስፒታል ሚሊኒየም ሜዲካል ኮሌጅ (node 8296886217), Swaziland Avenue, Gulale\". The centre is inside the hospital grounds; the pin is the hospital, not the centre's door."
+      }
+    ],
+    "verified_on": "2026-09-15",
+    "verified_via": "document",
+    "status": "unverified",
+    "notes_en": "Sub-city, phone number and hours are not stated by the source. A female member of staff is present during examinations.",
+    "notes_am": "ክፍለ ከተማ፣ ስልክ ቁጥርና የሥራ ሰዓት በምንጩ አልተገለጹም። በምርመራ ወቅት ሴት ባለሙያ ትገኛለች።"
   }
 ]
