@@ -11,7 +11,7 @@ const base: Omit<ServiceRecord, "category" | "services"> = {
   location_description_en: null,
   location_description_am: null,
   coordinates: { lat: null, lng: null },
-  phone: [],
+  phone: [] as string[],
   hours: null,
   what_to_bring_en: null,
   what_to_bring_am: null,

@@ -5,16 +5,16 @@
   "type": "module",
   "scripts": {
     "dev": "npm run build:dataset && vite",
-    "build": "npm run verify && npm run build:dataset && vite build",
+    "build": "npm run typecheck && npm run verify && npm run build:dataset && vite build",
     "build:dev": "npm run build:dataset && vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "vitest run",
     "test:watch": "vitest",
+    "typecheck": "tsc --noEmit -p tsconfig.app.json",
     "verify": "node scripts/verify.mjs",
     "build:dataset": "node scripts/build-dataset.mjs",
-    "check:offline": "node scripts/check-offline.mjs",
-    "screenshots": "node scripts/screenshot.mjs"
+    "check:offline": "node scripts/check-offline.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
