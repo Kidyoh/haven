@@ -139,7 +139,8 @@ describe("hotspots", () => {
       row({ latitude: null, longitude: null }),
     ]);
     expect(spots[0]).toMatchObject({ lat: 9.03, lng: 38.74, alerts: 2, people: 2 });
-    expect(spots).toHaveLength(2);
+    // The area with a single alert points at one person, so it is left out.
+    expect(spots).toHaveLength(1);
   });
 });
 

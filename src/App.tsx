@@ -2,9 +2,10 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { sosEngine } from "@/lib/sos";
 import Landing from "./pages/Landing";
 import Auth from "./pages/Auth";
 import Setup from "./pages/Setup";
@@ -20,6 +21,18 @@ import NotFound from "./pages/NotFound";
 const Pathways = lazy(() => import("./pages/Pathways"));
 
 const queryClient = new QueryClient();
+
+/**
+ * Picks a running SOS alert back up after a reload on whatever page the user
+ * was on (the alert screen links to Pathways), and sends anything still queued.
+ */
+const SOSResume = () => {
+  const { session } = useAuth();
+  useEffect(() => {
+    if (session?.user) sosEngine.restore(session.user.id);
+  }, [session?.user]);
+  return null;
+};
 
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { session, loading } = useAuth();
@@ -39,6 +52,7 @@ const App = () => (
     <TooltipProvider>
       <Toaster />
       <Sonner />
+      <SOSResume />
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Landing />} />

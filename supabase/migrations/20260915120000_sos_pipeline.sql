@@ -41,6 +41,16 @@ ALTER TABLE public.incidents
 -- When the fix was taken on the phone. created_at is when it reached the
 -- server, which can be minutes later if it was queued offline.
 ALTER TABLE public.location_updates ADD COLUMN IF NOT EXISTS recorded_at TIMESTAMPTZ;
+
+-- The original policy only checked user_id, so any account could add fake
+-- positions to another person's incident (whose id the tracking page exposed).
+DROP POLICY IF EXISTS "Users can create their own location updates" ON public.location_updates;
+CREATE POLICY "Users can create their own location updates"
+  ON public.location_updates FOR INSERT TO authenticated
+  WITH CHECK (
+    auth.uid() = user_id
+    AND EXISTS (SELECT 1 FROM public.incidents i WHERE i.id = incident_id AND i.user_id = auth.uid())
+  );
 CREATE INDEX IF NOT EXISTS location_updates_incident_idx ON public.location_updates (incident_id, created_at DESC);
 
 -- ---------------------------------------------------------------------------
@@ -61,9 +71,13 @@ CREATE TABLE IF NOT EXISTS public.incident_evidence (
 );
 ALTER TABLE public.incident_evidence ENABLE ROW LEVEL SECURITY;
 
+-- Into your own incident only: user_id alone would let any account attach clips to someone else's alert.
 CREATE POLICY "Users can add their own evidence"
   ON public.incident_evidence FOR INSERT TO authenticated
-  WITH CHECK (auth.uid() = user_id);
+  WITH CHECK (
+    auth.uid() = user_id
+    AND EXISTS (SELECT 1 FROM public.incidents i WHERE i.id = incident_id AND i.user_id = auth.uid())
+  );
 
 CREATE POLICY "Users can view their own evidence"
   ON public.incident_evidence FOR SELECT TO authenticated
@@ -138,7 +152,6 @@ BEGIN
     'incidents', COALESCE((
       SELECT jsonb_agg(
         jsonb_build_object(
-          'id', i.id,
           'reference_number', i.reference_number,
           'status', i.status,
           'created_at', COALESCE(i.activated_at, i.created_at),
@@ -159,7 +172,7 @@ BEGIN
             FROM (
               SELECT latitude, longitude, accuracy_meters, COALESCE(recorded_at, created_at) AS at
               FROM public.location_updates
-              WHERE incident_id = i.id
+              WHERE incident_id = i.id AND user_id = i.user_id
               ORDER BY COALESCE(recorded_at, created_at) DESC
               LIMIT 20
             ) l

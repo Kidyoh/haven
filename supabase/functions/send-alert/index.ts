@@ -82,7 +82,7 @@ Deno.serve(async (req) => {
         .eq("incident_id", incident.id)
         .eq("kind", "alert")
         .eq("status", "sent");
-      const reached = new Set((alerted ?? []).map((r) => r.contact_id));
+      const reached = new Set((alerted ?? []).map((r: { contact_id: string }) => r.contact_id));
       contacts = contacts.filter((c) => reached.has(c.id));
       if (contacts.length === 0) return result("skipped");
     }
@@ -111,6 +111,7 @@ Deno.serve(async (req) => {
     const countryCode = Deno.env.get("DEFAULT_COUNTRY_CODE") ?? "251";
     let sent = 0;
     let failed = 0;
+    let inFlight = 0;
 
     await Promise.all(
       contacts.map(async (contact) => {
@@ -123,9 +124,11 @@ Deno.serve(async (req) => {
           to_phone: to,
           provider: provider.name,
         });
-        // Already sent (or being sent right now by another attempt).
         if (!claimId) {
-          sent++;
+          // Someone else holds this slot: count it by what actually happened to it.
+          const state = await slotStatus(admin, incident.id, contact.id, kind);
+          if (state === "sent") sent++;
+          else inFlight++;
           return;
         }
         try {
@@ -145,7 +148,9 @@ Deno.serve(async (req) => {
       }),
     );
 
-    const status: Outcome = failed === 0 ? "sent" : sent === 0 ? "failed" : "partial";
+    // Texts still being sent by another attempt are not "sent" yet: report partial so the client asks again.
+    const status: Outcome =
+      failed === 0 && inFlight === 0 ? "sent" : sent === 0 && inFlight === 0 ? "failed" : "partial";
     return result(status, sent, failed, contacts.length);
   } catch (err) {
     return json({ error: err instanceof Error ? err.message : "Unexpected error" }, 500);
@@ -159,12 +164,14 @@ interface Contact {
 }
 
 async function loadContacts(admin: SupabaseClient, userId: string): Promise<Contact[]> {
-  const { data } = await admin
+  const { data, error } = await admin
     .from("emergency_contacts")
     .select("id, name, phone")
     .eq("user_id", userId)
     .order("is_primary", { ascending: false })
     .order("created_at", { ascending: true });
+  // A failed read is not "no contacts": throw so the client retries.
+  if (error) throw new Error(`could not load contacts: ${error.message}`);
   return (data ?? []).filter((c: Contact) => c.phone?.trim());
 }
 
@@ -176,14 +183,15 @@ async function claim(
   admin: SupabaseClient,
   row: { incident_id: string; user_id: string; contact_id: string; kind: Kind; to_phone: string; provider: string },
 ): Promise<string | null> {
-  const { data: inserted } = await admin
+  const { data: inserted, error: insertError } = await admin
     .from("alert_notifications")
     .upsert({ ...row, channel: "sms", status: "sending" }, { onConflict: "incident_id,contact_id,kind", ignoreDuplicates: true })
     .select("id");
+  if (insertError) throw new Error(`could not claim notification: ${insertError.message}`);
   if (inserted && inserted.length > 0) return inserted[0].id;
 
   const staleBefore = new Date(Date.now() - STALE_SENDING_MS).toISOString();
-  const { data: reclaimed } = await admin
+  const { data: reclaimed, error: reclaimError } = await admin
     .from("alert_notifications")
     .update({ status: "sending", error: null, to_phone: row.to_phone, provider: row.provider })
     .eq("incident_id", row.incident_id)
@@ -191,7 +199,20 @@ async function claim(
     .eq("kind", row.kind)
     .or(`status.eq.failed,and(status.eq.sending,updated_at.lt.${staleBefore})`)
     .select("id");
+  if (reclaimError) throw new Error(`could not reclaim notification: ${reclaimError.message}`);
   return reclaimed && reclaimed.length > 0 ? reclaimed[0].id : null;
+}
+
+async function slotStatus(admin: SupabaseClient, incidentId: string, contactId: string, kind: Kind): Promise<string | null> {
+  const { data, error } = await admin
+    .from("alert_notifications")
+    .select("status")
+    .eq("incident_id", incidentId)
+    .eq("contact_id", contactId)
+    .eq("kind", kind)
+    .maybeSingle();
+  if (error) throw new Error(`could not read notification: ${error.message}`);
+  return data?.status ?? null;
 }
 
 async function isRateLimited(admin: SupabaseClient, userId: string, incidentId: string): Promise<boolean> {

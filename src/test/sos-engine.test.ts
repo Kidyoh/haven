@@ -186,13 +186,16 @@ describe("SOS engine", () => {
     expect(kinds).toContain("evidence");
   });
 
-  test("pressing SOS during a duress stand-down brings back the same alert, not a new one", async () => {
+  test("pressing SOS during a duress stand-down shows a normal countdown over the same alert, not a new one", async () => {
     const t = setup();
     t.engine.startCountdown("user-1");
     t.engine.activate();
     const incidentId = t.engine.getSnapshot().incidentId;
     t.engine.enterDuress();
     t.engine.startCountdown("user-1");
+    // To someone watching, this is indistinguishable from a first press.
+    expect(t.engine.getSnapshot().phase).toBe("countdown");
+    t.engine.activate();
     await t.settle();
 
     const snap = t.engine.getSnapshot();
@@ -244,6 +247,42 @@ describe("SOS engine", () => {
     await second.settle();
     expect(second.engine.getSnapshot().phase).toBe("active");
     expect(second.kinds()).toContain("incident.activate");
+  });
+
+  test("cancelling the pretend countdown during duress goes back to the stand-down", async () => {
+    const t = setup();
+    t.engine.startCountdown("user-1");
+    t.engine.activate();
+    t.engine.enterDuress();
+    t.engine.startCountdown("user-1");
+    await t.engine.cancel();
+    await t.settle();
+    expect(t.engine.getSnapshot().phase).toBe("duress");
+    expect(t.kinds()).not.toContain("incident.cancel");
+    expect(t.recorder.stop).not.toHaveBeenCalled();
+  });
+
+  test("a countdown abandoned long ago is cancelled on reopening, not sent", async () => {
+    const storage = memoryStorage();
+    const first = setup({ storage });
+    first.engine.startCountdown("user-1");
+
+    const second = setup({ storage });
+    second.tick(10 * 60_000);
+    second.engine.restore("user-1");
+    await second.settle();
+    expect(second.engine.getSnapshot().phase).toBe("idle");
+    expect(second.kinds()).toEqual(["incident.cancel"]);
+    expect(second.recorder.start).not.toHaveBeenCalled();
+  });
+
+  test("a clip that arrives after its countdown was cancelled is discarded", async () => {
+    const t = setup();
+    t.engine.startCountdown("user-1");
+    await t.engine.cancel();
+    t.emitClip(0);
+    await t.settle();
+    expect(t.kinds()).not.toContain("evidence");
   });
 
   test("another account's saved alert is not restored", () => {

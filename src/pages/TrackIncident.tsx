@@ -20,7 +20,6 @@ interface TrailPoint {
 }
 
 interface Incident {
-  id: string;
   status: string;
   created_at: string;
   resolved_at: string | null;
@@ -123,7 +122,7 @@ const TrackIncident = () => {
             </p>
             <div className="mt-3 space-y-3">
               {activeIncidents.map((incident) => (
-                <ActiveIncident key={incident.id} incident={incident} now={now} />
+                <ActiveIncident key={incident.reference_number} incident={incident} now={now} />
               ))}
             </div>
             <a
@@ -156,7 +155,7 @@ const TrackIncident = () => {
           ) : (
             <ul className="mt-4 space-y-3">
               {incidents.map((incident) => (
-                <li key={incident.id} className="rounded-2xl border border-border bg-card p-4">
+                <li key={incident.reference_number} className="rounded-2xl border border-border bg-card p-4">
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-mono text-xs text-muted-foreground">{incident.reference_number}</span>
                     <StatusPill active={incident.status === "active"} />

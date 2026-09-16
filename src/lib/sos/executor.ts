@@ -29,6 +29,20 @@ export function createSupabaseExecutor(client: SupabaseClient<Database>): Execut
     if (error) throw new Error(error.message);
   };
 
+  /**
+   * A conditional update that matched no row is only fine if the incident is
+   * already where the update would have put it (a retry after a lost reply,
+   * or a responder got there first). If the row is missing, or in some other
+   * state, the op is not done: throwing keeps it queued.
+   */
+  const settle = async (incidentId: string, matched: { id: string }[] | null, acceptable: string[]) => {
+    if (matched && matched.length > 0) return;
+    const { data, error } = await client.from("incidents").select("status").eq("id", incidentId).maybeSingle();
+    check(error);
+    if (!data) throw new Error("incident not on the server yet");
+    if (!acceptable.includes(data.status)) throw new Error(`incident is ${data.status}`);
+  };
+
   return async (op: OutboxOp): Promise<ExecResult> => {
     switch (op.kind) {
       case "incident.create": {
@@ -40,32 +54,38 @@ export function createSupabaseExecutor(client: SupabaseClient<Database>): Execut
       }
 
       case "incident.activate": {
-        const { error } = await client
+        const { data, error } = await client
           .from("incidents")
           .update({ status: "active", activated_at: iso(op.at), battery_level: op.batteryLevel })
           .eq("id", op.incidentId)
-          .eq("status", "pending");
+          .eq("status", "pending")
+          .select("id");
         check(error);
+        await settle(op.incidentId, data, ["active", "resolved"]);
         return { done: true };
       }
 
       case "incident.cancel": {
-        const { error } = await client
+        const { data, error } = await client
           .from("incidents")
           .update({ status: "cancelled", resolved_at: iso(op.at) })
           .eq("id", op.incidentId)
-          .eq("status", "pending");
+          .eq("status", "pending")
+          .select("id");
         check(error);
+        await settle(op.incidentId, data, ["cancelled", "active", "resolved"]);
         return { done: true };
       }
 
       case "incident.resolve": {
-        const { error } = await client
+        const { data, error } = await client
           .from("incidents")
           .update({ status: "resolved", resolved_at: iso(op.at) })
           .eq("id", op.incidentId)
-          .in("status", ["pending", "active"]);
+          .in("status", ["pending", "active"])
+          .select("id");
         check(error);
+        await settle(op.incidentId, data, ["resolved", "cancelled"]);
         return { done: true };
       }
 

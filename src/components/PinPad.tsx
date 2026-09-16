@@ -27,8 +27,14 @@ const PinPad = ({
   const submit = async () => {
     if (pin.length < 4 || checking) return;
     setChecking(true);
-    const ok = await onSubmit(pin);
-    setChecking(false);
+    let ok = false;
+    try {
+      ok = await onSubmit(pin);
+    } catch {
+      ok = false;
+    } finally {
+      setChecking(false);
+    }
     if (!ok) {
       setWrong(true);
       setPin("");

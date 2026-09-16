@@ -74,15 +74,21 @@ export interface ExecResult {
 
 export type Executor = (op: OutboxOp) => Promise<ExecResult>;
 
-/** Ops that must reach the server in the order they were queued. */
-const SEQUENTIAL = new Set<OutboxOp["kind"]>([
+/** Status changes: they go in order, and one failing holds back the rest for that incident. */
+const STATUS_OPS = new Set<OutboxOp["kind"]>([
   "incident.create",
   "incident.activate",
   "incident.cancel",
   "incident.resolve",
   "incident.duress",
-  "notify",
 ]);
+
+/**
+ * Notifications wait behind a held-back status change (an alert text needs the
+ * incident active) but never hold anything back themselves: one bad phone
+ * number must not delay "I am safe" or a duress flag reaching responders.
+ */
+const WAITS_FOR_STATUS = new Set<OutboxOp["kind"]>([...STATUS_OPS, "notify"]);
 
 export interface OutboxOptions {
   /** Failures (while online) before an op is given up on. */
@@ -165,7 +171,7 @@ export class Outbox {
     for (const record of ordered) {
       const { op } = record;
       if (uncreated.has(op.incidentId)) continue;
-      if (SEQUENTIAL.has(op.kind) && blocked.has(op.incidentId)) continue;
+      if (WAITS_FOR_STATUS.has(op.kind) && blocked.has(op.incidentId)) continue;
 
       let ok = false;
       let error: unknown = null;
@@ -185,11 +191,13 @@ export class Outbox {
 
       failed = true;
       if (op.kind === "incident.create") uncreated.add(op.incidentId);
-      if (SEQUENTIAL.has(op.kind)) blocked.add(op.incidentId);
+      if (STATUS_OPS.has(op.kind)) blocked.add(op.incidentId);
 
       // Being offline is not the op's fault; only count attempts that had a chance.
       if (this.isOnline()) record.attempts += 1;
-      if (record.attempts >= this.maxAttempts) {
+      // The incident itself is never given up on: dropping a create or a resolve
+      // would leave the server telling a different story from the phone.
+      if (record.attempts >= this.maxAttempts && !STATUS_OPS.has(op.kind)) {
         await this.store.remove(record.id);
         this.options.onDrop?.(op, error);
       } else {

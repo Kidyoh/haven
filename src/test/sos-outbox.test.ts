@@ -88,6 +88,22 @@ describe("SOS outbox", () => {
     expect(sent).toEqual(["location:a", "incident.activate:a", "notify:a", "incident.resolve:a"]);
   });
 
+  test("a failing notification never holds back I am safe", async () => {
+    const { outbox, sent } = setup((op) => op.kind === "notify");
+    await outbox.enqueue(notify("a"));
+    await outbox.enqueue(resolve("a"));
+    await outbox.flush();
+    expect(sent).toEqual(["incident.resolve:a"]);
+  });
+
+  test("status changes are never given up on, however long they fail", async () => {
+    const { outbox, store, onDrop } = setup((op) => op.kind === "incident.create", { maxAttempts: 2 });
+    await outbox.enqueue(create("a"));
+    for (let i = 0; i < 5; i++) await outbox.flush();
+    expect(await store.all()).toHaveLength(1);
+    expect(onDrop).not.toHaveBeenCalled();
+  });
+
   test("a partly finished op (done: false) is kept and retried", async () => {
     let calls = 0;
     const store = createMemoryStore();

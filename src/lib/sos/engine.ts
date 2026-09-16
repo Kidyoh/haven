@@ -26,6 +26,18 @@ export const MAX_RECORDING_MS = 10 * 60_000;
 /** How long the alert text waits for a first GPS fix before going without one. */
 export const NOTIFY_WAIT_FOR_FIX_MS = 5_000;
 const STATUS_POLL_MS = 60_000;
+/** A countdown older than this when the app reopens is cancelled, not sent. */
+export const COUNTDOWN_STALE_MS = 60_000;
+
+/** crypto.randomUUID is missing before iOS 15.4 and on plain-http origins. */
+function uuidv4(): string {
+  if (typeof crypto !== "undefined" && typeof crypto.randomUUID === "function") return crypto.randomUUID();
+  const b = crypto.getRandomValues(new Uint8Array(16));
+  b[6] = (b[6] & 0x0f) | 0x40;
+  b[8] = (b[8] & 0x3f) | 0x80;
+  const h = Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("");
+  return `${h.slice(0, 8)}-${h.slice(8, 12)}-${h.slice(12, 16)}-${h.slice(16, 20)}-${h.slice(20)}`;
+}
 /** Also read by Pathways (without importing the engine) to offer a way back to a running alert. */
 export const SESSION_KEY = "haven-sos-session";
 
@@ -124,10 +136,15 @@ export class SOSEngine {
   private heartbeat: ReturnType<typeof setInterval> | null = null;
   private poll: ReturnType<typeof setInterval> | null = null;
   private restoredFor: string | null = null;
+  private countdownTimer: ReturnType<typeof setTimeout> | null = null;
+  /** Pressing SOS during a duress stand-down shows an ordinary countdown over the same incident. */
+  private revealing = false;
+  /** Sessions whose countdown was cancelled: a late clip from them is discarded. */
+  private readonly cancelled = new WeakSet<Session>();
 
   constructor(private readonly deps: EngineDeps) {
     this.now = deps.now ?? Date.now;
-    this.uuid = deps.uuid ?? (() => crypto.randomUUID());
+    this.uuid = deps.uuid ?? uuidv4;
     this.isOnline = deps.isOnline ?? (() => (typeof navigator === "undefined" ? true : navigator.onLine));
     this.background = deps.background ?? true;
     this.online = this.isOnline();
@@ -141,7 +158,15 @@ export class SOSEngine {
         this.emit();
       },
       onResult: (op, result) => this.handleResult(op, result),
-      onDrop: (op, error) => console.error(`SOS outbox gave up on ${op.kind}`, error),
+      onDrop: (op, error) => {
+        console.error(`SOS outbox gave up on ${op.kind}`, error);
+        const s = this.session;
+        if (op.kind === "notify" && op.notify === "alert" && s && s.incidentId === op.incidentId) {
+          s.notify = { ...s.notify, state: "failed" };
+          this.persist();
+          this.emit();
+        }
+      },
     });
 
     this.snapshot = this.buildSnapshot();
@@ -186,11 +211,20 @@ export class SOSEngine {
     const saved = this.readSession();
     if (!saved || saved.userId !== userId) return;
 
+    if (saved.phase === "countdown" && this.now() - saved.startedAt > COUNTDOWN_STALE_MS) {
+      // Closed mid-countdown a while ago. Sending "needs help now" days later
+      // would be wrong; the user can press SOS again.
+      void this.enqueue({ kind: "incident.cancel", incidentId: saved.incidentId, at: this.now() });
+      this.clearSession();
+      this.emit();
+      return;
+    }
+
     this.session = saved;
     this.startCapture();
     if (saved.phase === "countdown") {
-      // Only Cancel cancels. A countdown cut short by a reload or the OS killing
-      // the tab was still a request for help.
+      // A countdown cut short moments ago by a reload or the OS killing the tab
+      // was still a request for help. Only Cancel cancels.
       this.activate();
       return;
     }
@@ -201,10 +235,12 @@ export class SOSEngine {
 
   startCountdown(userId: string) {
     if (this.session) {
-      // Pressing SOS during a duress stand-down brings the real alert screen back.
-      if (this.session.phase === "duress") {
-        this.session.phase = "active";
-        this.persist();
+      // During a duress stand-down, pressing SOS looks exactly like a fresh press:
+      // a countdown, then the alert screen. Underneath it is the same incident,
+      // still running, so nothing new is created or sent.
+      if (this.session.phase === "duress" && !this.revealing) {
+        this.revealing = true;
+        this.startCountdownTimer();
         this.emit();
       }
       return;
@@ -244,12 +280,40 @@ export class SOSEngine {
       },
     });
     this.startCapture();
+    this.startCountdownTimer();
     this.emit();
+  }
+
+  /**
+   * The countdown's own deadline. The overlay normally fires activate() first;
+   * this covers the overlay going away (Android back, a re-render) mid-count.
+   */
+  private startCountdownTimer() {
+    if (!this.background) return;
+    if (this.countdownTimer) clearTimeout(this.countdownTimer);
+    this.countdownTimer = setTimeout(() => {
+      this.countdownTimer = null;
+      this.activate();
+    }, COUNTDOWN_SECONDS * 1000 + 500);
+  }
+
+  private clearCountdownTimer() {
+    if (this.countdownTimer) clearTimeout(this.countdownTimer);
+    this.countdownTimer = null;
   }
 
   activate() {
     const s = this.session;
+    if (s && this.revealing) {
+      this.revealing = false;
+      this.clearCountdownTimer();
+      s.phase = "active";
+      this.persist();
+      this.emit();
+      return;
+    }
     if (!s || s.phase !== "countdown") return;
+    this.clearCountdownTimer();
 
     s.phase = "active";
     s.activatedAt = this.now();
@@ -268,8 +332,17 @@ export class SOSEngine {
 
   async cancel() {
     const s = this.session;
+    if (s && this.revealing) {
+      // Cancelling the pretend countdown goes back to the stand-down; the alert keeps running.
+      this.revealing = false;
+      this.clearCountdownTimer();
+      this.emit();
+      return;
+    }
     if (!s || s.phase !== "countdown") return;
 
+    this.clearCountdownTimer();
+    this.cancelled.add(s);
     this.session = null;
     this.heldClips = [];
     this.clearSession();
@@ -312,6 +385,8 @@ export class SOSEngine {
     const s = this.session;
     if (!s) return;
     await this.recorder?.stop();
+    // The alert may have ended while the old recorder was stopping.
+    if (this.session !== s) return;
     this.recorder = this.makeRecorder(s);
     await this.recorder.start();
   }
@@ -335,15 +410,21 @@ export class SOSEngine {
     }
 
     if (!this.tracker) {
+      let tracker: TrackerLike | null = null;
       const opts: TrackerOptions = {
-        onFix: (fix) => this.handleFix(fix),
+        onFix: (fix) => {
+          if (this.tracker === tracker) this.handleFix(fix);
+        },
         onStatus: (status) => {
+          // A stopped tracker reports "idle" late; it must not overwrite a newer one.
+          if (this.tracker !== tracker) return;
           this.locationStatus = status;
           this.emit();
         },
       };
-      this.tracker = this.deps.createTracker ? this.deps.createTracker(opts) : new LocationTracker(opts);
-      this.tracker.start();
+      tracker = this.deps.createTracker ? this.deps.createTracker(opts) : new LocationTracker(opts);
+      this.tracker = tracker;
+      tracker.start();
     }
 
     this.deps.wakeLock?.acquire();
@@ -354,36 +435,41 @@ export class SOSEngine {
   }
 
   private makeRecorder(s: Session): RecorderLike {
+    let recorder: RecorderLike | null = null;
     const opts: RecorderOptions = {
       segmentMs: SEGMENT_MS,
       maxMs: MAX_RECORDING_MS,
       startSeq: s.nextSeq,
       recordedMs: s.recordedMs,
-      onClip: (clip) => this.handleClip(clip),
+      // Each recorder files clips under the incident it was started for, even if they arrive late.
+      onClip: (clip) => this.handleClip(clip, s),
       onStatus: (status) => {
+        if (this.recorder !== recorder) return;
         this.audioStatus = status;
         this.emit();
       },
     };
-    return this.deps.createRecorder ? this.deps.createRecorder(opts) : new SegmentRecorder(opts);
+    recorder = this.deps.createRecorder ? this.deps.createRecorder(opts) : new SegmentRecorder(opts);
+    return recorder;
   }
 
   private async stopCapture() {
     this.stopTimers();
+    this.clearCountdownTimer();
     this.tracker?.stop();
     this.tracker = null;
     this.deps.wakeLock?.release();
     const recorder = this.recorder;
     this.recorder = null;
-    await recorder?.stop();
+    // Reset before awaiting: a new alert may start while the old recorder winds down.
     this.audioStatus = "idle";
     this.locationStatus = "idle";
     this.lastFix = null;
+    await recorder?.stop();
   }
 
-  private handleClip(clip: AudioClip) {
-    const s = this.session ?? this.ending;
-    if (!s) return;
+  private handleClip(clip: AudioClip, s: Session) {
+    if (this.cancelled.has(s)) return;
     s.nextSeq = Math.max(s.nextSeq, clip.seq + 1);
     s.recordedMs += clip.durationMs;
     s.clips += 1;
@@ -546,7 +632,7 @@ export class SOSEngine {
   private buildSnapshot(): SOSSnapshot {
     const s = this.session;
     return {
-      phase: s?.phase ?? "idle",
+      phase: this.revealing ? "countdown" : (s?.phase ?? "idle"),
       incidentId: s?.incidentId ?? null,
       referenceNumber: s?.referenceNumber ?? null,
       startedAt: s?.startedAt ?? null,
